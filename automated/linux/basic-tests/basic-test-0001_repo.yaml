@@ -1,0 +1,20 @@
+metadata:
+    name: Basic test 0001 - Repo
+    format: "Lava-Test Test Definition 1.0"
+    description: "This test checks if RevolutionPi-Repository works."
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+
+    scope:
+        - functional
+    devices:
+        - Core3_Ostfildern_001
+
+run:
+    steps:
+        - lava-test-case test1 --result pass
+        - lava-test-case test2 --result pass
+#        - lava-test-case test3 --result fail
+#        - lava-test-case test4 --result fail
