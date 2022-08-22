@@ -1,2 +1,2 @@
 # LAVA-test-definitions
-Test definitions work with and without LAVA
+A set of testing scripts designed to work with LAVA.
