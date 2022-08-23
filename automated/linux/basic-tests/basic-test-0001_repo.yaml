@@ -6,15 +6,14 @@ metadata:
         - r.gsponer@kunbus.com
     os:
         - raspian
-
     scope:
         - functional
     devices:
         - Core3_Ostfildern_001
-
 run:
     steps:
         - lava-test-case test1 --result pass
         - lava-test-case test2 --result pass
+# With the next 2 lines you can simulate a failed test.
 #        - lava-test-case test3 --result fail
 #        - lava-test-case test4 --result fail

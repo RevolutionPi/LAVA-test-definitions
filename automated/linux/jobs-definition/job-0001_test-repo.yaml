@@ -10,7 +10,6 @@ timeouts:
     minutes: 1
   connection:
     minutes: 2
-    
 actions:
 - deploy:
     timeout:
