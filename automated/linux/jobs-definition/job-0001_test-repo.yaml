@@ -18,7 +18,7 @@ actions:
 - boot:
     method: ssh
     connection: ssh
-    prompts: ["root@RevPi32961:"]
+    prompts: ["root@"]
     timeout:
       minutes: 2
 - test:
