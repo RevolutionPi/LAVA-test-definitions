@@ -1,0 +1,19 @@
+metadata:
+    name: Basic test 0002 - Repo with script
+    format: "Lava-Test Test Definition 1.0"
+    description: "This test checks if RevolutionPi-Repository works and run a simple script."
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+run:
+    steps:
+        - cd automated/linux/basic-tests
+        - bash ./basic-test-0002_repo-script.sh
