@@ -1,0 +1,19 @@
+metadata:
+    name: Test eth-iperf3
+    format: "Lava-Test Test Definition 1.0"
+    description: "Measurements of the maximum achievable bandwidth on IP networks."
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+run:
+    steps:
+        - cd automated/linux/ethernet
+        - bash ./test-eth-iperf3.sh
