@@ -9,7 +9,10 @@ metadata:
     scope:
         - functional
     devices:
-        - Core3_Ostfildern_001
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
 run:
     steps:
         - lava-test-case test1 --result pass
