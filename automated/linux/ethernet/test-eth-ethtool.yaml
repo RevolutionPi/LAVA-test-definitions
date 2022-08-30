@@ -1,0 +1,19 @@
+metadata:
+    name: Test eth-ethtool
+    format: "Lava-Test Test Definition 1.0"
+    description: "Test displays parameters of network interface controller (NIC)."
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+run:
+    steps:
+        - cd automated/linux/ethernet
+        - bash ./test-eth-ethtool.sh
