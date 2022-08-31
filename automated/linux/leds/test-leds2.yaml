@@ -1,0 +1,19 @@
+metadata:
+    name: LEDs2 - Visual check LEDs
+    format: "Lava-Test Test Definition 1.0"
+    description: "Test LEDs 2 - Visual test - LEDs on/off - green/red."
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+run:
+    steps:
+        - cd automated/linux/leds
+        - bash ./test-leds2.sh
