@@ -1,0 +1,19 @@
+metadata:
+    name: Test piBridge.
+    format: "Lava-Test Test Definition 1.0"
+    description: "Test read/write from/to RevPi modules using piTest"
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+run:
+    steps:
+        - cd automated/revpi/pibridge
+        - bash ./test-pb-1.sh
