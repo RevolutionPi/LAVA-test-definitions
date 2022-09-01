@@ -1,0 +1,19 @@
+metadata:
+    name: Test usb-1
+    format: "Lava-Test Test Definition 1.0"
+    description: "All hardware devices are listed and shown with text: Module is present."
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+run:
+    steps:
+        - cd automated/linux/piTest
+        - bash ./test-PT-1.sh
