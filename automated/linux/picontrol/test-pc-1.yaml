@@ -1,0 +1,19 @@
+metadata:
+    name: Test pc-1
+    format: "Lava-Test Test Definition 1.0"
+    description: "Check picontrol driver and picontrol0 device"
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+run:
+    steps:
+        - cd automated/linux/picontrol
+        - bash ./test-pc-1.sh
