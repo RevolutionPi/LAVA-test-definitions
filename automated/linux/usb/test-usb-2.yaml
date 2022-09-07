@@ -1,0 +1,19 @@
+metadata:
+    name: Test usb-2
+    format: "Lava-Test Test Definition 1.0"
+    description: "Test for correct USB data transfer with a USB flash disk. Flash disk will be formated"
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+run:
+    steps:
+        - cd automated/linux/usb
+        - bash ./test-usb-2.sh
