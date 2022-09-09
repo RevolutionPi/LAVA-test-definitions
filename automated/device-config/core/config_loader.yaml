@@ -1,0 +1,19 @@
+metadata:
+    name: Configuration loader
+    format: "Lava-Test Test Definition 1.0"
+    description: "Configuration for Core-Devices with specific modules is loaded"
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+run:
+    steps:
+        - cd automated/device-config/core
+        - bash ./config_loader.sh
