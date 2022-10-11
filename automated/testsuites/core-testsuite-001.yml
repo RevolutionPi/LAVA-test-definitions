@@ -1,0 +1,89 @@
+device_type: RevPi_Core
+job_name: RevPi_Core - TestSuite 001
+priority: medium
+visibility: public
+tags:
+- config_core_01
+
+timeouts:
+  job:
+    minutes: 10
+  action:
+    minutes: 1
+  connection:
+    minutes: 2
+actions:
+- deploy:
+    timeout:
+      minutes: 4
+    to: ssh
+- boot:
+    method: ssh
+    connection: ssh
+    prompts: ["root@RevPi"]
+    timeout:
+      minutes: 2
+- test:
+    timeout:
+      minutes: 5
+    definitions:
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/leds/test-leds1.yaml
+      name: test-leds1
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/leds/test-leds2.yaml
+      name: test-leds2
+- test:
+    timeout:
+      minutes: 5
+    definitions:
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/picontrol/test-pc-1.yaml
+      name: test-pc-1
+- test:
+    timeout:
+      minutes: 5
+    definitions:
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/ethernet/test-eth-ethtool.yaml
+      name: test-eth-ethtool
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/ethernet/test-eth-iperf3.yaml
+      name: test-eth-iperf3
+- test:
+    timeout:
+      minutes: 10
+    definitions:
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/usb/test-usb-2.yaml
+      name: test-usb-2
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/usb/test-usb-3.yaml
+      name: test-usb-3
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/usb/test-usb-4.yaml
+      name: test-usb-4
+- test:
+    timeout:
+      minutes: 5
+    definitions:
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/device-config/core/config_loader.yaml
+      name: config_loader
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/piTest/test-PT-1.yaml
+      name: test-PT-1
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/revpi/pibridge/test-pb-1.yaml
+      name: test-pb-1
