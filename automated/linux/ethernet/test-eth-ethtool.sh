@@ -1,5 +1,5 @@
 #!/bin/bash
-source "../test_format.sh"
+TEST_CASE_NAME=$(basename "$0" .sh)
 
 # Waiting for Parameter:
 #1- Speed: 100Mb/s
@@ -22,9 +22,9 @@ do
 	echo $RET_ETHTOOL | grep -E -o $i
 	if [ "$?" == 0 ]
 	then
-		lava-test-case logfile --result pass
+		lava-test-case "$TEST_CASE_NAME-$i" --result pass
 	else
-		lava-test-case logfile --result fail
-		lava-test-raise "Test ethtool FAIL - " $r
+		lava-test-case "$TEST_CASE_NAME-$i" --result fail
+		lava-test-raise "$TEST_CASE_NAME FAIL - " $r
 	fi
 done

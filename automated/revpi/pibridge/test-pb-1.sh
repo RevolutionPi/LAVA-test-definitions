@@ -1,5 +1,7 @@
 #!/bin/bash
 
+TEST_CASE_NAME=$(basename "$0" .sh)
+
 LOW=0
 HIGH=1
 
@@ -17,37 +19,25 @@ OUTPUT_R_2="O_3_i05"
 
 piTest_setIOValue()
 {
-  piTest -w $1,$2
+	piTest -w "$1","$2"
 }
 
 piTest_validateIOValue()
 {
-	RET=$(piTest -q -1 -r $1)
-	if [ $RET -ne $2 ]
+	RET=$(piTest -q -1 -r "$1")
+	if [ "$RET" -ne "$2" ]
 	then
-		lava-test-case logfile --result fail
-		lava-test-raise "Test pb-1 FAIL - piTest_validateIOValue()  $1: $RET"
+		lava-test-case "$TEST_CASE_NAME-$1" --result fail
+		lava-test-raise "Test $TEST_CASE_NAME FAIL - piTest_validateIOValue()  $1: $RET"
 	else
-		lava-test-case logfile --result pass
-	fi	
+		lava-test-case "$TEST_CASE_NAME-$1" --result pass
+	fi
 }
 
 #Set output LOW
 VALUE=$LOW
 piTest_setIOValue $OUTPUT_L_1 $VALUE
 piTest_setIOValue $OUTPUT_L_2 $VALUE
-piTest_setIOValue $OUTPUT_R_1 $VALUE
-piTest_setIOValue $OUTPUT_R_2 $VALUE
-sleep 1
-
-#Check inputs with LOW
-VALUE=$LOW
-piTest_validateIOValue $INPUT_L_1 $VALUE
-piTest_validateIOValue $INPUT_L_2 $VALUE
-piTest_validateIOValue $INPUT_R_1 $VALUE
-piTest_validateIOValue $INPUT_R_2 $VALUE
-
-#Set output HIGH
 VALUE=$HIGH
 piTest_setIOValue $OUTPUT_L_1 $VALUE
 piTest_setIOValue $OUTPUT_L_2 $VALUE

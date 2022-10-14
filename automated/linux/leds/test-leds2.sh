@@ -1,5 +1,5 @@
 #!/bin/bash
-source "../test_format.sh"
+TEST_CASE_NAME=$(basename "$0" .sh)
 
 #LED_TIME: LED on/off time.
 LED_TIME=1
@@ -20,4 +20,4 @@ do
 done
 
 # TODO: This test should be modified for external hardware...
-lava-test-case logfile --result pass
+lava-test-case "$TEST_CASE_NAME" --result pass
