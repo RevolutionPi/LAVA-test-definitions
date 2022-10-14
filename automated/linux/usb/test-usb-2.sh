@@ -1,4 +1,5 @@
 #!/bin/bash
+TEST_CASE_NAME=$(basename "$0" .sh)
 
 PATH_DEV="/dev/sda1"
 PATH_MOUNT="/mnt/lava_usb_test"
@@ -28,23 +29,23 @@ then
 
             if [ $? -eq 0 ]
             then
-                lava-test-case logfile --result pass
+                lava-test-case "$TEST_CASE_NAME-md5sum" --result pass
             else
-                lava-test-case logfile --result fail
-                lava-test-raise "Test usb-2 FAIL - Check md5sum failed"
+                lava-test-case "$TEST_CASE_NAME-md5sum" --result fail
+                lava-test-raise "$TEST_CASE_NAME FAIL - Check md5sum failed"
             fi
         else
-            lava-test-case logfile --result fail
-            lava-test-raise "Test usb-2 FAIL - Mount failed"
+            lava-test-case "$TEST_CASE_NAME-mount" --result fail
+            lava-test-raise "$TEST_CASE_NAME FAIL - Mount failed"
         fi
         cd /
         umount "$PATH_MOUNT"
         rm -r "$PATH_MOUNT"
     else
-        lava-test-case logfile --result fail
-        lava-test-raise "Test usb-2 FAIL - Flash disk cannot be formatted"
+        lava-test-case "$TEST_CASE_NAME-format" --result fail
+        lava-test-raise "$TEST_CASE_NAME FAIL - Flash disk cannot be formatted"
     fi
 else
-    lava-test-case logfile --result fail
-    lava-test-raise "Test usb-2 FAIL - Flash disk not found"
+    lava-test-case "$TEST_CASE_NAME-flash-disk" --result fail
+    lava-test-raise "$TEST_CASE_NAME FAIL - Flash disk not found"
 fi

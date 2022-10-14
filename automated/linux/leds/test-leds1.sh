@@ -1,5 +1,5 @@
 #!/bin/bash
-source "../test_format.sh"
+TEST_CASE_NAME=$(basename "$0" .sh)
 
 declare -a LEDS_CORE_TREE=(
 	"├── a1_green -> ../../devices/platform/leds/leds/a1_green"
@@ -17,9 +17,9 @@ do
 	echo "$RET_TREE" | grep -o "$i"
 	if [ "$?" == 0 ]
 	then
-		lava-test-case logfile --result pass
+		lava-test-case "$TEST_CASE_NAME-$i" --result pass
 	else
-		lava-test-case logfile --result fail
-		lava-test-raise "Test Leds1 FAIL $i"
+		lava-test-case "$TEST_CASE_NAME-$i" --result fail
+		lava-test-raise ""$TEST_CASE_NAME" FAIL $i"
 	fi
 done
