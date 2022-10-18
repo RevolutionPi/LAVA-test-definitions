@@ -13,7 +13,6 @@ then
     lava-test-case "$TEST_CASE_NAME-iperf3-1/2" --result pass
 else
     lava-test-case "$TEST_CASE_NAME-iperf3-1/2" --result fail
-	lava-test-raise "$TEST_CASE_NAME FAIL - Run server: $ iperf3 -s"
 fi
 
 iperf3 -t 1800 -4 -R -c $IP_ATE -t 10
@@ -22,5 +21,4 @@ then
     lava-test-case "$TEST_CASE_NAME-iperf3-2/2" --result pass
 else
     lava-test-case "$TEST_CASE_NAME-iperf3-2/2" --result fail
-	lava-test-raise "$TEST_CASE_NAME FAIL - Run server: $ iperf3 -s"
 fi

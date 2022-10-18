@@ -17,4 +17,4 @@ lava-test-case "$TEST_CASE_NAME-example-fail" --result fail
 # Use: lava-test-raise "message from test shell".
 # The rest of the test job will not run.
 # Example:
-lava-test-raise "Error title. State of Job will show as Incompleted.FAIL"
+#lava-test-raise "Error title. State of Job will show as Incompleted.FAIL"

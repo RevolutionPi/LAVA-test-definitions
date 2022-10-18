@@ -7,7 +7,6 @@ then
 	lava-test-case "$TEST_CASE_NAME-1" --result pass
 else
 	lava-test-case "$TEST_CASE_NAME-1" --result fail
-	lava-test-raise "$TEST_CASE_NAME FAIL"
 fi
 
 ls -l /dev/pi* | grep /dev/piControl0
@@ -16,5 +15,4 @@ then
 	lava-test-case "$TEST_CASE_NAME-2" --result pass
 else
 	lava-test-case "$TEST_CASE_NAME-2" --result fail
-	lava-test-raise "$TEST_CASE_NAME FAIL"
 fi

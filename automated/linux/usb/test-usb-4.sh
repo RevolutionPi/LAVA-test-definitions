@@ -9,5 +9,4 @@ then
     lava-test-case "$TEST_CASE_NAME" --result pass
 else
     lava-test-case "$TEST_CASE_NAME" --result fail
-    lava-test-raise "$TEST_CASE_NAME FAIL - Unable to write from USB flash disk"
 fi

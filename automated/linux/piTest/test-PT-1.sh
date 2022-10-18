@@ -16,7 +16,6 @@ then
         lava-test-case "$TEST_CASE_NAME-$HW_NOT_PRESENT-pass" --result pass
     else
         lava-test-case "$TEST_CASE_NAME-$HW_NOT_PRESENT-fail" --result fail
-        lava-test-raise "$TEST_CASE_NAME FAIL: DUT constellation must be checked! At least one module is NOT present, data is NOT available: $RET"
     fi
 
     #Check Module-UPDATE
@@ -27,5 +26,4 @@ then
     fi
 else
     lava-test-case "$TEST_CASE_NAME-piText-x-fail" --result fail
-    lava-test-raise "$TEST_CASE_NAME FAIL: piTest -x ERROR: $RET"
 fi

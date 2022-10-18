@@ -28,7 +28,6 @@ piTest_validateIOValue()
 	if [ "$RET" -ne "$2" ]
 	then
 		lava-test-case "$TEST_CASE_NAME-$1" --result fail
-		lava-test-raise "Test $TEST_CASE_NAME FAIL - piTest_validateIOValue()  $1: $RET"
 	else
 		lava-test-case "$TEST_CASE_NAME-$1" --result pass
 	fi
