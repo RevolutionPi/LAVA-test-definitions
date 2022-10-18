@@ -20,6 +20,5 @@ do
 		lava-test-case "$TEST_CASE_NAME-$i" --result pass
 	else
 		lava-test-case "$TEST_CASE_NAME-$i" --result fail
-		lava-test-raise ""$TEST_CASE_NAME" FAIL $i"
 	fi
 done
