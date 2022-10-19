@@ -24,8 +24,7 @@ piTest_setIOValue()
 
 piTest_validateIOValue()
 {
-	RET=$(piTest -q -1 -r "$1")
-	if [ "$RET" -ne "$2" ]
+	if [ "$(piTest -q -1 -r "$1")" -ne "$2" ]
 	then
 		lava-test-case "$TEST_CASE_NAME-$1" --result fail
 	else
