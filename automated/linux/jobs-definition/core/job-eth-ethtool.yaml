@@ -1,5 +1,5 @@
 device_type:	RevPi_Core
-job_name: Test eth-iperf3
+job_name: Test eth-ethtool - Core
 priority: medium
 visibility: public
 
@@ -18,7 +18,7 @@ actions:
 - boot:
     method: ssh
     connection: ssh
-    prompts: ["root@"]
+    prompts: ["root@RevPi"]
     timeout:
       minutes: 2
 - test:
@@ -27,5 +27,7 @@ actions:
     definitions:
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/linux/ethernet/test-eth-iperf3.yaml
-      name: test-eth-iperf3
+      path: automated/linux/ethernet/test-eth-ethtool.yaml
+      name: test-eth-ethtool
+      params:
+        DUT: "Core"
