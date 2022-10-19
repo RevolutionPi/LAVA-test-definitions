@@ -13,6 +13,10 @@ metadata:
         - Core 3
         - core 3+
         - Core S
+        - Connect
+        - Connect+
+        - Connect S
+        - Connect SE
 run:
     steps:
         - cd automated/linux/picontrol
