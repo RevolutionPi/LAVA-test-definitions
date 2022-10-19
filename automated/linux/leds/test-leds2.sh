@@ -13,10 +13,10 @@ LEDS_CORE=(
 
 for i in {0..3}
 do
-	echo ${LEDS_CORE[$i]}
-	echo 1 > /sys/class/leds/${LEDS_CORE[$i]}/brightness
+	echo "${LEDS_CORE[$i]}"
+	echo 1 > /sys/class/leds/"${LEDS_CORE[$i]}"/brightness
 	sleep $LED_TIME
-	echo 0 > /sys/class/leds/${LEDS_CORE[$i]}/brightness
+	echo 0 > /sys/class/leds/"${LEDS_CORE[$i]}"/brightness
 done
 
 # TODO: This test should be modified for external hardware...

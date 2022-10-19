@@ -19,8 +19,7 @@ RET_ETHTOOL=$(ethtool eth0)
 
 for i in "${ETH_PARAM[@]}"
 do
-	echo $RET_ETHTOOL | grep -E -o $i
-	if [ "$?" == 0 ]
+	if echo "$RET_ETHTOOL" | grep -E -o "$i";
 	then
 		lava-test-case "$TEST_CASE_NAME-$i" --result pass
 	else

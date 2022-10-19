@@ -14,8 +14,7 @@ declare -a LEDS_CORE_TREE=(
 RET_TREE=$(tree /sys/class/leds)
 for i in "${LEDS_CORE_TREE[@]}"
 do
-	echo "$RET_TREE" | grep -o "$i"
-	if [ "$?" == 0 ]
+	if echo "$RET_TREE" | grep -o "$i";
 	then
 		lava-test-case "$TEST_CASE_NAME-$i" --result pass
 	else
