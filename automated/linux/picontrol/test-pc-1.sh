@@ -1,7 +1,7 @@
 #!/bin/bash
 TEST_CASE_NAME=$(basename "$0" .sh)
 
-if dmesg | grep -i picontrol;
+if dmesg | grep -i picontrol
 then
 	lava-test-case "$TEST_CASE_NAME-1" --result pass
 else
