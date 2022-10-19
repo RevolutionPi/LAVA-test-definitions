@@ -19,10 +19,27 @@ RET_ETHTOOL=$(ethtool eth0)
 
 for i in "${ETH_PARAM[@]}"
 do
-	if echo "$RET_ETHTOOL" | grep -E -o "$i";
+	if echo "$RET_ETHTOOL" | grep -E -o "$i"
 	then
 		lava-test-case "$TEST_CASE_NAME-$i" --result pass
 	else
 		lava-test-case "$TEST_CASE_NAME-$i" --result fail
 	fi
 done
+
+case "$1" in
+"Connect")
+	RET_ETHTOOL=$(ethtool eth1)
+	for i in "${ETH_PARAM[@]}"
+	do
+		if echo "$RET_ETHTOOL" | grep -E -o "$i"
+		then
+			lava-test-case "$TEST_CASE_NAME-eth1-$i" --result pass
+		else
+			lava-test-case "$TEST_CASE_NAME-eth1-$i" --result fail
+		fi
+	done
+	;;
+Default)
+	;;
+esac
