@@ -19,8 +19,7 @@ then
     fi
 
     #Check Module-UPDATE
-    piTest -d | grep $HW_UPDATE
-    if [ $? -eq 0 ]
+    if piTest -d | grep $HW_UPDATE;
     then
         lava-test-case "$TEST_CASE_NAME-$HW_UPDATE" --result fail
     fi
