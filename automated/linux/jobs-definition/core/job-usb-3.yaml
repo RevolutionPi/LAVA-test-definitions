@@ -1,0 +1,31 @@
+device_type:	RevPi_Core
+job_name: Test read speed from USB flash disk - Core
+priority: medium
+visibility: public
+
+timeouts:
+  job:
+    minutes: 5
+  action:
+    minutes: 1
+  connection:
+    minutes: 2
+actions:
+- deploy:
+    timeout:
+      minutes: 4
+    to: ssh
+- boot:
+    method: ssh
+    connection: ssh
+    prompts: ["root@RevPi"]
+    timeout:
+      minutes: 2
+- test:
+    timeout:
+      minutes: 5
+    definitions:
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/usb/test-usb-3.yaml
+      name: test-usb-3
