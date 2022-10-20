@@ -1,0 +1,23 @@
+metadata:
+    name: Test IOCycle-1
+    format: "Lava-Test Test Definition 1.0"
+    description: "Cycle should be displayed"
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+        - Connect
+        - Connect+
+        - Connect S
+        - Connect SE
+run:
+    steps:
+        - cd automated/revpi/iocycle
+        - bash ./test-iocycle-1.sh
