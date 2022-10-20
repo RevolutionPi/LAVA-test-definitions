@@ -1,5 +1,5 @@
 device_type:	RevPi_Core
-job_name: Test LEDs2 - Visual check LEDs
+job_name: Test LEDs 1 - Check LEDs with visual test - LEDs on/off - green/red."
 priority: medium
 visibility: public
 
@@ -18,7 +18,7 @@ actions:
 - boot:
     method: ssh
     connection: ssh
-    prompts: ["root@"]
+    prompts: ["root@RevPi"]
     timeout:
       minutes: 5
 - test:
@@ -27,5 +27,7 @@ actions:
     definitions:
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/linux/leds/test-leds2.yaml
-      name: test-leds2
+      path: automated/linux/leds/test-leds1.yaml
+      name: test-leds1
+      params:
+        DUT: "Core"
