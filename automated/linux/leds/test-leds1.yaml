@@ -1,7 +1,7 @@
 metadata:
-    name: Test LEDs 1 - Tree
+    name: Test LEDs 1
     format: "Lava-Test Test Definition 1.0"
-    description: "Listing default LEDs."
+    description: "Listing default LEDs with visual test - LEDs on/off - green/red."
     maintainer:
         - r.gsponer@kunbus.com
     os:
@@ -13,7 +13,11 @@ metadata:
         - Core 3
         - core 3+
         - Core S
+        - Connect
+        - Connect+
+        - Connect S
+        - Connect SE
 run:
     steps:
         - cd automated/linux/leds
-        - bash ./test-leds1.sh
+        - bash ./test-leds1.sh "${DUT}"
