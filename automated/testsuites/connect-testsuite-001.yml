@@ -1,9 +1,9 @@
-device_type: RevPi_Core
-job_name: RevPi_Core - TestSuite 001
+device_type: RevPi_Connect
+job_name: RevPi_Connect - TestSuite 001
 priority: medium
 visibility: public
 tags:
-- config_core_01
+- config_connect_01
 
 timeouts:
   job:
@@ -32,7 +32,7 @@ actions:
       path: automated/linux/leds/test-leds1.yaml
       name: test-leds1
       params:
-        DUT: "Core"
+        DUT: "Connect"
 - test:
     timeout:
       minutes: 5
@@ -50,7 +50,7 @@ actions:
       path: automated/linux/ethernet/test-eth-ethtool.yaml
       name: test-eth-ethtool
       params:
-        DUT: "Core"
+        DUT: "Connect"
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
       path: automated/linux/ethernet/test-eth-iperf3.yaml
@@ -79,7 +79,7 @@ actions:
     definitions:
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/device-config/core/config_loader.yaml
+      path: automated/device-config/connect/config_loader.yaml
       name: config_loader
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
