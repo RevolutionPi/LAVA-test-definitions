@@ -1,0 +1,39 @@
+device_type: RevPi_Core
+job_name: RevPi_Core - pibridge-cycle-time
+priority: medium
+visibility: public
+
+timeouts:
+  job:
+    minutes: 10
+  action:
+    minutes: 1
+  connection:
+    minutes: 2
+actions:
+- deploy:
+    timeout:
+      minutes: 4
+    to: ssh
+- boot:
+    method: ssh
+    connection: ssh
+    prompts: ["root@RevPi"]
+    timeout:
+      minutes: 2
+- test:
+    timeout:
+      minutes: 10
+    definitions:
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/device-config/core/config_loader.yaml
+      name: config_loader
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/revpi/iocycle/test-iocycle-2.yaml
+      name: test-iocycle-2
+      params:
+        SHOW_JSON: 1
+        MAX_MS: 10
+        MEASUREMENT_TIME: 0
