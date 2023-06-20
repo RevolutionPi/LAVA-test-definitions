@@ -1,0 +1,41 @@
+device_type: RevPi_Core
+job_name: RevPi_Core - Standard health check
+priority: medium
+visibility: public
+
+timeouts:
+  job:
+    minutes: 5
+  action:
+    minutes: 1
+  connection:
+    minutes: 2
+    
+actions:
+- deploy:
+    timeout:
+      minutes: 4
+    to: ssh
+- boot:
+    method: ssh
+    connection: ssh
+    prompts: ["root@RevPi"]
+    timeout:
+      minutes: 2
+
+- test:
+    timeout:
+      minutes: 5
+    definitions:
+    - repository:
+        metadata:
+          format: Lava-Test Test Definition 1.0
+          name: worker-device-test
+          description: "Simple test if the test will be executed on given devices on a specific worker"
+        run:
+          steps:
+          - lava-test-case test1-pass --result pass
+          - lava-test-case test2-pass --result pass
+      from: inline
+      name: worker-device-test
+      path: inline/worker-device-test.yaml
