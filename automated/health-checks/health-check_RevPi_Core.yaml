@@ -10,32 +10,34 @@ timeouts:
     minutes: 1
   connection:
     minutes: 2
-    
+
 actions:
 - deploy:
     timeout:
-      minutes: 4
+      # this is a health check, so no flashing or other time-intensive tasks
+      # need to be executed
+      minutes: 1
     to: ssh
+
 - boot:
     method: ssh
     connection: ssh
-    prompts: ["root@RevPi"]
+    # it is assumed that the revpi is in a working state for the health check,
+    # so the prompt should be set correctly (i.e. the hostname is correct)
+    prompts: ["root@RevPi[0-9]+:"]
     timeout:
-      minutes: 2
+      minutes: 1
 
 - test:
     timeout:
-      minutes: 5
+      # the actual test for the health check is very basic and tests for dmesg
+      # warnings or errors, cpu load, free memory, free disk space, and
+      # internet connectivity. this should be doable in 1 minute
+      minutes: 1
     definitions:
-    - repository:
-        metadata:
-          format: Lava-Test Test Definition 1.0
-          name: worker-device-test
-          description: "Simple test if the test will be executed on given devices on a specific worker"
-        run:
-          steps:
-          - lava-test-case test1-pass --result pass
-          - lava-test-case test2-pass --result pass
-      from: inline
-      name: worker-device-test
-      path: inline/worker-device-test.yaml
+    - name: health-check-test
+      repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/health-checks/tests/health-check-test.yaml
+      params:
+        DUT: "Core"
