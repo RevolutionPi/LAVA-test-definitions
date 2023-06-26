@@ -22,11 +22,17 @@ TEST_NAME="image_deployment"
 # find image and extract
 cd /lava-lxc || exit
 
-ARCHIVE=$(find . -iname "*tar*")
-tar xzvf "$ARCHIVE"
-rm "$ARCHIVE"
 
-IMAGE=$(find . -iname "*.img")
+if ! command -v xz &> /dev/null; then
+    echo "xz not intalled. It will now be installed."
+    apt-get -q update
+    apt-get install -qy xz-utils
+fi
+
+ARCHIVE=$(find . -maxdepth 1 -iname "*.xz" -type f)
+xz --decompress "$ARCHIVE"
+
+IMAGE=$(find . -maxdepth 1 -iname "*.img" -type f)
 echo "$IMAGE"
 
 echoinfo "please wait, calculating md5sum for image"
