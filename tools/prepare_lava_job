@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+"""
+This script is designed to generate a LAVA Job-file in yaml, which
+can be used with our RevPi devices in order to flash and perform tests
+with LAVA automatically, thus saving time finding errors in the images.
+"""
+
+import argparse
+import os
+import sys
+import yaml
+
+parser = argparse.ArgumentParser(
+    description=__doc__,
+    epilog="Default behaviour: Generate a LAVA Job to flash and run tests on a given RevPi device.",
+)
+
+parser.add_argument(
+    "-d",
+    "--device-type",
+    dest="device_type",
+    nargs="?",
+    help="Device type to use for testing",
+)
+
+parser.add_argument(
+    "-u",
+    "--url",
+    dest="url",
+    help="URL of the image to be flashed",
+)
+
+parser.add_argument(
+    "--flash",
+    dest="flash",
+    nargs="?",
+    required=True,
+    help="Manifest used to flash the given image onto the DUT",
+)
+
+parser.add_argument(
+    "-s",
+    "--testsuite",
+    dest="testsuite",
+    required=True,
+    help="Job testsuite to be used after flashing",
+)
+
+parser.add_argument(
+    "-t",
+    "--tags",
+    dest="tags",
+    type=str,
+    nargs="?",
+    const="True",
+    help="Tag used for selecting an appropriate device for testing",
+)
+
+# TODO what about another URLs???
+def get_image_name_from_url(url):
+    return os.path.basename(url)
+
+
+def add_namespace_in_testsuite(content):
+    actions = content.get("actions", [])
+
+    for action in actions:
+        if "test" in action or "boot" in action or "deploy" in action:
+            action_name = next(iter(action))
+            action[action_name]["namespace"] = "testsuite"
+
+    return content
+
+
+def create_job(device_type, device_tags, image_url, file_flash, file_testsuite) -> bool:
+    # Load the contents of file_flash
+    try:
+        with open(file_flash, "r") as file:
+            file_flash_contents = yaml.safe_load(file)
+    except OSError:
+        print(f"Could not read file to flash device: {file_flash}", file=sys.stderr)
+        return False
+    # Load the contents of file_testsuite
+    try:
+        with open(file_testsuite, "r") as file:
+            file_testsuite_contents = yaml.safe_load(file)
+    except OSError:
+        print(f"Could not read file with testsuite: {file_testsuite}", file=sys.stderr)
+        return False
+    if device_type:
+        # Update device_type
+        file_flash_contents["device_type"] = device_type
+
+    if not image_url:
+        image_url = file_flash_contents["actions"][2]["deploy"]["images"][
+            "recovery_image"
+        ]["url"]
+
+    # Update job_name
+    file_flash_contents["job_name"] = "Flash & Test Image: " + get_image_name_from_url(
+        image_url
+    )
+
+    if device_tags:
+        # Update device tags
+        file_flash_contents["tags"] = device_tags
+
+    if image_url:
+        # Update the image URL with the provided image parameter
+        file_flash_contents["actions"][2]["deploy"]["images"]["recovery_image"][
+            "url"
+        ] = image_url
+
+    # Append the actions from "file_testsuite" to the actions in "file_flash"
+    file_flash_contents["actions"].extend(file_testsuite_contents["actions"])
+
+    # Add or modify namespace from "file_testsuite"
+    file_testsuite_contents = add_namespace_in_testsuite(file_testsuite_contents)
+
+    # Output updated contents to stdout with proper indentation
+    formatted_output = yaml.dump(file_flash_contents, default_flow_style=False)
+    print(formatted_output)
+
+    return True
+
+
+def main() -> int:
+    args = parser.parse_args()
+
+    device_type = args.device_type
+    image_url = args.url
+    file_flash = args.flash
+    file_testsuite = args.testsuite
+    device_tags = args.tags
+
+    return int(
+        not create_job(device_type, device_tags, image_url, file_flash, file_testsuite)
+    )
+
+
+if __name__ == "__main__":
+    sys.exit(main())
