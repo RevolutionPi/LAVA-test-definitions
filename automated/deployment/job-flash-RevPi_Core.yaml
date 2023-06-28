@@ -1,0 +1,76 @@
+device_type: RevPi_Core
+job_name: 'Flash Image: 2023-06-26-revpi-bullseye-rc3-arm64-lite.img'
+priority: medium
+protocols:
+  lava-lxc:
+    distribution: debian
+    mirror: http://mirror.bytemark.co.uk/debian
+    name: lxc-revpi
+    release: bullseye
+    template: debian
+tags:
+- config_core_01
+timeouts:
+  action:
+    minutes: 10
+  connection:
+    minutes: 2
+  job:
+    minutes: 30
+visibility: public
+actions:
+- deploy:
+    namespace: tlxc
+    os: debian
+    packages:
+    - iputils-ping
+    - netcat-traditional
+    - usbutils
+    - fdisk
+    timeout:
+      minutes: 5
+    to: lxc
+- boot:
+    method: lxc
+    namespace: tlxc
+    prompts:
+    - root@(.*):/#
+    timeout:
+      minutes: 5
+- deploy:
+    connection-namespace: tlxc
+    images:
+      recovery_image:
+        url: http://172.23.16.235:8082/artifactory/revpi-images-local/2023-06-26-revpi-bullseye-rc3-arm64_build-161/2023-06-26-revpi-bullseye-rc3-arm64-lite.img.xz
+    namespace: recovery
+    os: debian
+    timeout:
+      minutes: 10
+    to: recovery
+- boot:
+    commands: recovery
+    method: recovery
+    namespace: recovery
+    timeout:
+      minutes: 5
+- test:
+    definitions:
+    - from: git
+      name: auto-programming-device
+      path: automated/deployment/lava_prog_device.yaml
+      repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+    namespace: tlxc
+    timeout:
+      minutes: 30
+- boot:
+    commands: exit
+    method: recovery
+    namespace: recovery
+    timeout:
+      minutes: 5
+- command:
+    name: run_factory_reset
+    namespace: recovery
+- command:
+    name: timeout_power_off
+    namespace: recovery
