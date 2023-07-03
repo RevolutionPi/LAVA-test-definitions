@@ -39,5 +39,3 @@ actions:
       repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
       path: automated/health-checks/tests/health-check-test.yaml
-      params:
-        DUT: "Connect"
