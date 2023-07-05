@@ -56,6 +56,37 @@ parser.add_argument(
     help="Tag used for selecting an appropriate device for testing",
 )
 
+def validate_flash_file(device_type, image_url, file_flash_contents):
+    # Check if 'device_type' has been predefined
+    if not device_type: 
+        if 'device_type' not in file_flash_contents or not file_flash_contents['device_type']:
+            print("device_type not found", file=sys.stderr)
+            return False
+
+    if not image_url:
+        # Check if 'image_url' in 'deploy' exists
+        try:
+            for action in file_flash_contents['actions']:
+                if 'deploy' in action:
+                    deploy_data = action['deploy']
+                    if 'images' in deploy_data:
+                        images_data = deploy_data['images']
+                        for image_key, image_value in images_data.items():
+                            if 'url' in image_value:
+                                image_url = image_value['url']
+                                print("image_url:", image_url)
+                                break
+                        if image_url:
+                            break
+        except KeyError:
+            image_url = None
+
+        # Validate 'image_url'
+        if not image_url:
+            print("image not found", file=sys.stderr)
+            return False
+    return True
+
 def get_image_name_from_url(url):
     # check url-ending
     allowed_extensions = ['.xz', '.zip', '.tar.gz']
@@ -91,6 +122,10 @@ def create_job(device_type, device_tags, image_url, file_flash, file_testsuite) 
     except OSError:
         print(f"Could not read file with testsuite: {file_testsuite}", file=sys.stderr)
         return False
+    
+    if not validate_flash_file(device_type, image_url, file_flash_contents):
+        return False
+
     if device_type:
         # Update device_type
         file_flash_contents["device_type"] = device_type
