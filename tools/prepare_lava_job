@@ -56,8 +56,12 @@ parser.add_argument(
     help="Tag used for selecting an appropriate device for testing",
 )
 
-# TODO what about another URLs???
 def get_image_name_from_url(url):
+    # check url-ending
+    allowed_extensions = ['.xz', '.zip', '.tar.gz']
+    url_extension = os.path.splitext(url)[1]
+    if url_extension not in allowed_extensions:
+        return "image from - " + url
     return os.path.basename(url)
 
 
