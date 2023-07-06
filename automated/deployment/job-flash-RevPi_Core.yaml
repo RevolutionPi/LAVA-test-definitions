@@ -27,6 +27,7 @@ actions:
     - netcat-traditional
     - usbutils
     - fdisk
+    - xz-utils
     timeout:
       minutes: 5
     to: lxc

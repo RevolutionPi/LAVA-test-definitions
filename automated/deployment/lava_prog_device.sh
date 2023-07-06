@@ -22,13 +22,6 @@ TEST_NAME="image_deployment"
 # find image and extract
 cd /lava-lxc || exit
 
-
-if ! command -v xz &> /dev/null; then
-    echo "xz not intalled. It will now be installed."
-    apt-get -q update
-    apt-get install -qy xz-utils
-fi
-
 ARCHIVE=$(find . -maxdepth 1 -iname "*.xz" -type f)
 xz --decompress "$ARCHIVE"
 
