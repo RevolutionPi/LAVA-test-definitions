@@ -74,7 +74,6 @@ def validate_flash_file(device_type, image_url, file_flash_contents):
                         for image_key, image_value in images_data.items():
                             if 'url' in image_value:
                                 image_url = image_value['url']
-                                print("image_url:", image_url)
                                 break
                         if image_url:
                             break
