@@ -29,13 +29,13 @@ declare -a LEDS_CONNECT=(
 )
 
 case "$1" in
-"Connect")
+Connect)
 	LEDS=( "${LEDS_CONNECT[@]}" )
 	;;
-"Core")
+Core*)
 	LEDS=( "${LEDS_CORE[@]}" )
 	;;
-Default)
+*)
 	;;
 esac
 
@@ -54,7 +54,7 @@ do
 	else
 		lava-test-case "$TEST_CASE_NAME-$i/brightness-green" --result fail
 	fi
-	
+
 	sleep $LED_TIME
 	if echo 0 > "$i"/brightness
 	then
