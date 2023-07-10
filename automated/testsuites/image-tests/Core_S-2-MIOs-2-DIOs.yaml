@@ -1,0 +1,55 @@
+device_type: &device_type Core_S
+job_name: Core_S - Test MIOs and DIOs left and right
+priority: medium
+visibility: public
+tags:
+  - core_s_01
+
+timeouts:
+  job:
+    minutes: 10
+  action:
+    minutes: 1
+  connection:
+    minutes: 2
+actions:
+- deploy:
+    timeout:
+      minutes: 4
+    to: ssh
+- boot:
+    method: ssh
+    connection: ssh
+    prompts: ["root@RevPi[0-9]+:"]
+    timeout:
+      minutes: 2
+- test:
+    timeout:
+      minutes: 10
+    definitions:
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/device-config/core-s/config_loader.yaml
+      name: config_loader
+      params:
+        TYPE: *device_type
+        # MIO <- DIO <- Core S -> DIO -> MIO
+        CONFIG: config003.rsc
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/leds/test-leds1.yaml
+      name: test-leds1
+      params:
+        DUT: *device_type
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/picontrol/test-pc-1.yaml
+      name: test-pc-1
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/revpi/pibridge/test-pb-7.yaml
+      name: test-pb-7
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/revpi/pibridge/test-pb-8.yaml
+      name: test-pb-8
