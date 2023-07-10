@@ -1,0 +1,28 @@
+metadata:
+    name: Configuration loader
+    format: "Lava-Test Test Definition 1.0"
+    description: "Configuration for RevPi-Devices with specific modules is loaded"
+    maintainer:
+        - r.gsponer@kunbus.com
+        - t.boehler@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - Core 3+
+        - Core S
+        - Core SE
+        - Connect
+        - Connect+
+        - Connect S
+        - Connect SE
+        - Connect 4
+        - Compact
+        - Flat
+run:
+    steps:
+        - cd automated/device-config
+        - bash ./config_loader.sh ./"$TYPE"/"$CONFIG" || lava-test-raise "config_loader"
