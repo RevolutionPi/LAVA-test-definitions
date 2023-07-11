@@ -1,0 +1,20 @@
+metadata:
+    name: Test piBridge 5
+    format: "Lava-Test Test Definition 1.0"
+    description: "Test MIO on the right side of RevPi using piTest"
+    maintainer:
+        - t.boehler@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Core
+        - Core 3
+        - core 3+
+        - Core S
+        - Core SE
+run:
+    steps:
+        - cd automated/revpi/pibridge
+        - bash ./test-wrapper.sh test-pb-5
