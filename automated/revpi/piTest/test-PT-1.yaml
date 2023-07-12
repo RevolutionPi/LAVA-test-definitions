@@ -1,5 +1,5 @@
 metadata:
-    name: Test usb-1
+    name: Test pt-1 / pt-2
     format: "Lava-Test Test Definition 1.0"
     description: "All hardware devices are listed and shown with text: Module is present."
     maintainer:
@@ -13,11 +13,15 @@ metadata:
         - Core 3
         - core 3+
         - Core S
+        - Core SE
         - Connect
         - Connect+
         - Connect S
         - Connect SE
+        - Connect 4
+        - Flat
+        - Compact
 run:
     steps:
-        - cd automated/linux/piTest
+        - cd automated/revpi/piTest
         - bash ./test-PT-1.sh
