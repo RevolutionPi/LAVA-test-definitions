@@ -1,26 +1,27 @@
 metadata:
-    name: Test Health Check
-    format: "Lava-Test Test Definition 1.0"
-    description: "Standard Health Check for RevPi devices"
-    maintainer:
-        - r.gsponer@kunbus.com
-    os:
-        - raspian
-    scope:
-        - functional
-    devices:
-        - Core
-        - Core 3
-        - Core 3+
-        - Core S
-        - Core SE
-        - Connect
-        - Connect+
-        - Connect S
-        - Connect SE
-        - Compact
-        - Flat
+  name: Test Health Check
+  format: "Lava-Test Test Definition 1.0"
+  description: "Standard Health Check for RevPi devices"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - raspian
+  scope:
+    - functional
+  devices:
+    - Core
+    - Core 3
+    - Core 3+
+    - Core S
+    - Core SE
+    - Connect
+    - Connect+
+    - Connect S
+    - Connect SE
+    - Compact
+    - Flat
 run:
-    steps:
-        - cd automated/health-checks/tests
-        - bash ./health-check.sh "${DUT}"
+  steps:
+    - lava-test-case health-check_uptime --shell 'uptime'
+    - lava-test-case health-check_memory --shell 'free -m'
+    - lava-test-case health-check_storage --shell 'df -h /'
