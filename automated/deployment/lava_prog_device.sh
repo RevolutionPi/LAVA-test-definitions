@@ -40,7 +40,7 @@ if [ ! "$usb_disk" == "$disk" ]; then
 fi
 
 echoinfo "programming the image on storage device /dev/$disk"
-dd if="$IMAGE" of="/dev/$disk" bs=64k status=progress
+dd if="$IMAGE" of="/dev/$disk" bs=64k
 sync
 
 echoinfo "verifying disk vs image"
