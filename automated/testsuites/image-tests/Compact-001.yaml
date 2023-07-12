@@ -1,0 +1,54 @@
+device_type: &device_type RevPi_Compact
+job_name: RevPi Compact - Test 001
+priority: medium
+visibility: public
+tags:
+  - revpi-compact
+
+timeouts:
+  job:
+    minutes: 10
+  action:
+    minutes: 1
+  connection:
+    minutes: 2
+actions:
+- deploy:
+    timeout:
+      minutes: 4
+    to: ssh
+- boot:
+    method: ssh
+    connection: ssh
+    prompts: ["root@RevPi[0-9]+:"]
+    timeout:
+      minutes: 2
+- test:
+    timeout:
+      minutes: 10
+    definitions:
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/device-config/config_loader.yaml
+      name: config_loader
+      params:
+        TYPE: *device_type
+        CONFIG: config001.rsc
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/picontrol/test-pc-1.yaml
+      name: test-pc-1
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/revpi/piTest/test-PT-1.yaml
+      name: pt-1_pt-2
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/revpi/piTest/test-PT-Compact.yaml
+      name: pt-Compact
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/linux/leds/test-leds1.yaml
+      name: test-leds1
+      params:
+        DUT: *device_type
