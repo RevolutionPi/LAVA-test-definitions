@@ -28,11 +28,16 @@ declare -a LEDS_CONNECT=(
 	"$LED_BASE/power_red"
 )
 
+declare -a LEDS_COMPACT=("${LEDS_CORE[@]}")
+
 case "$1" in
-Connect)
+RevPi_Compact)
+	LEDS=( "${LEDS_COMPACT[@]}" )
+	;;
+RevPi_Connect)
 	LEDS=( "${LEDS_CONNECT[@]}" )
 	;;
-Core*)
+RevPi_Core*)
 	LEDS=( "${LEDS_CORE[@]}" )
 	;;
 *)

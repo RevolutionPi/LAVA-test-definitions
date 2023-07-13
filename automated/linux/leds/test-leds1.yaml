@@ -11,13 +11,14 @@ metadata:
     devices:
         - Core
         - Core 3
-        - core 3+
+        - Core 3+
         - Core S
         - Core SE
         - Connect
         - Connect+
         - Connect S
         - Connect SE
+        - Compact
 run:
     steps:
         - cd automated/linux/leds
