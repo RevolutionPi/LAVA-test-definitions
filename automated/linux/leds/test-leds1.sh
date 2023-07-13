@@ -28,6 +28,22 @@ declare -a LEDS_CONNECT=(
 	"$LED_BASE/power_red"
 )
 
+declare -a LEDS_FLAT=(
+	"$LED_BASE/a1_green"
+	"$LED_BASE/a1_red"
+	"$LED_BASE/a2_green"
+	"$LED_BASE/a2_red"
+	"$LED_BASE/a3_green"
+	"$LED_BASE/a3_red"
+	"$LED_BASE/a4_green"
+	"$LED_BASE/a4_red"
+	"$LED_BASE/a5_green"
+	"$LED_BASE/a5_red"
+	"$LED_BASE/default-on"
+	"$LED_BASE/mmc0"
+	"$LED_BASE/power_red"
+)
+
 declare -a LEDS_COMPACT=("${LEDS_CORE[@]}")
 
 case "$1" in
@@ -39,6 +55,9 @@ RevPi_Connect)
 	;;
 RevPi_Core*)
 	LEDS=( "${LEDS_CORE[@]}" )
+	;;
+RevPi_Flat)
+	LEDS=( "${LEDS_FLAT[@]}" )
 	;;
 *)
 	;;

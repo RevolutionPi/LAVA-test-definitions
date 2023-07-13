@@ -19,6 +19,7 @@ metadata:
         - Connect S
         - Connect SE
         - Compact
+        - Flat
 run:
     steps:
         - cd automated/linux/leds
