@@ -1,0 +1,16 @@
+metadata:
+    name: Test pt-Flat
+    format: "Lava-Test Test Definition 1.0"
+    description: "Tests for RevPi Flat using piTest."
+    maintainer:
+        - r.gsponer@kunbus.com
+    os:
+        - raspian
+    scope:
+        - functional
+    devices:
+        - Flat
+run:
+    steps:
+        - cd automated/revpi/piTest
+        - bash ./test-wrapper.sh test-pt-flat-da-1
