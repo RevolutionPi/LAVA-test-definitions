@@ -1,6 +1,14 @@
 device_type: RevPi_Core
 job_name: 'Flash Image: 2023-06-26-revpi-bullseye-rc3-arm64-lite.img'
 priority: medium
+visibility: public
+tags:
+  - config_core_01
+
+# Set up the linux container (LXC) for flashing the DUT.
+#
+# Setting up an LXC is done to have a clean environment for flashing the DUT
+# every time.
 protocols:
   lava-lxc:
     distribution: debian
@@ -8,8 +16,7 @@ protocols:
     name: lxc-revpi
     release: bullseye
     template: debian
-tags:
-- config_core_01
+
 timeouts:
   action:
     minutes: 10
@@ -17,61 +24,106 @@ timeouts:
     minutes: 2
   job:
     minutes: 30
-visibility: public
+
 actions:
-- deploy:
-    namespace: tlxc
-    os: debian
-    packages:
-    - iputils-ping
-    - netcat-traditional
-    - usbutils
-    - fdisk
-    - xz-utils
-    timeout:
-      minutes: 5
-    to: lxc
-- boot:
-    method: lxc
-    namespace: tlxc
-    prompts:
-    - root@(.*):/#
-    timeout:
-      minutes: 5
-- deploy:
-    connection-namespace: tlxc
-    images:
-      recovery_image:
-        url: http://172.23.16.235:8082/artifactory/revpi-images-local/2023-06-26-revpi-bullseye-rc3-arm64_build-161/2023-06-26-revpi-bullseye-rc3-arm64-lite.img.xz
-    namespace: recovery
-    os: debian
-    timeout:
-      minutes: 10
-    to: recovery
-- boot:
-    commands: recovery
-    method: recovery
-    namespace: recovery
-    timeout:
-      minutes: 5
-- test:
-    definitions:
-    - from: git
-      name: auto-programming-device
-      path: automated/deployment/lava_prog_device.yaml
-      repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
-    namespace: tlxc
-    timeout:
-      minutes: 30
-- boot:
-    commands: exit
-    method: recovery
-    namespace: recovery
-    timeout:
-      minutes: 5
-- command:
-    name: run_factory_reset
-    namespace: recovery
-- command:
-    name: timeout_power_off
-    namespace: recovery
+# Create the LXC container for flashing and install the required packages.
+  - deploy:
+      to: lxc
+      namespace: tlxc
+      os: debian
+      packages:
+        - iputils-ping
+        - netcat-traditional
+        - usbutils
+        - fdisk
+        # decompressing the downloaded image archive
+        - xz-utils
+      timeout:
+        minutes: 5
+  # Boot the LXC.
+  - boot:
+      method: lxc
+      namespace: tlxc
+      prompts:
+        - root@(.*):/#
+      timeout:
+        minutes: 5
+
+  # This section follows the documentation closely:
+  # https://docs.lavasoftware.org/lava/actions-deploy.html#to-recovery
+  #
+  # Download the image to flash onto the DUT to the LXC.
+  - deploy:
+      to: recovery
+      connection-namespace: tlxc
+      images:
+        recovery_image:
+          url: http://172.23.16.235:8082/artifactory/revpi-images-local/2023-06-26-revpi-bullseye-rc3-arm64_build-161/2023-06-26-revpi-bullseye-rc3-arm64-lite.img.xz
+      namespace: recovery
+      os: debian
+      timeout:
+        minutes: 10
+  # Power on the DUT.
+  #
+  # This uses the `recovery_mode_command` set in the device dictionary of the
+  # DUT. This can be found on the LAVA server in
+  # `/etc/lava-server/dispatcher-config/devices/${DEVICE}.jinja2`.
+  #
+  # For example: If the device is a RevPi and needs to be power cycled by a
+  # connected relay, the command could be:
+  #
+  #     {%
+  #       set recovery_mode_command = [
+  #         "/home/lava-user/LAVA-tools/worker/lava_recovery_cmd.sh 10.42.11.151 17123 1 2 2-1.1 on"
+  #       ]
+  #     %}
+  #
+  # This example connects to the Relay Card and powers on the DUT.
+  - boot:
+      commands: recovery
+      method: recovery
+      namespace: recovery
+      timeout:
+        minutes: 5
+  # Flash the DUT from the LXC.
+  #
+  # As per the documentation linked above, the DUT should be flashed from the LXC
+  # by running a "test" - a script that defines *how* to flash the DUT.
+  - test:
+      definitions:
+        - from: git
+          name: auto-programming-device
+          path: automated/deployment/lava_prog_device.yaml
+          repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      namespace: tlxc
+      timeout:
+        minutes: 30
+  # Reset the DUT.
+  - boot:
+      commands: exit
+      method: recovery
+      namespace: recovery
+      timeout:
+        minutes: 5
+
+  # Run revpi_factory_reset.sh.
+  #
+  # The `command` action allows for the execution of custom commands that have
+  # been defined in the device dictionary (see above for where this is exactly).
+  # Example from flashing a RevPi Core:
+  #
+  #     {%
+  #       set user_commands = {
+  #         'run_factory_reset': {
+  #           'do': '/home/lava-user/LAVA-tools/worker/revpi_factory_reset.sh b8-27-eb-a1-f1-b3.testing.revpi.kunbus.com core 32346 c8-e3-a7-01-56-cb'
+  #          },
+  #         'timeout_power_off': { 'do': 'sleep 60' }
+  #       }
+  #     %}
+  - command:
+      name: run_factory_reset
+      namespace: recovery
+  # Wait for the DUT to power off.
+  - command:
+      name: timeout_power_off
+      namespace: recovery
