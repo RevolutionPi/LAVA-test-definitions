@@ -1,0 +1,23 @@
+metadata:
+    format: Lava-Test Test Definition 1.0
+    name: usb-mount-storage
+    description: "Mount a USB mass storage devic3"
+    maintainer:
+        - t.boehler@kunbus.com
+    os:
+        - debian
+    scope:
+        - functional
+    devices:
+        - RevPi Core
+        # TODO: etc.
+
+params:
+    SKIP_INSTALL: "True"
+    DEVICE: "/dev/sda1"
+
+run:
+    steps:
+        - cd ./automated/revpi/usb
+        - ./mount.sh -s "${SKIP_INSTALL}" -d "${DEVICE}"
+        - ../../utils/send-to-lava.sh ./output/result.txt
