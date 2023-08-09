@@ -1,0 +1,23 @@
+metadata:
+    format: Lava-Test Test Definition 1.0
+    name: picontrol-test-basic
+    description: "Run basic piControl tests."
+    maintainer:
+        - t.boehler@kunbus.com
+    os:
+        - debian
+    scope:
+        - functional
+    devices:
+        - RevPi Core
+        # TODO: etc.
+
+params:
+    SKIP_INSTALL: "False"
+    TESTS: "dmesg dev"
+
+run:
+    steps:
+        - cd ./automated/revpi/piControl/
+        - ./piControl.sh -s "${SKIP_INSTALL}" -t "${TESTS}"
+        - ../../utils/send-to-lava.sh ./output/result.txt
