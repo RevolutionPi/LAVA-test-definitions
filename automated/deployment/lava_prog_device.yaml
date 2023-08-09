@@ -1,9 +1,21 @@
 metadata:
-    format: Lava-Test Test Definition 1.0
-    name: testrack-image-prog-service
-    description: "Service that programs a given image onto the device."
+  format: Lava-Test Test Definition 1.0
+  name: testrack-image-prog-service
+  description: "Service that programs a given image onto the device."
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+
+params:
+  SKIP_INSTALL: "True"
 
 run:
-    steps:
-        - cd automated/deployment 
-        - bash ./lava_prog_device.sh
+  steps:
+    - cd automated/deployment
+    # Run the test.
+    - ./lava_prog_device.sh -s "${SKIP_INSTALL}"
+    # Send the results in result.txt to LAVA.
+    - ../utils/send-to-lava.sh ./output/result.txt
