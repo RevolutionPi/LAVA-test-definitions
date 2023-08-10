@@ -1,0 +1,3 @@
+#!/bin/sh
+
+../utils/prepare_lava_job
