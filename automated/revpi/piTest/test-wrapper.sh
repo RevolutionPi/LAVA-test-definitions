@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../../../lib/piTest.sh
+source ../../lib/piTest.sh
 
 test-pt-compact-d-1() {
     piTest_Check_001 "test-compact-pt" "DI1" "DO1"

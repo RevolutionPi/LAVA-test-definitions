@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../../../lib/piTest.sh
+source ../../lib/piTest.sh
 
 test-pb-3() {
     piTest_Check_001 "test-pb-3" "DIO_R1_I1" "DIO_R1_O1"
