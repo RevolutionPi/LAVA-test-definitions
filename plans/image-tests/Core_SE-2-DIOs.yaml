@@ -29,7 +29,7 @@ actions:
     definitions:
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/device-config/core-se/config_loader.yaml
+      path: device-config/core-se/config_loader.yaml
       name: config_loader
       params:
         TYPE: *device_type

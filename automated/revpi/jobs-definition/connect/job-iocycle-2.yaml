@@ -27,7 +27,7 @@ actions:
     definitions:
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/device-config/connect/config_loader.yaml
+      path: device-config/connect/config_loader.yaml
       name: config_loader
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
