@@ -1,0 +1,48 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: LAVA-test-definitions
+Upstream-Contact: Kunbus GmbH
+Source: https://gitlab.com/RevolutionPi/LAVA-test-definitions
+
+Files: *
+Copyright: 2022-2023 Kunbus GmbH
+License: GPL-2.0-only
+
+Files: automated/lib/sh-test-lib
+Copyright: 2012-2019 Linaro Limited
+           2019 Daniel Wagner <wagi@monom.org>
+           2019 Daniel Wagner <daniel.wagner@siemens.com>
+           2019 Patryk Mungai <patryk.mungai-ndungu.kx@renesas.com>
+           2018 Karsten Tausche <karsten@fairphone.com>
+           2018 Oleksandr Terentiev <oterenti@cisco.com>
+           2017 Lei Yang <Lei.Yang@windriver.com>
+License: GPL-2.0-only
+
+Files: automated/utils/requirements.txt
+Copyright: 2012-2019 Linaro Limited
+           2019 Daniel Wagner <wagi@monom.org>
+           2019 Daniel Wagner <daniel.wagner@siemens.com>
+           2019 Patryk Mungai <patryk.mungai-ndungu.kx@renesas.com>
+           2018 Karsten Tausche <karsten@fairphone.com>
+           2018 Oleksandr Terentiev <oterenti@cisco.com>
+           2017 Lei Yang <Lei.Yang@windriver.com>
+License: GPL-2.0-only
+
+Files: automated/utils/send-to-lava.sh
+Copyright: 2012-2019 Linaro Limited
+           2019 Daniel Wagner <wagi@monom.org>
+           2019 Daniel Wagner <daniel.wagner@siemens.com>
+           2019 Patryk Mungai <patryk.mungai-ndungu.kx@renesas.com>
+           2018 Karsten Tausche <karsten@fairphone.com>
+           2018 Oleksandr Terentiev <oterenti@cisco.com>
+           2017 Lei Yang <Lei.Yang@windriver.com>
+License: GPL-2.0-only
+
+Files: automated/utils/test-runner.py
+Copyright: 2012-2019 Linaro Limited
+           2019 Daniel Wagner <wagi@monom.org>
+           2019 Daniel Wagner <daniel.wagner@siemens.com>
+           2019 Patryk Mungai <patryk.mungai-ndungu.kx@renesas.com>
+           2018 Karsten Tausche <karsten@fairphone.com>
+           2018 Oleksandr Terentiev <oterenti@cisco.com>
+           2017 Lei Yang <Lei.Yang@windriver.com>
+License: GPL-2.0-only
