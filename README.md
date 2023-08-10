@@ -1,5 +1,23 @@
 # LAVA-test-definitions
+
 A set of testing scripts designed to work with LAVA.
+
+## Repository Layout
+
+```
+.
+├── automated				# test definitions
+│   ├── bin					# misc. tools to use with this repo
+│   ├── deployment			# test definitions for deploying images onto boards
+│   ├── health-checks		# definitions of health checks for various boards
+│   ├── lib					# reusable code
+│   ├── linux				# linux-specific tests
+│   ├── revpi				# revpi-specific tests
+│   └── utils				# various utilities used by jobs
+├── device-config			# pictory configuration files for RevPi boards
+├── docs					# general documentation
+└── plans					# commonly used job definitions
+```
 
 ## Naming schema for Pictory configurations
 
