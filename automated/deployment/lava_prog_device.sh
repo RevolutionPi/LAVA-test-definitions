@@ -19,7 +19,7 @@ usage() {
 }
 
 while getopts "s:" o; do
-  case "$o" in
+  case "${o}" in
     s) ;;
     *) usage ;;
   esac
@@ -28,46 +28,39 @@ done
 prog_device() {
     set +x
 
-    # shellcheck disable=SC2005
-    absdirname () { echo "$(cd "$(dirname "$1")" && pwd)"; }
-    SRC_ROOT="$(absdirname "${BASH_SOURCE[0]}")"
-
-    # include echo helper
-    # shellcheck disable=SC1090
-    . "$SRC_ROOT/tools/echohelper.sh"
-
     # find image and extract
     cd /lava-lxc || exit
 
     ARCHIVE=$(find . -maxdepth 1 -iname "*.xz" -type f)
-    xz --decompress "$ARCHIVE"
+    xz --decompress "${ARCHIVE}"
 
     IMAGE=$(find . -maxdepth 1 -iname "*.img" -type f)
-    echo "$IMAGE"
+    info_msg "${IMAGE} will be programmed onto the DUT"
 
-    echoinfo "please wait, calculating md5sum for image"
-    md5_img=$(md5sum "$IMAGE" | awk '{ print $1 }' )
+    info_msg "calculating md5 checksum for ${IMAGE}"
+    md5_img=$(md5sum "${IMAGE}" | awk '{ print $1 }' )
+    info_msg "md5 checksum of ${IMAGE}: ${md5_img}"
 
     usb_disk=$(find /sys/devices -iname "${LAVA_STATIC_INFO_0_usb_path:?}" -exec find {} -iname block -print0 \; 2>/dev/null | xargs -0 ls)
     disk=$(lsblk -I 8 -dno NAME,RM | awk '{ if  ($2 == 1) { print $1 } }')
 
-    if [ ! "$usb_disk" == "$disk" ]; then
-    echoerr "Blockdevice from lsblk and sysfs are different ($disk - $usb_disk)"
-    exit 1
+    if [ ! "${usb_disk}" == "${disk}" ]; then
+        error_msg "Blockdevice from lsblk and sysfs are different (${disk} - ${usb_disk})"
     fi
 
-    echoinfo "programming the image on storage device /dev/$disk"
-    dd if="$IMAGE" of="/dev/$disk" bs=64k
+    info_msg
+    info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programming the image on storage device /dev/${disk}"
+    dd if="${IMAGE}" of="/dev/${disk}" bs=64k
     sync
+    info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programmed image onto storage device /dev/${disk}"
 
-    echoinfo "verifying disk vs image"
-    md5_disk=$(dd if="/dev/$disk" bs=64k count="$(stat -c %s "$IMAGE")" iflag=count_bytes status=progress | md5sum | awk '{ print $1 }' )
-    echo "$md5_img"
-    echo "$md5_disk"
+    info_msg "verifying disk vs image"
+    md5_disk=$(dd if="/dev/${disk}" bs=64k count="$(stat -c %s "${IMAGE}")" iflag=count_bytes | md5sum | awk '{ print $1 }' )
+    info_msg "md5 checksum of image: ${md5_img}"
+    info_msg "md5 checksum of disk: ${md5_disk}"
 
-    if [[ "$md5_img" != "$md5_disk" ]]; then
-    echoerr "image on disk seems to have errors"
-    exit 1
+    if [ "${md5_img}" != "${md5_disk}" ]; then
+        error_msg "md5 checksums of image and disk don't match!"
     fi
 }
 
