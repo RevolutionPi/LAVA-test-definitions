@@ -1,5 +1,5 @@
 device_type: RevPi_Core
-job_name: 'Flash Image: 2023-06-26-revpi-bullseye-rc3-arm64-lite.img'
+job_name: 'Flash Image: 2023-07-28-revpi-bullseye-arm64-lite.img'
 priority: medium
 visibility: public
 tags:
@@ -58,7 +58,7 @@ actions:
       connection-namespace: tlxc
       images:
         recovery_image:
-          url: http://172.23.16.235:8082/artifactory/revpi-images-local/2023-06-26-revpi-bullseye-rc3-arm64_build-161/2023-06-26-revpi-bullseye-rc3-arm64-lite.img.xz
+          url: http://172.23.16.235:8082/artifactory/revpi-images-local/2023-07-28-revpi-bullseye-arm64/2023-07-28-revpi-bullseye-arm64-lite.img.xz
       namespace: recovery
       os: debian
       timeout:
