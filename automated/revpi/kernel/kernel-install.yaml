@@ -1,0 +1,41 @@
+---
+metadata:
+  name: Install-Kernel
+  format: "Lava-Test Test Definition 1.0"
+  description: "Install Kernel for RevPi devices"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Compact
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect 4
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Flat
+
+params:
+  KERNEL_url_armhf: &url_armhf http://172.23.16.235:8082/artifactory/revpi-images-local/kernel/2024-02-05-Kernel-6.1.46-1%2Brevpi11%2B1/raspberrypi-kernel_9.20240205%2B1-6.1.46-1-revpi11%2B1_armhf.zip
+  KERNEL_url_arm64: &url_arm64 http://172.23.16.235:8082/artifactory/revpi-images-local/kernel/2024-02-05-Kernel-6.1.46-1%2Brevpi11%2B1/raspberrypi-kernel_9.20240205%2B1-6.1.46-1-revpi11%2B1_arm64.zip
+  KERNEL_name: raspberrypi-kernel_9.20240205*
+  KERNEL_url: *url_armhf
+  SKIP_REBOOT: "false"
+
+run:
+  steps:
+    - |
+      if [ "$(uname -m)" = "aarch64" ]; then
+        KERNEL_url=${KERNEL_url_arm64}
+      fi
+    - cd ./automated/revpi/kernel
+    - ./kernel-install.sh -n "${KERNEL_name}" -u "${KERNEL_url}" -r "${SKIP_REBOOT}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
