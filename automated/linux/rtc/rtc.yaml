@@ -1,0 +1,37 @@
+---
+metadata:
+  name: rtc-Tests
+  format: "Lava-Test Test Definition 1.0"
+  description: "Testing RTC on RevPi devices"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+    - raspbian
+  scope:
+    - functional
+  devices:
+    - RevPi Compact
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect 4
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Flat
+
+params:
+  SKIP_INSTALL: "true"
+  SKIP_REBOOT: "true"
+  TEST: "rtc-1 rtc-2a"
+  DATE_SET: "2024-01-01 11:11:00"
+
+run:
+  steps:
+    - cd ./automated/linux/rtc
+    - ./rtc.sh -s "${SKIP_INSTALL}" -r "${SKIP_REBOOT}" -t "${TEST}" -d "${DATE_SET}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
