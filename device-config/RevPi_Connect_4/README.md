@@ -6,3 +6,4 @@
 | config002.rsc | MIO <- Connect 4 -> MIO                               |
 | config003.rsc | MIO <- DIO <- Connect 4 -> DIO -> MIO                 |
 | config005.rsc | DIO <- DO <- Connect 4 -> AIO -> MIO                  |
+| config006.rsc | DIO <- MIO <- AIO <- Connect 4 -> AIO -> MIO -> DIO   |
