@@ -1,0 +1,33 @@
+metadata:
+  name: tpm-tests
+  format: "Lava-Test Test Definition 1.0"
+  description: "tpm tests for RevPi devices"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Compact
+    - RevPi Connect
+    - RevPi Connect 4
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Flat
+
+params:
+  SKIP_INSTALL: "false"
+  TEST: "tpm-1"
+
+run:
+  steps:
+    - cd ./automated/revpi/tpm
+    - ./tpm.sh -s "${SKIP_INSTALL}" -t "${TEST}" -S "${PISERIAL_SERIAL_NR}" -P "${PISERIAL_PASS}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
