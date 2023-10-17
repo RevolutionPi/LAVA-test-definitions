@@ -45,7 +45,8 @@ prog_device() {
     disk=$(lsblk -I 8 -dno NAME,RM | awk '{ if  ($2 == 1) { print $1 } }')
 
     if [ ! "${usb_disk}" == "${disk}" ]; then
-        error_msg "Blockdevice from lsblk and sysfs are different (${disk} - ${usb_disk})"
+        error_fatal "Blockdevice from lsblk and sysfs are different (${disk} - ${usb_disk})"
+        return $?
     fi
 
     info_msg
@@ -60,7 +61,8 @@ prog_device() {
     info_msg "md5 checksum of disk: ${md5_disk}"
 
     if [ "${md5_img}" != "${md5_disk}" ]; then
-        error_msg "md5 checksums of image and disk don't match!"
+        error_fatal "md5 checksums of image and disk don't match!"
+        return $?
     fi
 }
 
@@ -68,5 +70,4 @@ prog_device() {
 create_out_dir "${OUTPUT}"
 
 prog_device
-
 check_return "prog_device"
