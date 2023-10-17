@@ -141,7 +141,7 @@ def create_job(device_type, device_tags, image_url, file_flash, file_testsuite) 
 
     if device_tags:
         # Update device tags
-        file_flash_contents["tags"] = device_tags
+        file_flash_contents["tags"] = [device_tags]
 
     if image_url:
         # Update the image URL with the provided image parameter
