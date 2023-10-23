@@ -49,7 +49,6 @@ prog_device() {
         return $?
     fi
 
-    info_msg
     info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programming the image on storage device /dev/${disk}"
     dd if="${IMAGE}" of="/dev/${disk}" bs=64k
     sync
