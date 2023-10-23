@@ -1,5 +1,5 @@
-device_type: Core_SE
-job_name: Core_SE - Standard health check
+device_type: RevPi_Core_SE
+job_name: RevPi_Core_SE - Standard health check
 priority: medium
 visibility: public
 

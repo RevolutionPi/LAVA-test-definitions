@@ -5,7 +5,7 @@ metadata:
   maintainer:
     - r.gsponer@kunbus.com
   os:
-    - raspian
+    - debian
   scope:
     - functional
   devices:

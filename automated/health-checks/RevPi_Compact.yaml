@@ -1,0 +1,41 @@
+device_type: RevPi_Compact
+job_name: RevPi_Compact - Standard health check
+priority: medium
+visibility: public
+
+timeouts:
+  job:
+    minutes: 5
+  action:
+    minutes: 1
+  connection:
+    minutes: 2
+
+actions:
+- deploy:
+    timeout:
+      # this is a health check, so no flashing or other time-intensive tasks
+      # need to be executed
+      minutes: 1
+    to: ssh
+
+- boot:
+    method: ssh
+    connection: ssh
+    # it is assumed that the revpi is in a working state for the health check,
+    # so the prompt should be set correctly (i.e. the hostname is correct)
+    prompts: ["root@RevPi[0-9]+:"]
+    timeout:
+      minutes: 1
+
+- test:
+    timeout:
+      # the actual test for the health check is very basic and tests for dmesg
+      # warnings or errors, cpu load, free memory, free disk space, and
+      # internet connectivity. this should be doable in 1 minute
+      minutes: 1
+    definitions:
+    - name: health-check-test
+      repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
+      path: automated/health-checks/tests/health-check-test.yaml
