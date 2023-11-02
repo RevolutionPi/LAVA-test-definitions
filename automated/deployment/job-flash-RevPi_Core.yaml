@@ -25,6 +25,15 @@ timeouts:
   job:
     minutes: 30
 
+notify:
+  recipients:
+  - to:
+     method: email
+     user: automator
+  criteria:
+    status: finished
+  verbosity: verbose
+
 actions:
 # Create the LXC container for flashing and install the required packages.
   - deploy:
