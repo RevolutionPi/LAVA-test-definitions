@@ -39,14 +39,6 @@ actions:
     definitions:
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/linux/picontrol/test-pc-1.yaml
-      name: test-pc-1
-- test:
-    timeout:
-      minutes: 5
-    definitions:
-    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
-      from: git
       path: automated/linux/ethernet/test-eth-ethtool.yaml
       name: test-eth-ethtool
       params:
@@ -83,8 +75,8 @@ actions:
       name: config_loader
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/linux/piTest/test-PT-1.yaml
-      name: test-PT-1
+      path: automated/revpi/piControl/piControl.yaml
+      name: piControl
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
       path: automated/revpi/pibridge/test-pb-1.yaml

@@ -43,8 +43,8 @@ actions:
         DUT: *device_type
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/linux/picontrol/test-pc-1.yaml
-      name: test-pc-1
+      path: automated/revpi/piControl/piControl.yaml
+      name: piControl
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
       path: automated/revpi/pibridge/test-pb-7.yaml
