@@ -5,7 +5,7 @@
 OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
-TESTS="dmesg dev"
+TESTS="pc-1 pc-2"
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS]" 1>&2
@@ -37,12 +37,12 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test" in
-      "dmesg")
-          info_msg "Image test: PC-1"
+      "pc-1")
+          info_msg "Image test: pc-1"
           dmesg | grep piControl
           ;;
-      "dev")
-          info_msg "Image test: PC-2"
+      "pc-2")
+          info_msg "Image test: pc-2"
           ls /dev/piControl*
           ;;
     esac
@@ -53,7 +53,12 @@ run() {
 # Test run.
 create_out_dir "${OUTPUT}"
 
-install
+if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
+    info_msg "Package installation skipped"
+else
+    install
+fi
+
 for t in $TESTS; do
     run "$t"
 done
