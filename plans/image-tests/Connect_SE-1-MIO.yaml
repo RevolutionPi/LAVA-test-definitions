@@ -37,8 +37,8 @@ actions:
         CONFIG: config002.rsc
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/linux/leds/test-leds1.yaml
-      name: test-leds1
+      path: automated/linux/leds/leds.yaml
+      name: leds
       params:
         DUT: *device_type
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
