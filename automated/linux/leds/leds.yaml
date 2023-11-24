@@ -1,0 +1,34 @@
+metadata:
+  name: leds-tests
+  format: "Lava-Test Test Definition 1.0"
+  description: "LED Tests for RevPi Devices"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Compact
+    - RevPi Flat
+
+params:
+  SKIP_INSTALL: "False"
+  DUT: ""
+  TEST: "led-1 led-2_led-3 led-5"
+
+run:
+  steps:
+    - cd ./automated/linux/leds
+    - ./leds.sh -s "${SKIP_INSTALL}" -d "${DUT}" -t "${TEST}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
