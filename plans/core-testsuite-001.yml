@@ -79,6 +79,12 @@ actions:
       name: piControl
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
+      path: automated/revpi/piTest/pt.yaml
+      name: piTest
+      params:
+        TEST: "pt_1"
+    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+      from: git
       path: automated/revpi/pibridge/test-pb-1.yaml
       name: test-pb-1
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git

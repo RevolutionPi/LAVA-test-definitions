@@ -1,5 +1,5 @@
-device_type: RevPi_Connect
-job_name: Test PT-1 - Connect
+device_type: &device_type RevPi_Connect
+job_name: Test pt - Connect
 priority: medium
 visibility: public
 
@@ -31,5 +31,7 @@ actions:
       name: config_loader
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/linux/piTest/test-PT-1.yaml
-      name: test-PT-1
+      path: automated/revpi/piTest/pt.yaml
+      name: piTest
+      params:
+        TEST: "pt_1"

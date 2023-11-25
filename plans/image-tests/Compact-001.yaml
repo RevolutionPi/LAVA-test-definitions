@@ -40,12 +40,10 @@ actions:
       name: piControl
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
-      path: automated/revpi/piTest/test-PT-1.yaml
-      name: pt-1_pt-2
-    - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
-      from: git
-      path: automated/revpi/piTest/test-PT-Compact.yaml
+      path: automated/revpi/piTest/pt.yaml
       name: pt-Compact
+      params:
+        TEST: "pt_1 test_pt_compact_d_1 test_pt_compact_a_1"
     - repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
       from: git
       path: automated/linux/leds/leds.yaml
