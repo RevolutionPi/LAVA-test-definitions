@@ -1,0 +1,33 @@
+metadata:
+  name: Test piTest
+  format: "Lava-Test Test Definition 1.0"
+  description: "Tests with piTest"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Compact
+    - RevPi Flat
+
+params:
+  SKIP_INSTALL: "True"
+  TEST: "pt_1"
+
+run:
+  steps:
+    - cd automated/revpi/piTest
+    - ./test-wrapper.sh -s "${SKIP_INSTALL}" -t "${TEST}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
