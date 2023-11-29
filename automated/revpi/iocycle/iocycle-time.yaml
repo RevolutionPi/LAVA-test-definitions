@@ -1,0 +1,32 @@
+metadata:
+  name: pibridge-cycle-time-tests
+  format: "Lava-Test Test Definition 1.0"
+  description: "pibridge-cycle-time tool used for time-tests"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Connect
+    - RevPi Connect 4
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect+
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+
+params:
+  SKIP_INSTALL: "false"
+  TEST: "iocycle-time iocycle-time-stress"
+  C_TIME: "300"
+
+run:
+  steps:
+    - cd ./automated/revpi/iocycle
+    - ./iocycle-time.sh -s "${SKIP_INSTALL}" -t "${TEST}" -c "${C_TIME}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
