@@ -25,7 +25,8 @@ done
 install() {
     dist_name
 
-    tree
+    apt-get update -q
+    apt-get -y install tree
 }
 
 run() {
