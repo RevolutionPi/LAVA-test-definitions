@@ -46,6 +46,20 @@ test_pt_flat_da_1() {
     piTest_setIOValue "test-flat-digital" "DOut" "0"
 }
 
+test_pt_config_004() {
+    piTest_Check_001 "test-pt-config-004" "DI_R1_I1" "DO_R2_O1"
+    piTest_Check_001 "test-pt-config-004" "DI_L2_I3" "DO_R2_O3"
+    piTest_Check_001 "test-pt-config-004" "DI_L1_I1" "DO_L2_O1"
+    piTest_Check_001 "test-pt-config-004" "DI_R1_I3" "DO_L2_O3"
+}
+
+test_pt_config_006() {
+    piTest_Check_001 "test-pt-config-006" "DIO_L3_I1" "DIO_R3_O1"
+    piTest_Check_001 "test-pt-config-006" "DIO_R3_I1" "DIO_L3_O1"
+    piTest_Check_002 "test-pt-config-006" "MIO_L2_I1" "MIO_R2_O7"
+    piTest_Check_002 "test-pt-config-006" "MIO_R2_I2" "MIO_L2_O7"
+}
+
 run() {
     # shellcheck disable=SC3043
     local test="$1"
