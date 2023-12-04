@@ -1,0 +1,32 @@
+---
+metadata:
+  name: Test rs485
+  format: "Lava-Test Test Definition 1.0"
+  description: "Test read/write data with rs485"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+    - raspbian
+  scope:
+    - functional
+  devices:
+    - RevPi Compact
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect 4
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Flat
+
+params:
+  SKIP_INSTALL: "true"
+  TESTS: "rs485-tx rs485-rx"
+  RSDEV: ""
+  BAUD: "19200"
+
+run:
+  steps:
+    - cd ./automated/revpi/rs485
+    - ./rs485.sh -s "${SKIP_INSTALL}" -t "${TESTS}" -d "${RSDEV}" -b "${BAUD}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
