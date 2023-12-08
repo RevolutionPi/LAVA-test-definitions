@@ -41,3 +41,12 @@ examples:
 
 This naming schema should be enforced in the Pictory configuration to be
 usable in scripts.
+
+## Naming schema for plans
+
+In order to simplify the testsuites, the following naming schema will be used for the plans:
+
+`$TYPE-$CONFIG_NR.yaml`
+
+- `$TYPE`: RevPi_Core, RevPi_Compact, etc.
+- `$CONFIG_NR`: Configuration number used with RevPi (See [Configuration RevPi devices](./device-config/README.md))
