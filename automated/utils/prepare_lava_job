@@ -101,7 +101,8 @@ def add_namespace_in_testsuite(content):
     for action in actions:
         if "test" in action or "boot" in action or "deploy" in action:
             action_name = next(iter(action))
-            action[action_name]["namespace"] = "testsuite"
+            if "namespace" not in action[action_name]:
+                action[action_name]["namespace"] = "testsuite"
 
     return content
 
