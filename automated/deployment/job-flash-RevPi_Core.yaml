@@ -24,7 +24,7 @@ timeouts:
   connection:
     minutes: 2
   job:
-    minutes: 30
+    minutes: 60
 
 notify:
   recipients:
