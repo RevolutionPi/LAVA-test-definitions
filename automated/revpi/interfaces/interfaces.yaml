@@ -1,0 +1,31 @@
+metadata:
+  name: interfaces
+  format: "Lava-Test Test Definition 1.0"
+  description: "Tests for interfaces pileft/piright"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+
+params:
+  SKIP_INSTALL: "True"
+  TEST: "pileft-1 pileft-2 dmesg"
+
+run:
+  steps:
+    - cd ./automated/revpi/interfaces
+    - ./interfaces.sh -s "${SKIP_INSTALL}" -t "${TEST}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
