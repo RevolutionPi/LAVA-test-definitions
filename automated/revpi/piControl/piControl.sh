@@ -28,21 +28,42 @@ install() {
     apt-get -y install coreutils
 }
 
+check_dmesg() {
+    # shellcheck disable=SC3043
+    local log_level="$1"
+    # shellcheck disable=SC3043
+    local param_grep="$2"
+    # shellcheck disable=SC3043
+    local dmesg_output=""
+    dmesg_output="$(dmesg -l "$log_level" | grep -E "$param_grep")"
+    if [ -n "$dmesg_output" ]; then
+        info_msg "Something went wrong..."
+        info_msg "log_level: $log_level"
+        info_msg "param_grep: $param_grep"
+        echo "$dmesg_output"
+        error_msg "piControl error(s) occured. Check output of warning messages above."
+    fi
+}
+
 run() {
     # shellcheck disable=SC3043
-    local test="$1"
-    test_case_id="${test}"
-    echo
+    local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
 
-    case "$test" in
+    case "$test_case_id" in
       "pc-1")
-          info_msg "Image test: pc-1"
+          info_msg "Output piControl in dmesg"
           dmesg | grep piControl
+
+          check_dmesg "emerg,alert,crit,err,warn" "piControl"
+          # Catch errors or failures from other levels
+          check_dmesg "notice,info,debug" "piControl.*fail|piControl.*err|piControl.*incorrect"
           ;;
       "pc-2")
           info_msg "Image test: pc-2"
-          ls /dev/piControl*
+          if [ -e "/dev/piControl*" ]; then
+            error_msg "pc-2 failed: /dev/piControl* doesn't exist"
+          fi
           ;;
     esac
 
