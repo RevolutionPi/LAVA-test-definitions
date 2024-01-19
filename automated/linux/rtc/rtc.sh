@@ -45,7 +45,7 @@ check_hwclock() {
 
     # Convert the date strings to epoch timestamps
     EXPECTED_TIMESTAMP=$(date -d "$EXPECTED_TIME" +%s)
-    HWCLOCK_TIMESTAMP=$(date +%s)
+    HWCLOCK_TIMESTAMP=$(date -d "$(hwclock)" +%s)
 
     # Calculate the difference in seconds between expected and actual timestamps
     TIME_DIFF=$((HWCLOCK_TIMESTAMP - EXPECTED_TIMESTAMP))
@@ -66,8 +66,6 @@ check_hwclock() {
 rtc_1() {
     info_msg "Set hardware clock to $DATE_SET"
     hwclock --set --date "$DATE_SET"
-    # Synchronize system time according to hardware clock
-    hwclock -s
     # Check if hwclock is correct after setting
     check_hwclock "$DATE_SET"
 }
@@ -77,8 +75,6 @@ rtc_2a() {
     timedatectl set-ntp false
     info_msg "Set hardware clock to $DATE_SET"
     hwclock --set --date "$DATE_SET"
-    # Synchronize system time according to hardware clock
-    hwclock -s
     check_hwclock "$DATE_SET"
     # Reboot DUT if desired
     [ "${SKIP_REBOOT}" = "true" ] || shutdown -r +1
