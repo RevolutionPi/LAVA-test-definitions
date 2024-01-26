@@ -23,11 +23,9 @@ done
 
 install() {
     dist_name
-    # shellcheck disable=SC2154
-    case "${dist}" in
-      debian) install_deps "coreutils" "${SKIP_INSTALL}";;
-      unknown|*) warn_msg "Unsupported distro: package install skipped" ;;
-    esac
+
+    apt-get update -q
+    apt-get -y install coreutils
 }
 
 run() {
