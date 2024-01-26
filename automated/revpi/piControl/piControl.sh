@@ -6,6 +6,7 @@ OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 TESTS="pc-1 pc-2"
+SKIP_INSTALL=false
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS]" 1>&2
