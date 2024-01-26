@@ -1,0 +1,37 @@
+---
+metadata:
+  name: Tests eth
+  format: "Lava-Test Test Definition 1.0"
+  description: "Test for eth interfaces"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Compact
+    - RevPi Flat
+
+params:
+  SKIP_INSTALL: "False"
+  DUT: ""
+  IP_ATE: "10.42.11.150"
+  TESTS: "eth-1 eth-3"
+  BITRATE_DEFAULT: 90
+
+run:
+  steps:
+    - cd automated/linux/ethernet
+    - ./eth.sh -s "${SKIP_INSTALL}" -d "${DUT}" -i "${IP_ATE}" -t "${TESTS}" -b "${BITRATE_DEFAULT}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
