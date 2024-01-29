@@ -1,0 +1,38 @@
+---
+metadata:
+  name: usb-tests
+  format: "Lava-Test Test Definition 1.0"
+  description: "usb-1 usb-2 usb-4 usb-5"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Compact
+    - RevPi Flat
+
+params:
+  SKIP_INSTALL: "True"
+  DEVICE: "/dev/sda1"
+  MOUNT_POINT: "/mnt/usb_test"
+  TESTS: "usb-1 usb-2 usb-4 usb-5"
+  SPEED_DEFAULT_READ_MIN: 20
+  SPEED_DEFAULT_WRITE_MIN: 4
+
+run:
+  steps:
+    - cd ./automated/linux/usb
+    - ./usb.sh -s "${SKIP_INSTALL}" -d "${DEVICE}" -m "${MOUNT_POINT}" -t "${TESTS}" -r "${SPEED_DEFAULT_READ_MIN}" -w "${SPEED_DEFAULT_WRITE_MIN}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
