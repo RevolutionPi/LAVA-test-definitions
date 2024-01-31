@@ -7,7 +7,7 @@
 #4- Auto-negotiation: on
 #5- Link detected: yes
 
-ETH_PARAM="Speed:\s*100
+export ETH_PARAM="Speed:\s*100
 Duplex:\s*Full
 Port:\s*Twisted\s+Pair
 Auto-negotiation:\s*on
