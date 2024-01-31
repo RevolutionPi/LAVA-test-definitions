@@ -1,5 +1,8 @@
-stages:
-  - lint
+include:
+  - project: "revolutionpi/infrastructure/ci-templates"
+    file: "base.yml"
+  - project: "revolutionpi/infrastructure/ci-templates"
+    file: "/reuse-lint.yml"
 
 lint-shellcheck:
   stage: lint
