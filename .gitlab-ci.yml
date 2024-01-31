@@ -1,0 +1,11 @@
+stages:
+  - lint
+
+lint-shellcheck:
+  stage: lint
+  image: koalaman/shellcheck-alpine:latest
+  tags:
+    - host-arm64
+    - self-hosted
+  script:
+    - find . -name "*.sh" | xargs shellcheck
