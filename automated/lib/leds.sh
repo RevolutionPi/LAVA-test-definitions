@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #LED_TIME: LED on/off time.
-LED_TIME=1
+export LED_TIME=1
 LED_BASE="/sys/class/leds"
 
 LEDS_CORE="
