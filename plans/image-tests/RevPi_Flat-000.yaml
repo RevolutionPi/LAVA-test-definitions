@@ -1,0 +1,140 @@
+---
+device_type: &device_type RevPi_Flat
+job_name: 'RevPi Flat - Testsuite Config000'
+priority: medium
+visibility: public
+tags:
+  - config000
+timeouts:
+  job:
+    minutes: 60
+  action:
+    minutes: 10
+  connection:
+    minutes: 2
+actions:
+  - deploy:
+      namespace: testsuite-I
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: testsuite-I
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: testsuite-I
+      timeout:
+        minutes: 30
+      definitions:
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: device-config/config_loader.yaml
+          name: config_loader
+          params:
+            CONFIG: config000.rsc
+            TYPE: *device_type
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/system_info/system_info.yaml
+          name: system_info
+          params:
+            TESTS: "sysinfo-image-release sysinfo-uname sysinfo-dpkg"
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/usb/usb.yaml
+          name: usb
+          params:
+            TESTS: "usb-1 usb-2 usb-4 usb-5"
+            SKIP_INSTALL: "false"
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/leds/leds.yaml
+          name: leds
+          params:
+            DUT: *device_type
+            TEST: "led-1 led-2_led-3 led-5"
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/tpm/tpm.yaml
+          name: tpm-test
+          params:
+            TEST: "tpm-1"
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/piControl/piControl.yaml
+          name: piControl
+          params:
+            TESTS: "pc-1 pc-2"
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/piTest/pt.yaml
+          name: pt-Flat-config000
+          params:
+            TEST: "pt-1 test_pt_flat_da_1"
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/ethernet/eth.yaml
+          name: eth
+          params:
+            SKIP_INSTALL: "false"
+            DUT: *device_type
+            IP_ATE: "10.42.11.158"  # IP LAVA Worker Connect03
+            TESTS: "eth-1 eth-3"
+            BITRATE_DEFAULT: 90
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/rs485/rs485.yaml
+          name: rs485-test
+          params:
+            RSDEV: "/dev/ttyRS485"
+            TESTS: "rs485-tx rs485-rx"
+            BAUD: "19200"
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/rtc/rtc.yaml
+          name: rtc-I
+          params:
+            SKIP_INSTALL: "true"
+            SKIP_REBOOT: "false"
+            TEST: "rtc-1 rtc-2a"
+  - command:
+      name: wait_for_reboot
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - command:
+      name: wait_for_system_up
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - deploy:
+      namespace: testsuite-II
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: testsuite-II
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: testsuite-II
+      timeout:
+        minutes: 2
+      definitions:
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/rtc/rtc.yaml
+          name: rtc-II
+          params:
+            SKIP_INSTALL: "true"
+            SKIP_REBOOT: "true"
+            TEST: "rtc-2b"
