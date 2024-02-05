@@ -41,7 +41,8 @@ check_dmesg() {
         info_msg "log_level: $log_level"
         info_msg "param_grep: $param_grep"
         echo "$dmesg_output"
-        error_msg "piControl error(s) occured. Check output of warning messages above."
+        report_fail "piControl error(s) occured. Check output of warning messages above."
+        return 1
     fi
 }
 
@@ -56,13 +57,14 @@ run() {
           dmesg | grep piControl
 
           check_dmesg "emerg,alert,crit,err,warn" "piControl"
+          check_return "${test_case_id}"
           # Catch errors or failures from other levels
           check_dmesg "notice,info,debug" "piControl.*fail|piControl.*err|piControl.*incorrect"
           ;;
       "pc-2")
           info_msg "Image test: pc-2"
           if [ -e "/dev/piControl*" ]; then
-            error_msg "pc-2 failed: /dev/piControl* doesn't exist"
+            report_fail "pc-2 failed: /dev/piControl* doesn't exist"
           fi
           ;;
     esac
