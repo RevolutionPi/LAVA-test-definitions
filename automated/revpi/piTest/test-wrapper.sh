@@ -84,6 +84,17 @@ run() {
             info_msg "Image test: test_pt_flat_da_1"
             test_pt_flat_da_1
             ;;
+        "test_pt_config_004")
+            info_msg "Image test: test_pt_config_004"
+            test_pt_config_004
+            ;;
+        "test_pt_config_006")
+            info_msg "Image test: test_pt_config_006"
+            test_pt_config_006
+            ;;
+        *)
+            report_fail "Undefined test..."
+            ;;
     esac
 
     check_return "${test_case_id}"
