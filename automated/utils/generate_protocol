@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+import sys
+import requests
+
+def usage():
+    print("Usage: generate_protocol <job-nr>")
+
+def fetch_data(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an error for non-200 status codes
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to fetch data: {e}", file=sys.stderr)
+        sys.exit(1)
+
+if len(sys.argv) != 2:
+    print("Argument job-nr is required.", file=sys.stderr)
+    usage()
+    sys.exit(1)
+
+job_nr = sys.argv[1]
+
+# Define base URLs
+BASE_URL = f'http://lava.revpi.kunbus.com'
+URL_API = f'{BASE_URL}/api/v0.2/jobs/{job_nr}'
+URL_RESULTS = f'{BASE_URL}/results'
+URL_SUITES = f'{URL_API}/suites/'
+URL_SCHEDULER = f'{BASE_URL}/scheduler/job/{job_nr}'
+
+try:
+    suites_response = fetch_data(URL_SUITES)
+except Exception as e:
+    print(f"Failed to fetch suite data: {e}", file=sys.stderr)
+    sys.exit(1)
+
+with open(f"{job_nr}.md", "w") as md_file:
+    md_file.write("| **Test Name** | **Test cases** | **Test ID (Log results)** | **Result** | **Additional notes** |\n")
+    md_file.write("|---------------|----------------|---------------------------|------------|---------------------|\n")
+
+    suites_data = suites_response.get("results", [])
+
+    for suite in suites_data:
+        suite_link = f"{URL_RESULTS}/{job_nr}/{suite['name']}"
+        md_file.write(f"| [{suite['name']}]({suite_link}) |\n")
+
+        suite_tests_url = f"{URL_API}/suites/{suite['id']}/tests/"
+        try:
+            tests_data = fetch_data(suite_tests_url)
+        except Exception as e:
+            print(f"Failed to fetch test data for suite {suite['name']}: {e}", file=sys.stderr)
+            continue
+
+        tests = tests_data.get("results", [])
+        for test in tests:
+            testcase_link = f"{URL_RESULTS}/testcase/{test['id']}"
+            logs_link = f"{URL_SCHEDULER}#results_{test['id']}"
+            md_file.write(f"|  | [{test['name']}]({testcase_link}) | [{test['id']}]({logs_link}) | **{test['result']}** |\n")
