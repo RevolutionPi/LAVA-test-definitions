@@ -24,7 +24,7 @@ metadata:
 
 params:
   SKIP_INSTALL: "True"
-  TEST: "pt_1"
+  TEST: "pt-1"
 
 run:
   steps:

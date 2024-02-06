@@ -68,7 +68,7 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test" in
-        "pt_1")
+        "pt-1")
             info_msg "Image test: pt-1"
             pt_1
             ;;
