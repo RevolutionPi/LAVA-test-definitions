@@ -40,11 +40,13 @@ run() {
     case "$test_case_id" in
         "tpm-1")
             piserial_output="$(piSerial -s)"
+            echo "piSerial serial number: $piserial_output"
             if [ "$piserial_output" != "$PISERIAL_SERIAL_NR" ]; then
                 error_msg "${test_case_id} Serial number not ok! (output: $piserial_output, actual: $PISERIAL_SERIAL_NR)"
             fi
 
             piserial_output="$(piSerial -p)"
+            echo "piSerial password: $piserial_output"
             if [ "$piserial_output" != "$PISERIAL_PASS" ]; then
                 error_msg "${test_case_id} Password not ok! (output: $piserial_output, actual: $PISERIAL_PASS)"
             fi
