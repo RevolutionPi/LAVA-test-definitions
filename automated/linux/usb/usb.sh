@@ -10,6 +10,7 @@ TESTS="usb-1 usb-2 usb-4 usb-5"
 MOUNT_POINT="/mnt/usb"
 SPEED_DEFAULT_READ_MIN=15
 SPEED_DEFAULT_WRITE_MIN=4
+SPEED_REGEX="[[:digit:]]+(\.[[:digit:]]+)? MB\/s"
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-d device] [-m mount_point] [-t test] [-r speed_default_read_min] [-w speed_default_write_min]" 1>&2
@@ -102,7 +103,7 @@ run() {
         # Run dd to measure the speed - write
         output=$(dd if=/dev/zero of="$DEVICE" bs=1k count=100000 2>&1)
         echo "$output"
-        speed=$(echo "$output" | awk '/copied/{print $10}')
+        speed=$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)
         if [ "$(echo "$speed >= $SPEED_DEFAULT_WRITE_MIN" | bc -l)" -eq 1 ]; then
             report_pass "Overall write speed is greater than $SPEED_DEFAULT_WRITE_MIN MB/s"
         else
@@ -113,7 +114,7 @@ run() {
         # Run dd to measure the speed - read
         output=$(dd if="$DEVICE" of=/dev/null bs=1k count=100000 2>&1)
         echo "$output"
-        speed=$(echo "$output" | awk '/copied/{print $10}')
+        speed=$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)
         if [ "$(echo "$speed >= $SPEED_DEFAULT_READ_MIN" | bc -l)" -eq 1 ]; then
             report_pass "Overall read speed is greater than $SPEED_DEFAULT_READ_MIN MB/s"
         else
