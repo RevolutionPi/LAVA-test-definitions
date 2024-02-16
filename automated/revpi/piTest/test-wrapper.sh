@@ -6,6 +6,7 @@
 OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
+TESTS="pt-1"
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t test]" 1>&2
