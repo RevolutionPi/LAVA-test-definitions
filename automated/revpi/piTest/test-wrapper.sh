@@ -62,34 +62,27 @@ test_pt_config_006() {
 }
 
 run() {
-    local test="$1"
-    test_case_id="${test}"
+    local test_case_id="$1"
     echo
     info_msg "Running ${test_case_id} test..."
 
-    case "$test" in
+    case "$test_case_id" in
         "pt-1")
-            info_msg "Image test: pt-1"
             pt_1
             ;;
         "test_pt_compact_d_1")
-            info_msg "Image test: test_pt_compact_d_1"
             test_pt_compact_d_1
             ;;
         "test_pt_compact_a_1")
-            info_msg "Image test: test_pt_compact_a_1"
             test_pt_compact_a_1
             ;;
         "test_pt_flat_da_1")
-            info_msg "Image test: test_pt_flat_da_1"
             test_pt_flat_da_1
             ;;
         "test_pt_config_004")
-            info_msg "Image test: test_pt_config_004"
             test_pt_config_004
             ;;
         "test_pt_config_006")
-            info_msg "Image test: test_pt_config_006"
             test_pt_config_006
             ;;
         *)
