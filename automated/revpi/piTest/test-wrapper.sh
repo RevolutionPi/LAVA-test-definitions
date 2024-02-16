@@ -85,6 +85,12 @@ run() {
         "test_pt_config_006")
             test_pt_config_006
             ;;
+        "test_pt_connect_digin-1_relais-3")
+            test_pt_connect_digin1_relaisX "relais-3" "RevPiOutput"
+            ;;
+        "test_pt_connect_digin-1_relais-5")
+            test_pt_connect_digin1_relaisX "relais-5" "RevPiLED"
+            ;;
         *)
             report_fail "Undefined test..."
             ;;

@@ -102,6 +102,46 @@ piTest_validateIOValue() (
     fi
 )
 
+piTest_getOffset() (
+    # $1: Variable name
+    local var="$1"
+    local offset=0
+    offset=$(piTest -v "$var")
+    offset=$(echo "$offset" | grep -oP '(?<=offset:\s)\d+')
+    echo "$offset"
+)
+
+piTest_set_bit() (
+    # $1: Variable name
+    # $2: Bit number (bi0-bit7)
+    # $3: Status to set the bit to (0 or 1)
+    local var="$1"
+    local bit="$2"
+    local bit_status="$3"
+    local offset=0
+    offset=$(piTest_getOffset "$var")
+    piTest -s "$offset","$bit","$bit_status"
+)
+
+# Function for checking digital IO bit status
+piTest_validate_BitStatus() (
+    # $1: Variable name
+    # $2: Bit number (bi0-bit7)
+    # $3: Expected status of the bit (0 or 1)
+    local var="$1"
+    local bit="$2"
+    local bit_status="$3"
+    local offset=0
+    local val=0
+    offset=$(piTest_getOffset "$var")
+    val=$(piTest -qg "$offset","$bit")
+    if [ "$val" = "$bit_status" ]; then
+        return 0
+    else
+        return 1
+    fi
+)
+
 # Function for checking analog IO value
 piTest_validateAIOValue() (
     if [ "$(piTest -v "$2")" != "Cannot read variable info" ]
@@ -167,4 +207,46 @@ piTest_Check_002() (
     # wait for process image
     sleep 1
     piTest_validateAIOValue "$test_case_name" "$input" "$LOW"
+)
+
+test_pt_connect_digin1_relaisX() (
+    # $1: TEST_CASE_NAME
+    # $2: NAME VARIABLE RELAY
+    local test_case_name="$1"
+    local variable_relay="$2"
+    local variable_di="RevPiStatus"
+    local bit_relay=0
+    local bit_di=6
+    local val_di=0
+    local ret=0
+    if [ "$(piTest -v "$variable_relay")" = "Cannot read variable info" ]; then
+        report_fail "$test_case_name: Variable $variable_relay cannot be read"
+        return 1
+    fi
+    if [ "$(piTest -v "$variable_di")" = "Cannot read variable info" ]; then
+        report_fail "$test_case_name: Variable $variable_di cannot be read"
+        return 1
+    fi
+    if [ "$variable_relay" = "RevPiLED" ]; then
+        bit_relay=6
+        val_di=1
+    fi
+    piTest_set_bit "$variable_relay" "$bit_relay" "$LOW"
+    # wait for process image
+    sleep 1
+    piTest_validate_BitStatus "$variable_di" "$bit_di" "$val_di"
+    ret=$?
+    if [ "$ret" -eq 1 ]; then
+        report_fail "$test_case_name-$variable_di-bit$bit_relay-$val_di"
+        return 1
+    fi
+    piTest_set_bit "$variable_relay" "$bit_relay" "$HIGH"
+    # wait for process image
+    sleep 1
+    piTest_validate_BitStatus "$variable_di" "$bit_di" $((1 - val_di))
+    ret=$?
+    if [ "$ret" -eq 1 ]; then
+        report_fail "$test_case_name-$variable_di-bit$bit_relay-$((1 - val_di))"
+        return 1
+    fi
 )
