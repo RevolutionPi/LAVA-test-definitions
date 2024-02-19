@@ -54,11 +54,12 @@ test_pt_config_004() {
     piTest_Check_001 "test-pt-config-004" "DI_R1_I3" "DO_L2_O3"
 }
 
-test_pt_config_006() {
-    piTest_Check_001 "test-pt-config-006" "DIO_L3_I1" "DIO_R3_O1"
-    piTest_Check_001 "test-pt-config-006" "DIO_R3_I1" "DIO_L3_O1"
-    piTest_Check_002 "test-pt-config-006" "MIO_L2_I1" "MIO_R2_O7"
-    piTest_Check_002 "test-pt-config-006" "MIO_R2_I2" "MIO_L2_O7"
+test_pt_DIO_MIO_AIO_01() {
+    local test_case_name="$1"
+    piTest_Check_001 "$test_case_name" "DIO_L3_I1" "DIO_R3_O1"
+    piTest_Check_001 "$test_case_name" "DIO_R3_I1" "DIO_L3_O1"
+    piTest_Check_002 "$test_case_name" "MIO_L2_AI1" "MIO_R2_AO7"
+    piTest_Check_002 "$test_case_name" "MIO_R2_AI2" "MIO_L2_AO7"
 }
 
 run() {
@@ -83,7 +84,11 @@ run() {
             test_pt_config_004
             ;;
         "test_pt_config_006")
-            test_pt_config_006
+            test_pt_DIO_MIO_AIO_01 "test-pt-config-006"
+            ;;
+        "test_pt_config_011")
+            # Same configuration as config006 but with GW
+            test_pt_DIO_MIO_AIO_01 "test-pt-config-011"
             ;;
         "test_pt_connect_digin-1_relais-3")
             test_pt_connect_digin1_relaisX "relais-3" "RevPiOutput"
