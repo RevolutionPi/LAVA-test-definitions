@@ -80,7 +80,7 @@ piTest_setIOValue() (
     fi
 
     # XXX: piTest never seems to return an error code
-    if [ $ret -ne 0 ]
+    if [ "$ret" -ne 0 ]
     then
         report_fail "$test_case_name-piTest-write"
     return
