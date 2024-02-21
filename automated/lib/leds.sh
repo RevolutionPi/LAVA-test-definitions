@@ -26,6 +26,25 @@ LEDS_CONNECT="
     $LED_BASE/power_red
 "
 
+LEDS_CONNECT_4="
+    $LED_BASE/a1:blue:status
+    $LED_BASE/a1:green:status
+    $LED_BASE/a1:red:status
+    $LED_BASE/a2:blue:status
+    $LED_BASE/a2:green:status
+    $LED_BASE/a2:red:status
+    $LED_BASE/a3:blue:status
+    $LED_BASE/a3:green:status
+    $LED_BASE/a3:red:status
+    $LED_BASE/a4:blue:status
+    $LED_BASE/a4:green:status
+    $LED_BASE/a4:red:status
+    $LED_BASE/a5:blue:status
+    $LED_BASE/a5:green:status
+    $LED_BASE/a5:red:status
+    $LED_BASE/power:1:fault
+"
+
 LEDS_FLAT="
     $LED_BASE/a1_green
     $LED_BASE/a1_red
@@ -51,6 +70,9 @@ get_list_leds() {
             ;;
         RevPi_Connect)
             LEDS="$LEDS_CONNECT"
+            ;;
+        RevPi_Connect_4)
+            LEDS="$LEDS_CONNECT_4"
             ;;
         RevPi_Core*)
             LEDS="$LEDS_CORE"
