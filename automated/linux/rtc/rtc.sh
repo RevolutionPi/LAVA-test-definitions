@@ -34,7 +34,6 @@ install() {
 }
 
 check_hwclock() {
-    # shellcheck disable=SC3043
     EXPECTED_TIME="$1"
     TOLERANCE_MINUTES="$2"
     TOLERANCE_SECONDS=$((TOLERANCE_MINUTES * 60))
@@ -86,7 +85,6 @@ rtc_2b() {
 }
 
 run() {
-    # shellcheck disable=SC3043
     local test="$1"
     test_case_id="${test}"
     info_msg "Running ${test_case_id} test..."

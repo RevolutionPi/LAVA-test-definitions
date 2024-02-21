@@ -35,11 +35,8 @@ install() {
 }
 
 run() {
-    # shellcheck disable=SC3043
     local test_case_id="$1"
-    # shellcheck disable=SC3043
     local output=""
-    # shellcheck disable=SC3043
     local speed=""
     info_msg "Running ${test_case_id} test..."
 

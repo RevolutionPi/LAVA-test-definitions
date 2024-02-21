@@ -39,7 +39,6 @@ init() {
 }
 
 get_ack() {
-    # shellcheck disable=SC3043
     local expected_ack="$1"
     read -r ack < "$RSDEV"
     ack=$(echo "$ack" | perl -p -e 's/\r//cg')
@@ -51,9 +50,7 @@ get_ack() {
 
 rs485() {
     init
-    # shellcheck disable=SC3043
     local mode="$1"
-    # shellcheck disable=SC3043
     local cnt=0
 
     while [ "$cnt" -lt "$LIMIT" ]; do
@@ -75,7 +72,6 @@ rs485() {
 }
 
 run() {
-    # shellcheck disable=SC3043
     local test="$1"
     test_case_id="${test}"
     info_msg "Running ${test_case_id} test..."

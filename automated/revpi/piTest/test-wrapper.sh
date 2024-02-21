@@ -61,7 +61,6 @@ test_pt_config_006() {
 }
 
 run() {
-    # shellcheck disable=SC3043
     local test="$1"
     test_case_id="${test}"
     echo

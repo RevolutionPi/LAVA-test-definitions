@@ -35,7 +35,6 @@ install() {
 }
 
 run() {
-    # shellcheck disable=SC3043
     local test="$1"
     test_case_id="${test}"
     info_msg "Running ${test_case_id} test..."

@@ -29,11 +29,8 @@ install() {
 }
 
 check_dmesg() {
-    # shellcheck disable=SC3043
     local log_level="$1"
-    # shellcheck disable=SC3043
     local param_grep="$2"
-    # shellcheck disable=SC3043
     local dmesg_output=""
     dmesg_output="$(dmesg -l "$log_level" | grep -E "$param_grep")"
     if [ -n "$dmesg_output" ]; then
@@ -47,7 +44,6 @@ check_dmesg() {
 }
 
 run() {
-    # shellcheck disable=SC3043
     local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
 

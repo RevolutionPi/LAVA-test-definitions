@@ -28,7 +28,6 @@ install() {
 }
 
 check_iface1() {
-    # shellcheck disable=SC3043
     local iface_name="$1"
     if [ -d "/sys/class/net/${iface_name}" ]; then
         info_msg "$iface_name found"
@@ -38,7 +37,6 @@ check_iface1() {
 }
 
 check_iface2() {
-    # shellcheck disable=SC3043
     local iface_name="$1"
     if ! ip addr show "$1" ; then
         error_msg "$iface_name not found!"
@@ -46,9 +44,7 @@ check_iface2() {
 }
 
 check_dmesg() {
-    # shellcheck disable=SC3043
     local dmesg_output=""
-    # shellcheck disable=SC3043
     local set_error=0
     dmesg_output=$(dmesg | grep -E "pileft|piright")
     if [ -n "$dmesg_output" ]; then
@@ -78,7 +74,6 @@ check_dmesg() {
 }
 
 run() {
-    # shellcheck disable=SC3043
     local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
 

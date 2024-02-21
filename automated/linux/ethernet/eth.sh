@@ -35,9 +35,7 @@ install() {
 }
 
 check_ethtool() {
-    # shellcheck disable=SC3043
     local interface="$1"
-    # shellcheck disable=SC3043
     local ret_ethtool=0
     ret_ethtool=$(ethtool "$interface")
     echo "$ret_ethtool"
@@ -53,11 +51,8 @@ check_ethtool() {
 }
 
 check_iperf3() {
-    # shellcheck disable=SC3043
     local check_nr="$1"
-    # shellcheck disable=SC3043
     local output_iperf3=""
-    # shellcheck disable=SC3043
     local bitrate_average=0
     case "$check_nr" in
     1)
@@ -82,7 +77,6 @@ check_iperf3() {
 }
 
 run() {
-    # shellcheck disable=SC3043
     local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
 
