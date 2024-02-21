@@ -7,17 +7,19 @@ OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 TESTS="led-1 led-2_led-3 led-5"
+LED_TIME=1
 
 usage() {
-    echo "Usage: $0 [-s <true|false>] [-d device] [-t TESTS]" 1>&2
+    echo "Usage: $0 [-s <true|false>] [-d device] [-t TESTS] [-l LED_TIME]" 1>&2
     exit 1
 }
 
-while getopts "s:d:t:h" o; do
+while getopts "s:d:t:l:h" o; do
   case "$o" in
     s) SKIP_INSTALL="${OPTARG}" ;;
     d) DUT="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
+    l) LED_TIME="${OPTARG}" ;;
     h|*) usage ;;
   esac
 done
