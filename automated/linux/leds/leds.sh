@@ -60,7 +60,6 @@ run() {
                 # Turn off the LED (set brightness to 0)
                 echo 0 > "$LED_BRIGHTNESS"
                 check_return "${LED_BRIGHTNESS}_OFF"
-                sleep "$LED_TIME"
             done
             ;;
         "led-5")
