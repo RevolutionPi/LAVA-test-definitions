@@ -31,6 +31,58 @@ install() {
     apt-get -y install tree
 }
 
+led2_led3() {
+    local brightness=""
+
+    LEDS_STRING=$(get_list_leds "$DUT")
+    if [ -z "$LEDS_STRING" ]; then
+        warn_msg "No LEDs specified for DUT '$DUT'"
+        return 1
+    fi
+
+    # shellcheck disable=SC2086
+    # Set the positional parameters to the elements of the string
+    set -- $LEDS_STRING
+
+    # Iterate over the positional parameters
+    for leds_value; do
+        # Define the paths for the green and red brightness
+        brightness="${leds_value}/brightness"
+
+        # Turn on the LED green (set brightness to 1)
+        echo 1 > "$brightness"
+        check_return "${brightness}_ON"
+        sleep "$LED_TIME"
+        # Turn off the LED (set brightness to 0)
+        echo 0 > "$brightness"
+        check_return "${brightness}_OFF"
+    done
+}
+
+led5() {
+    local test="$1"
+
+    LEDS_STRING=$(get_list_leds "$DUT")
+    if [ -z "$LEDS_STRING" ]; then
+        warn_msg "No LEDs specified for DUT '$DUT'"
+        return 1
+    fi
+
+    # shellcheck disable=SC2086
+    # Set the positional parameters to the elements of the string
+    set -- $LEDS_STRING
+
+    # Iterate over the positional parameters
+    for leds_value; do
+        # Check if the value represents a directory
+        if [ -d "$leds_value" ]; then
+            report_pass "${test}_${leds_value}"
+        else
+            report_fail "${test}_${leds_value}"
+        fi
+    done
+}
+
 run() {
     local test="$1"
     test_case_id="${test}"
@@ -42,41 +94,10 @@ run() {
             info_msg "$output"
             ;;
         "led-2_led-3")
-            LEDS_STRING=$(get_list_leds "$DUT")
-            info_msg "$LEDS_STRING"
-            # shellcheck disable=SC2086
-            # Set the positional parameters to the elements of the string
-            set -- $LEDS_STRING
-
-            # Iterate over the positional parameters
-            for LEDS_VALUE; do
-                # Define the paths for the green and red brightness
-                LED_BRIGHTNESS="${LEDS_VALUE}/brightness"
-
-                # Turn on the LED green (set brightness to 1)
-                echo 1 > "$LED_BRIGHTNESS"
-                check_return "${LED_BRIGHTNESS}_ON"
-                sleep "$LED_TIME"
-                # Turn off the LED (set brightness to 0)
-                echo 0 > "$LED_BRIGHTNESS"
-                check_return "${LED_BRIGHTNESS}_OFF"
-            done
+            led2_led3
             ;;
         "led-5")
-            LEDS_STRING=$(get_list_leds "$DUT")
-            # shellcheck disable=SC2086
-            # Set the positional parameters to the elements of the string
-            set -- $LEDS_STRING
-
-            # Iterate over the positional parameters
-            for LEDS_VALUE; do
-                # Check if the value represents a directory
-                if [ -d "$LEDS_VALUE" ]; then
-                    report_pass "${test}_${LEDS_VALUE}"
-                else
-                    report_fail "${test}_${LEDS_VALUE}"
-                fi
-            done
+            led5 "$test"
             ;;
     esac
 
