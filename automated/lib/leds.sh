@@ -7,8 +7,6 @@ LEDS_CORE="
     $LED_BASE/a1_red
     $LED_BASE/a2_green
     $LED_BASE/a2_red
-    $LED_BASE/default-on
-    $LED_BASE/mmc0
     $LED_BASE/power_red
 "
 
@@ -19,8 +17,6 @@ LEDS_CONNECT="
     $LED_BASE/a2_red
     $LED_BASE/a3_green
     $LED_BASE/a3_red
-    $LED_BASE/default-on
-    $LED_BASE/leds/mmc0
     $LED_BASE/power_red
 "
 
@@ -54,8 +50,6 @@ LEDS_FLAT="
     $LED_BASE/a4_red
     $LED_BASE/a5_green
     $LED_BASE/a5_red
-    $LED_BASE/default-on
-    $LED_BASE/mmc0
     $LED_BASE/power_red
 "
 
