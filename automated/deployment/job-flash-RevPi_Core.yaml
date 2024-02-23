@@ -3,7 +3,7 @@ job_name: 'Flash Image: 2023-09-26-revpi-bullseye-arm64-lite.img'
 priority: medium
 visibility: public
 tags:
-  - config_core_01
+  - config004
 
 # Set up the linux container (LXC) for flashing the DUT.
 #
