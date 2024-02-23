@@ -28,9 +28,9 @@ The LAVA Job Generator can be executed using the following command:
 
 > **_NOTE_** By using the recommended Job:
 
-> - the generated job is configured for a RevPi Core device (device_type: RevPi_Core) and uses the "config_core_01" tag.
+> - the generated job is configured for a RevPi Core device (device_type: RevPi_Core) and utilizes a "configXXX" tag that corresponds to an existing device configuration in [../device-config/RevPi_Core](../device-config/RevPi_Core).
 
-> - the image is "2023-06-26-revpi-bullseye-rc3-arm64-lite.img". 
+> - the image corresponds to one of our latest releases and is located under the 'deploy' section with 'namespace: recovery'."
 
 ---
 > **_NOTE:_**  This behavior can be modified by providing appropriate options.
@@ -38,7 +38,7 @@ The LAVA Job Generator can be executed using the following command:
 
 - A default job used to flash the image can be found here: [../automated/deployment/job-flash-RevPi_Core.yaml](../automated/deployment/job-flash-RevPi_Core.yaml)
 
-- A testsuite with a compilation of tests for RevPi Core devices can be found here: [../automated/testsuites/core-testsuite-001.yml](../automated/testsuites/core-testsuite-001.yml)
+- A testsuite with a compilation of tests for RevPi Core devices can be found here: [../plans/image-tests/RevPi_Core-004.yaml](../plans/image-tests/RevPi_Core-004.yaml)
 
 ---
 
@@ -48,7 +48,7 @@ For more information, please consult the LAVA documentation and the examples pro
 
 Example using job-flash-RevPi_Core.yaml to flash device and then running a testsuite for Core devices, saving the Job in `/tmp/job.yaml`
 ```
-./prepare_lava_job --flash ../automated/deployment/job-flash-RevPi_Core.yaml -s ../automated/testsuites/core-testsuite-001.yml > /tmp/job.yaml
+./prepare_lava_job --flash ../automated/deployment/job-flash-RevPi_Core.yaml -s ../plans/image-tests/RevPi_Core-004.yaml > /tmp/job.yaml
 ```
 
 #### Submitting the Job using lavacli
