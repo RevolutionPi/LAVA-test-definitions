@@ -1,0 +1,24 @@
+---
+metadata:
+  name: Tests bluetooth
+  format: "Lava-Test Test Definition 1.0"
+  description: "Test for bluetooth interfaces"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Connect 4
+    - RevPi Flat
+
+params:
+  TESTS: "bt-1 bt-2 bt-remove"
+  BT_SCAN_TIMEOUT: 30
+
+run:
+  steps:
+    - cd automated/linux/bluetooth
+    - ./bluetooth.sh -t "${TESTS}" -S "${BT_SCAN_TIMEOUT}" -B "${BT_REMOTE}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
