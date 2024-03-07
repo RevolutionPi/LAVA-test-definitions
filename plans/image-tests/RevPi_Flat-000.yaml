@@ -138,3 +138,9 @@ actions:
             SKIP_INSTALL: "true"
             SKIP_REBOOT: "true"
             TEST: "rtc-2b"
+        - repository: https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/wlan/wlan.yaml
+          name: wlan-test
+          params:
+            TESTS: "wlan-config-nm wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect"
