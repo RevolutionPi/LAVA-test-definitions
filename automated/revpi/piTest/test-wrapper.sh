@@ -49,7 +49,7 @@ test_pt_flat_da_1() {
 
 test_pt_config_004() {
     piTest_Check_001 "test-pt-config-004" "DI_R1_I1" "DO_R2_O1"
-    piTest_Check_001 "test-pt-config-004" "DI_L2_I3" "DO_R2_O3"
+    piTest_Check_001 "test-pt-config-004" "DI_L1_I3" "DO_R2_O3"
     piTest_Check_001 "test-pt-config-004" "DI_L1_I1" "DO_L2_O1"
     piTest_Check_001 "test-pt-config-004" "DI_R1_I3" "DO_L2_O3"
 }
