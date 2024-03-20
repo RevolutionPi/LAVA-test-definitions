@@ -19,7 +19,7 @@ chown www-data:www-data "$CONFIG_PATH"/_config.rsc
 
 if ! piTest -x
 then
-    lava-teset-raise "$TEST_CASE_NAME-reload-driver"
+    lava-test-raise "$TEST_CASE_NAME-reload-driver"
 else
     lava-test-case "$TEST_CASE_NAME-reload-driver" --result pass
 fi
