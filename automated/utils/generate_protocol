@@ -1,9 +1,39 @@
 #!/usr/bin/env python3
+"""
+This script utilizes the LAVA API to extract test data and generate
+protocols in Markdown format.
+
+It takes the job number as an argument and generates a Markdown file
+with information about test names, test cases, test IDs, and results.
+
+It works by querying the suites and associated tests with the given job
+number and uses LAVA result links to generate links in the Markdown
+document.
+"""
+
 import sys
 import requests
 
+
 def usage():
     print("Usage: generate_protocol <job-nr>")
+
+
+if len(sys.argv) != 2:
+    print("Argument job-nr is required.", file=sys.stderr)
+    usage()
+    sys.exit(1)
+
+job_nr = sys.argv[1]
+
+# Define base URLs
+BASE_URL = f"http://lava.revpi.kunbus.com"
+URL_API = f"{BASE_URL}/api/v0.2/jobs/{job_nr}"
+URL_RESULTS = f"{BASE_URL}/results"
+URL_SUITES = f"{URL_API}/suites/"
+URL_SCHEDULER_DEVICE = f"{BASE_URL}/scheduler/device"
+URL_SCHEDULER_JOB = f"{BASE_URL}/scheduler/job/{job_nr}"
+
 
 def fetch_data(url):
     try:
@@ -14,29 +44,31 @@ def fetch_data(url):
         print(f"Failed to fetch data: {e}", file=sys.stderr)
         sys.exit(1)
 
-if len(sys.argv) != 2:
-    print("Argument job-nr is required.", file=sys.stderr)
-    usage()
-    sys.exit(1)
 
-job_nr = sys.argv[1]
+def fetch_job_data():
+    try:
+        job_info = fetch_data(URL_API)
+        suites_response = fetch_data(URL_SUITES)
+        return job_info, suites_response
+    except Exception as e:
+        print(f"Failed to fetch suite and information data: {e}", file=sys.stderr)
+        sys.exit(1)
 
-# Define base URLs
-BASE_URL = f'http://lava.revpi.kunbus.com'
-URL_API = f'{BASE_URL}/api/v0.2/jobs/{job_nr}'
-URL_RESULTS = f'{BASE_URL}/results'
-URL_SUITES = f'{URL_API}/suites/'
-URL_SCHEDULER = f'{BASE_URL}/scheduler/job/{job_nr}'
 
-try:
-    suites_response = fetch_data(URL_SUITES)
-except Exception as e:
-    print(f"Failed to fetch suite data: {e}", file=sys.stderr)
-    sys.exit(1)
+job_info, suites_response = fetch_job_data()
 
 with open(f"{job_nr}.md", "w") as md_file:
-    md_file.write("| **Test Name** | **Test cases** | **Test ID (Log results)** | **Result** | **Additional notes** |\n")
-    md_file.write("|---------------|----------------|---------------------------|------------|---------------------|\n")
+    md_file.write(f"# {job_info.get('description', [])}\n\n")
+    md_file.write(
+        f"# Device: [{job_info.get('actual_device', [])}]({URL_SCHEDULER_DEVICE}/{job_info.get('actual_device', [])})\n"
+    )
+    md_file.write(f"# LAVA-Job: [{job_info.get('id', [])}]({URL_SCHEDULER_JOB})\n")
+    md_file.write(
+        "| **Test Name** | **Test cases** | **Test ID (Log results)** | **Result** | **Additional notes** |\n"
+    )
+    md_file.write(
+        "|---------------|----------------|---------------------------|------------|---------------------|\n"
+    )
 
     suites_data = suites_response.get("results", [])
 
@@ -48,11 +80,16 @@ with open(f"{job_nr}.md", "w") as md_file:
         try:
             tests_data = fetch_data(suite_tests_url)
         except Exception as e:
-            print(f"Failed to fetch test data for suite {suite['name']}: {e}", file=sys.stderr)
+            print(
+                f"Failed to fetch test data for suite {suite['name']}: {e}",
+                file=sys.stderr,
+            )
             continue
 
         tests = tests_data.get("results", [])
         for test in tests:
             testcase_link = f"{URL_RESULTS}/testcase/{test['id']}"
-            logs_link = f"{URL_SCHEDULER}#results_{test['id']}"
-            md_file.write(f"|  | [{test['name']}]({testcase_link}) | [{test['id']}]({logs_link}) | **{test['result']}** |\n")
+            logs_link = f"{URL_SCHEDULER_JOB}#results_{test['id']}"
+            md_file.write(
+                f"|  | [{test['name']}]({testcase_link}) | [{test['id']}]({logs_link}) | **{test['result']}** |\n"
+            )
