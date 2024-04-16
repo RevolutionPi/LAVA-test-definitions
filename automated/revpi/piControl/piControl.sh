@@ -22,8 +22,6 @@ while getopts "s:t:h" o; do
 done
 
 install() {
-    dist_name
-
     apt-get update -q
     apt-get -y install coreutils
 }

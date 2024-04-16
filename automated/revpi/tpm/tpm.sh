@@ -26,8 +26,6 @@ while getopts "s:t:S:P:h" o; do
 done
 
 install() {
-    dist_name
-
     apt-get update -q
     apt-get -y install piserial tpm2-tools
 }

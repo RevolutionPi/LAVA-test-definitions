@@ -25,8 +25,6 @@ while getopts "s:d:t:l:h" o; do
 done
 
 install() {
-    dist_name
-
     apt-get update -q
     apt-get -y install tree
 }

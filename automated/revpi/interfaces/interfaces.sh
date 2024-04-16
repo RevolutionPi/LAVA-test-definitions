@@ -22,8 +22,7 @@ while getopts "s:t:h" o; do
 done
 
 install() {
-    dist_name
-
+    :
     # No dependencies to install
 }
 
