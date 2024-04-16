@@ -40,11 +40,11 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test" in
-        "iocycle-time")
-            ;;
-        "iocycle-time-stress")
-            stress --cpu 4 &
-            ;;
+    "iocycle-time")
+        ;;
+    "iocycle-time-stress")
+        stress --cpu 4 &
+        ;;
     esac
 
     output=$("${TEST_SCRIPT_DIR}"/pibridge-cycle-time -s "${C_TIME}" 2>/dev/null)
