@@ -12,17 +12,19 @@ TEST_PROGRAM=revpi-benchmark
 TEST_DIR="$(pwd)/${TEST_PROGRAM}"
 TEST_SCRIPT_DIR="${TEST_DIR}/pibridge_cycle_time"
 C_TIME=300
+MEAN_MS=20
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS]" 1>&2
     exit 1
 }
 
-while getopts "s:t:c:h" o; do
+while getopts "s:t:c:T:h" o; do
   case "$o" in
     s) SKIP_INSTALL="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     c) C_TIME="${OPTARG}" ;;
+    T) MEAN_MS="${OPTARG}" ;;
     h|*) usage ;;
   esac
 done
@@ -33,11 +35,10 @@ install() {
 }
 
 run() {
-    local test="$1"
-    test_case_id="${test}"
+    local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
 
-    case "$test" in
+    case "$test_case_id" in
     "iocycle-time")
         ;;
     "iocycle-time-stress")
@@ -48,7 +49,7 @@ run() {
     output=$("${TEST_SCRIPT_DIR}"/pibridge-cycle-time -s "${C_TIME}" 2>/dev/null)
     echo "$output"
     mean_ms=$(echo "$output" | jq -r '.mean_ms')
-    if [ "$(echo "$mean_ms > 20" | bc)" -eq "1" ]; then
+    if [ "$(echo "$mean_ms > $MEAN_MS" | bc)" -eq "1" ]; then
         report_fail "${test_case_id}-mean_ms-${mean_ms}"
     else
         info_msg "${test_case_id}-mean_ms-${mean_ms}"
