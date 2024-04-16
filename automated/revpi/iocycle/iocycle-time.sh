@@ -51,7 +51,7 @@ run() {
     echo "$output"
     mean_ms=$(echo "$output" | jq -r '.mean_ms')
     if [ "$(echo "$mean_ms > 20" | bc)" -eq "1" ]; then
-        error_msg "${test_case_id}-mean_ms-${mean_ms}"
+        report_fail "${test_case_id}-mean_ms-${mean_ms}"
     else
         info_msg "${test_case_id}-mean_ms-${mean_ms}"
     fi
