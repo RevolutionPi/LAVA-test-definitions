@@ -1,0 +1,35 @@
+---
+metadata:
+  name: Install-Package
+  format: "Lava-Test Test Definition 1.0"
+  description: "Install debian packages from deb files"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Compact
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect 4
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Flat
+
+params:
+  SKIP_INSTALL: "false"
+  PKG_URLS: ""
+  SKIP_REBOOT: "false"
+
+run:
+  steps:
+    - cd ./automated/revpi/package
+    - ./pkg-install.sh -s "$SKIP_INSTALL" -r "$SKIP_REBOOT" $PKG_URLS
+    - ../../utils/send-to-lava.sh ./output/result.txt
