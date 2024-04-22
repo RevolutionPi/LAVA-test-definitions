@@ -1,3 +1,4 @@
+---
 device_type: RevPi_Core
 job_name: 'Flash Image: 2023-09-26-revpi-bullseye-arm64-lite.img'
 priority: medium
@@ -13,7 +14,8 @@ protocols:
   lava-lxc:
     distribution: debian
     mirror: http://mirror.bytemark.co.uk/debian
-    security_mirror: http://security.debian.org/debian-security bullseye-security
+    security_mirror:
+      http://security.debian.org/debian-security bullseye-security
     name: lxc-revpi
     release: bullseye
     template: debian
@@ -28,15 +30,15 @@ timeouts:
 
 notify:
   recipients:
-  - to:
-     method: email
-     user: automator
+    - to:
+      method: email
+      user: automator
   criteria:
     status: finished
   verbosity: verbose
 
 actions:
-# Create the LXC container for flashing and install the required packages.
+  # Create the LXC container for flashing and install the required packages.
   - deploy:
       to: lxc
       namespace: tlxc
@@ -68,11 +70,13 @@ actions:
       connection-namespace: tlxc
       images:
         recovery_image:
-          url: http://172.23.16.235:8082/artifactory/revpi-images-local/releases/2023-09-26/arm64-lite/2023-09-26-revpi-bullseye-arm64-lite.img.xz
+          url:
+            http://172.23.16.235:8082/artifactory/revpi-images-local/releases/2023-09-26/arm64-lite/2023-09-26-revpi-bullseye-arm64-lite.img.xz
       namespace: recovery
       os: debian
       timeout:
         minutes: 10
+  # yamllint disable rule:line-length
   # Power on the DUT.
   #
   # This uses the `recovery_mode_command` set in the device dictionary of the
@@ -89,6 +93,7 @@ actions:
   #     %}
   #
   # This example connects to the Relay Card and powers on the DUT.
+  # yamllint enable rule:line-length
   - boot:
       commands: recovery
       method: recovery
@@ -97,8 +102,8 @@ actions:
         minutes: 5
   # Flash the DUT from the LXC.
   #
-  # As per the documentation linked above, the DUT should be flashed from the LXC
-  # by running a "test" - a script that defines *how* to flash the DUT.
+  # As per the documentation linked above, the DUT should be flashed from the
+  # LXC by running a "test" - a script that defines *how* to flash the DUT.
   - test:
       definitions:
         - from: git
@@ -116,6 +121,7 @@ actions:
       timeout:
         minutes: 5
 
+  # yamllint disable rule:line-length
   # Run revpi_factory_reset.sh.
   #
   # The `command` action allows for the execution of custom commands that have
@@ -130,6 +136,7 @@ actions:
   #         'timeout_power_off': { 'do': 'sleep 60' }
   #       }
   #     %}
+  # yamllint enable rule:line-length
   - command:
       name: run_factory_reset
       namespace: recovery

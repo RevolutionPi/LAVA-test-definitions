@@ -1,3 +1,4 @@
+---
 metadata:
   name: tpm-tests
   format: "Lava-Test Test Definition 1.0"
@@ -29,5 +30,9 @@ params:
 run:
   steps:
     - cd ./automated/revpi/tpm
-    - ./tpm.sh -s "${SKIP_INSTALL}" -t "${TEST}" -S "${PISERIAL_SERIAL_NR}" -P "${PISERIAL_PASS}"
+    - ./tpm.sh
+        -s "${SKIP_INSTALL}"
+        -t "${TEST}"
+        -S "${PISERIAL_SERIAL_NR}"
+        -P "${PISERIAL_PASS}"
     - ../../utils/send-to-lava.sh ./output/result.txt

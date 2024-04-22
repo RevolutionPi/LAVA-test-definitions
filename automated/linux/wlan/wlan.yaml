@@ -14,18 +14,23 @@ metadata:
     - RevPi Flat
 
 params:
-  TESTS: "wlan-config-nm wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect"
+  TESTS:
+    wlan-config-nm
+    wlan-1-nm
+    wlan-2-nm-a
+    wlan-sleep
+    wlan-2-nm-b
+    wlan-2-nm-disconnect
   WLAN_INTERFACE: "wlan0"
   WLAN_SLEEP: 10
 
 run:
   steps:
     - cd automated/linux/wlan
-    - |
-      ./wlan.sh \
-        -t "${TESTS}" \
-        -I "${WLAN_INTERFACE}" \
-        -S "${WLAN_SLEEP}" \
-        -W "${WLAN_SSID}" \
+    - ./wlan.sh
+        -t "${TESTS}"
+        -I "${WLAN_INTERFACE}"
+        -S "${WLAN_SLEEP}"
+        -W "${WLAN_SSID}"
         -P "${WLAN_PASSWORD}"
     - ../../utils/send-to-lava.sh ./output/result.txt

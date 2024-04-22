@@ -1,5 +1,5 @@
+---
 metadata:
-
   format: Lava-Test Test Definition 1.0
   name: picontrol-test-basic
   description: "Run basic piControl tests."

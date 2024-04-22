@@ -33,5 +33,9 @@ params:
 run:
   steps:
     - cd ./automated/linux/rtc
-    - ./rtc.sh -s "${SKIP_INSTALL}" -r "${SKIP_REBOOT}" -t "${TEST}" -d "${DATE_SET}"
+    - ./rtc.sh
+        -s "${SKIP_INSTALL}"
+        -r "${SKIP_REBOOT}"
+        -t "${TEST}"
+        -d "${DATE_SET}"
     - ../../utils/send-to-lava.sh ./output/result.txt

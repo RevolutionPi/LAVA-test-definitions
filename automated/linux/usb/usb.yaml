@@ -34,5 +34,11 @@ params:
 run:
   steps:
     - cd ./automated/linux/usb
-    - ./usb.sh -s "${SKIP_INSTALL}" -d "${DEVICE}" -m "${MOUNT_POINT}" -t "${TESTS}" -r "${SPEED_DEFAULT_READ_MIN}" -w "${SPEED_DEFAULT_WRITE_MIN}"
+    - ./usb.sh
+        -s "${SKIP_INSTALL}"
+        -d "${DEVICE}"
+        -m "${MOUNT_POINT}"
+        -t "${TESTS}"
+        -r "${SPEED_DEFAULT_READ_MIN}"
+        -w "${SPEED_DEFAULT_WRITE_MIN}"
     - ../../utils/send-to-lava.sh ./output/result.txt

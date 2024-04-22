@@ -33,5 +33,10 @@ params:
 run:
   steps:
     - cd automated/linux/ethernet
-    - ./eth.sh -s "${SKIP_INSTALL}" -d "${DUT}" -i "${IP_ATE}" -t "${TESTS}" -b "${BITRATE_DEFAULT}"
+    - ./eth.sh
+        -s "${SKIP_INSTALL}"
+        -d "${DUT}"
+        -i "${IP_ATE}"
+        -t "${TESTS}"
+        -b "${BITRATE_DEFAULT}"
     - ../../utils/send-to-lava.sh ./output/result.txt

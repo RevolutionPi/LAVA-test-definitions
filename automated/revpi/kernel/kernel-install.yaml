@@ -24,8 +24,10 @@ metadata:
     - RevPi Flat
 
 params:
-  KERNEL_url_armhf: &url_armhf http://172.23.16.235:8082/artifactory/revpi-images-local/kernel/2024-02-05-Kernel-6.1.46-1%2Brevpi11%2B1/raspberrypi-kernel_9.20240205%2B1-6.1.46-1-revpi11%2B1_armhf.zip
-  KERNEL_url_arm64: &url_arm64 http://172.23.16.235:8082/artifactory/revpi-images-local/kernel/2024-02-05-Kernel-6.1.46-1%2Brevpi11%2B1/raspberrypi-kernel_9.20240205%2B1-6.1.46-1-revpi11%2B1_arm64.zip
+  KERNEL_url_armhf: &url_armhf
+    http://172.23.16.235:8082/artifactory/revpi-images-local/kernel/2024-02-05-Kernel-6.1.46-1%2Brevpi11%2B1/raspberrypi-kernel_9.20240205%2B1-6.1.46-1-revpi11%2B1_armhf.zip
+  KERNEL_url_arm64: &url_arm64
+    http://172.23.16.235:8082/artifactory/revpi-images-local/kernel/2024-02-05-Kernel-6.1.46-1%2Brevpi11%2B1/raspberrypi-kernel_9.20240205%2B1-6.1.46-1-revpi11%2B1_arm64.zip
   KERNEL_name: raspberrypi-kernel_9.20240205*
   KERNEL_url: *url_armhf
   SKIP_REBOOT: "false"
@@ -37,5 +39,8 @@ run:
         KERNEL_url=${KERNEL_url_arm64}
       fi
     - cd ./automated/revpi/kernel
-    - ./kernel-install.sh -n "${KERNEL_name}" -u "${KERNEL_url}" -r "${SKIP_REBOOT}"
+    - ./kernel-install.sh
+        -n "${KERNEL_name}"
+        -u "${KERNEL_url}"
+        -r "${SKIP_REBOOT}"
     - ../../utils/send-to-lava.sh ./output/result.txt
