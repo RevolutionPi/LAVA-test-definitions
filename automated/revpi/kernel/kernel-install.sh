@@ -25,10 +25,9 @@ done
 create_out_dir "${OUTPUT}"
 
 wget -nv "${KERNEL_url}"
-unzip ./"${KERNEL_name}"
 info_msg "Installing Kernel ${KERNEL_name}..."
 DEBIAN_FRONTEND=noninteractive apt-get install -y ./*.deb
 check_return "Install-Kernel"
-rm -f ./*.deb ./*.zip
+rm -f ./*.deb
 # Reboot DUT if desired
 [ "${SKIP_REBOOT}" = "true" ] || [ "${SKIP_REBOOT}" = "True" ] || shutdown -r +1
