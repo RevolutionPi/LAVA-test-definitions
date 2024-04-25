@@ -31,8 +31,8 @@ timeouts:
 notify:
   recipients:
     - to:
-      method: email
-      user: automator
+        method: email
+        user: automator
   criteria:
     status: finished
   verbosity: verbose
