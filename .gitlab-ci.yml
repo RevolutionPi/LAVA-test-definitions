@@ -8,12 +8,5 @@ include:
     file: "/reuse-lint.yml"
   - project: "revolutionpi/infrastructure/ci-templates"
     file: "/yaml-lint.yml"
-
-lint-shellcheck:
-  stage: lint
-  image: koalaman/shellcheck-alpine:latest
-  tags:
-    - host-arm64
-    - self-hosted
-  script:
-    - find . -name "*.sh" | xargs shellcheck
+  - project: "revolutionpi/infrastructure/ci-templates"
+    file: "/shell-lint.yml"
