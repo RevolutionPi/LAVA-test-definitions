@@ -95,6 +95,9 @@ run() {
             # Same configuration as config006 but with GW
             test_pt_DIO_MIO_AIO_01 "test-pt-config-011"
             ;;
+        "test_pt_config_010")
+            test_pt_DIO_MIO_AIO_02 "test-pt-config-010"
+            ;;
         "test_pt_config_013")
             test_pt_DIO_MIO_AIO_02 "test-pt-config-013"
             ;;
