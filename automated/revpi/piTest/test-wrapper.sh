@@ -61,6 +61,12 @@ test_pt_DIO_MIO_AIO_01() {
     piTest_Check_002 "$test_case_name" "MIO_R2_AI2" "MIO_L2_AO7"
 }
 
+test_pt_DIO_MIO_AIO_02() {
+    local test_case_name="$1"
+    piTest_Check_001 "$test_case_name" "DIO_L3_I1" "DIO_L3_O2"
+    piTest_Check_001 "$test_case_name" "DIO_L3_I2" "DIO_L3_O1"
+}
+
 run() {
     local test_case_id="$1"
     echo
@@ -88,6 +94,9 @@ run() {
         "test_pt_config_011")
             # Same configuration as config006 but with GW
             test_pt_DIO_MIO_AIO_01 "test-pt-config-011"
+            ;;
+        "test_pt_config_013")
+            test_pt_DIO_MIO_AIO_02 "test-pt-config-013"
             ;;
         "test_pt_connect_digin-1_relais-3")
             test_pt_connect_digin1_relaisX "relais-3" "RevPiOutput"
