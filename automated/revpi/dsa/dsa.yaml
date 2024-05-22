@@ -1,0 +1,31 @@
+---
+metadata:
+  name: dsa
+  format: "Lava-Test Test Definition 1.0"
+  description: "Tests for DSA"
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Flat S
+params:
+  PARAMS_SKIP: "-r"
+  TESTS: "dsa-config dsa-1 dsa-2"
+  BITRATE_DEFAULT_FORWARD: 70
+  BITRATE_DEFAULT_REVERSE: 90
+
+run:
+  steps:
+    - cd ./automated/revpi/dsa
+    - ./dsa.sh
+        "${PARAMS_SKIP}"
+        -t "${TESTS}"
+        -F "${BITRATE_DEFAULT_FORWARD}"
+        -R "${BITRATE_DEFAULT_REVERSE}"
+        "${SERVER_IPERF3_1}"
+        "${SERVER_IPERF3_2}"
+        "${SERVER_IPERF3_3}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
