@@ -91,7 +91,6 @@ actions:
           params:
             SKIP_INSTALL: "false"
             DUT: *device_type
-            IP_ATE: "10.42.11.158"  # IP LAVA Worker Connect03
             TESTS: "eth-1 eth-3"
             BITRATE_DEFAULT: 90
         - repository:

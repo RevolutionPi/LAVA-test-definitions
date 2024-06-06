@@ -105,7 +105,6 @@ actions:
           params:
             SKIP_INSTALL: "false"
             DUT: *device_type
-            IP_ATE: "10.42.11.150"  # IP lava-worker-testrack01-ODroid
             TESTS: "eth-1 eth-3"
             BITRATE_DEFAULT: 90
         - repository:

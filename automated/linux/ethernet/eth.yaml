@@ -26,7 +26,6 @@ metadata:
 params:
   SKIP_INSTALL: "False"
   DUT: ""
-  IP_ATE: "10.42.11.150"
   TESTS: "eth-1 eth-3"
   BITRATE_DEFAULT: 90
 
