@@ -136,9 +136,18 @@ actions:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/rs485/rs485.yaml
-          name: rs485-test
+          name: rs485-0-test
           params:
-            RSDEV: "/dev/ttyRS485"
+            RSDEV: "/dev/ttyRS485-0"
+            TESTS: "rs485-tx rs485-rx"
+            BAUD: "19200"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/rs485/rs485.yaml
+          name: rs485-1-test
+          params:
+            RSDEV: "/dev/ttyRS485-1"
             TESTS: "rs485-tx rs485-rx"
             BAUD: "19200"
         - repository:
