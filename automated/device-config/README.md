@@ -16,3 +16,4 @@
 | config011.rsc | GW Profinet IRT <- DIO <- MIO <- AIO <- RevPi -> AIO -> MIO -> DIO -> GW Modbus TCP   |
 | config012.rsc | DO <- DI <- RevPi -> DI -> DO                                                         |
 | config013.rsc | DIO <- MIO <- AIO <- RevPi                                                            |
+| config014.rsc | DIO <- RO <- RevPi -> GW Modbus TCP                                                   |
