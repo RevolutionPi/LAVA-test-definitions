@@ -13,17 +13,18 @@ SLEEP_TIME="0.3"
 LIMIT=50
 
 usage() {
-    echo "Usage: $0 [-s <true|false>] [-t TESTS] [-d RSDEV] [-b BAUD]" 1>&2
-    echo "Example: $0 -s true -t 'rs485-tx rs485-rx' -d /dev/ttyRS485 -b 19200" 1>&2
+    echo "Usage: $0 [-s <true|false>] [-t TESTS] [-d RSDEV] [-b BAUD] [-l LIMIT]" 1>&2
+    echo "Example: $0 -s true -t 'rs485-tx rs485-rx' -d /dev/ttyRS485 -b 19200 -l 12" 1>&2
     exit 1
 }
 
-while getopts "s:t:d:b:h" o; do
+while getopts "s:t:d:b:l:h" o; do
   case "$o" in
     s) SKIP_INSTALL="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     d) RSDEV="${OPTARG}" ;;
     b) BAUD="${OPTARG}" ;;
+    l) LIMIT="${OPTARG}" ;;
     h|*) usage ;;
   esac
 done

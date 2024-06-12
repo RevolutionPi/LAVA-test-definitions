@@ -24,9 +24,15 @@ params:
   TESTS: "rs485-tx rs485-rx"
   RSDEV: ""
   BAUD: "19200"
+  LIMIT: 50
 
 run:
   steps:
     - cd ./automated/revpi/rs485
-    - ./rs485.sh -s "${SKIP_INSTALL}" -t "${TESTS}" -d "${RSDEV}" -b "${BAUD}"
+    - ./rs485.sh
+        -s "${SKIP_INSTALL}"
+        -t "${TESTS}"
+        -d "${RSDEV}"
+        -b "${BAUD}"
+        -l "${LIMIT}"
     - ../../utils/send-to-lava.sh ./output/result.txt
