@@ -97,7 +97,7 @@ else
 fi
 
 if [ ! -c "$RSDEV" ] ; then
-	error_msg "$RSDEV not found!"
+	error_msg "RS485 device $RSDEV not found!"
 fi
 
 for t in $TESTS; do
