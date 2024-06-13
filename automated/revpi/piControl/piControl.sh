@@ -30,7 +30,9 @@ check_dmesg() {
     local log_level="$1"
     local param_grep="$2"
     local dmesg_output=""
-    dmesg_output="$(dmesg -l "$log_level" | grep -E "$param_grep")"
+    dmesg_output="$(dmesg -l "$log_level" \
+        | grep -E "$param_grep" \
+        | grep -v "loading out-of-tree module taints kernel.")"
     if [ -n "$dmesg_output" ]; then
         info_msg "Something went wrong..."
         info_msg "log_level: $log_level"
