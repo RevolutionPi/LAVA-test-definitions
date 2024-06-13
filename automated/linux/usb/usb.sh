@@ -98,7 +98,13 @@ run() {
         ;;
     "usb-4")
         # Run dd to measure the speed - write
-        output=$(dd if=/dev/zero of="$DEVICE" bs=1k count=100000 2>&1)
+        output=$(dd if=/dev/zero \
+            of="$DEVICE" \
+            conv=sync \
+            iflag=nocache \
+            oflag=nocache \
+            bs=1k \
+            count=100000 2>&1)
         echo "$output"
         speed=$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)
         if [ "$(echo "$speed >= $SPEED_DEFAULT_WRITE_MIN" | bc -l)" -eq 1 ]; then
@@ -111,7 +117,13 @@ run() {
         ;;
     "usb-5")
         # Run dd to measure the speed - read
-        output=$(dd if="$DEVICE" of=/dev/null bs=1k count=100000 2>&1)
+        output=$(dd if="$DEVICE" \
+            of=/dev/null \
+            conv=sync \
+            iflag=nocache \
+            oflag=nocache \
+            bs=1k \
+            count=100000 2>&1)
         echo "$output"
         speed=$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)
         if [ "$(echo "$speed >= $SPEED_DEFAULT_READ_MIN" | bc -l)" -eq 1 ]; then
