@@ -7,7 +7,7 @@ RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 SKIP_INSTALL="False"
 TESTS="usb-1 usb-2 usb-4 usb-5"
-MOUNT_POINT="/mnt/usb"
+MOUNT_POINT="./mnt_test"
 SPEED_DEFAULT_READ_MIN=15
 SPEED_DEFAULT_WRITE_MIN=4
 SPEED_REGEX="[[:digit:]]+(\.[[:digit:]]+)? MB\/s"
