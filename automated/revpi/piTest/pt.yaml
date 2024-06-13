@@ -2,7 +2,17 @@
 metadata:
   name: Test piTest
   format: "Lava-Test Test Definition 1.0"
-  description: "Tests with piTest"
+  description: |
+    Test the piBridge and communication with modules using `piTest`.
+
+    The variables `DIGITAL_IOS` and `ANALOG_IOS` are defined in a specific
+    format.
+
+    `DIGITAL_IOS`: `INPUT,OUTPUT[,POWER][;INPUT,OUTPUT[,POWER]...]`
+    `ANALOG_IOS`: `INPUT,OUTPUT[;INPUT,OUTPUT...]`
+
+    The variables in brackets can be omitted. If the variable `POWER` is given
+    the output be activated before the test and deactivated again afterwards.
   maintainer:
     - r.gsponer@kunbus.com
   os:
@@ -26,9 +36,15 @@ metadata:
 params:
   SKIP_INSTALL: "True"
   TEST: "pt-1"
+  DIGITAL_IOS: ""
+  ANALOG_IOS: ""
 
 run:
   steps:
     - cd automated/revpi/piTest
-    - ./test-wrapper.sh -s "${SKIP_INSTALL}" -t "${TEST}"
+    - ./test-wrapper.sh
+      -s "${SKIP_INSTALL}"
+      -t "${TEST}"
+      -d "${DIGITAL_IOS}"
+      -a "${ANALOG_IOS}"
     - ../../utils/send-to-lava.sh ./output/result.txt
