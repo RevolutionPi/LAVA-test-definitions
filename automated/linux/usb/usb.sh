@@ -75,42 +75,26 @@ run() {
         fi
         ;;
     "usb-2")
-        if lsblk | grep "$(basename "$DEVICE")"
-        then
-            #Flash disk will be formatted
-            if mke2fs -F -t ext4 "$DEVICE"
-            then
-                if [ ! -d "$MOUNT_POINT" ]
-                then
-                    mkdir "$MOUNT_POINT"
-                fi
-
-                if mount "$DEVICE" "$MOUNT_POINT"
-                then
-                    dd if=/dev/urandom of=/tmp/testfile bs=4k count=256k
-                    md5sum /tmp/testfile > md5
-
-                    cp /tmp/testfile "$MOUNT_POINT"
-                    cp md5 "$MOUNT_POINT"
-
-                    if cd "$MOUNT_POINT" && md5sum -c md5
-                    then
-                        report_pass "$test_case_id md5sum"
-                    else
-                        error_msg "$test_case_id md5sum FAIL!"
-                    fi
-                else
-                    error_msg "$test_case_id mount FAIL!"
-                fi
-                cd /
-                umount "$MOUNT_POINT"
-                rm -r "$MOUNT_POINT"
-            else
-                error_msg "$test_case_id format FAIL!"
-            fi
-        else
-            error_msg "$test_case_id flash-disk FAIL!"
+        if [ ! -d "$MOUNT_POINT" ]; then
+            mkdir "$MOUNT_POINT"
         fi
+
+        mount "$DEVICE" "$MOUNT_POINT"
+        exit_on_fail "$test_case_id-mount"
+
+        dd if=/dev/urandom of=./testfile bs=1k count=512
+        exit_on_fail "$test_case_id-dd"
+        md5sum ./testfile > md5
+
+        cp testfile md5 "$MOUNT_POINT" > /dev/null
+
+        pushd "$MOUNT_POINT" > /dev/null || error_msg "$test_case_id-pushd"
+        md5sum -c md5
+        check_return "$test_case_id-md5sum"
+        popd > /dev/null || error_msg "$test_case_id-popd"
+
+        umount "$MOUNT_POINT"
+        rmdir "$MOUNT_POINT"
         ;;
     "usb-4")
         # Run dd to measure the speed - write
