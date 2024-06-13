@@ -38,7 +38,7 @@ check_dmesg() {
         info_msg "log_level: $log_level"
         info_msg "param_grep: $param_grep"
         echo "$dmesg_output"
-        report_fail "piControl error(s) occured. Check output of warning messages above."
+        warn_msg "piControl error(s) occured. Check output of warning messages above."
         return 1
     fi
 }
