@@ -71,8 +71,10 @@ check_iperf3() {
 
     if [ "$(printf "%.0f" "$bitrate_average")" -gt "$BITRATE_DEFAULT" ]; then
         info_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $BITRATE_DEFAULT Mbit/s -> eth-3_$check_nr/2 OK"
+        add_metric "eth-3-$check_nr" pass "$bitrate_average" "Mbit/s"
     else
         error_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $BITRATE_DEFAULT Mbit/s -> eth-3_$check_nr/2 FAIL"
+        add_metric "eth-3-$check_nr" fail "$bitrate_average" "Mbit/s"
     fi
 }
 
@@ -90,6 +92,7 @@ run() {
         *)
             ;;
         esac
+        check_return "${test_case_id}"
         ;;
     "eth-3")
         output=$(ip a show eth0 | grep inet)
@@ -98,8 +101,6 @@ run() {
         check_iperf3 2
         ;;
     esac
-
-    check_return "${test_case_id}"
 }
 
 # Test run.
