@@ -102,9 +102,11 @@ run() {
         echo "$output"
         speed=$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)
         if [ "$(echo "$speed >= $SPEED_DEFAULT_WRITE_MIN" | bc -l)" -eq 1 ]; then
-            report_pass "Overall write speed is greater than $SPEED_DEFAULT_WRITE_MIN MB/s"
+            info_msg "Overall write speed is greater than $SPEED_DEFAULT_WRITE_MIN MB/s"
+            add_metric "$test_case_id-write-speed" pass "$speed" MB/s
         else
-            error_msg "Overall write speed is less than $SPEED_DEFAULT_WRITE_MIN MB/s -> FAIL!"
+            warn_msg "Overall write speed is less than $SPEED_DEFAULT_WRITE_MIN MB/s -> FAIL!"
+            add_metric "$test_case_id-write-speed" fail "$speed" MB/s
         fi
         ;;
     "usb-5")
@@ -113,9 +115,11 @@ run() {
         echo "$output"
         speed=$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)
         if [ "$(echo "$speed >= $SPEED_DEFAULT_READ_MIN" | bc -l)" -eq 1 ]; then
-            report_pass "Overall read speed is greater than $SPEED_DEFAULT_READ_MIN MB/s"
+            info_msg "Overall read speed is greater than $SPEED_DEFAULT_READ_MIN MB/s"
+            add_metric "$test_case_id-read-speed" pass "$speed" MB/s
         else
-            error_msg "Overall read speed is less than $SPEED_DEFAULT_READ_MIN MB/s -> FAIL!"
+            warn_msg "Overall read speed is less than $SPEED_DEFAULT_READ_MIN MB/s -> FAIL!"
+            add_metric "$test_case_id-read-speed" fail "$speed" MB/s
         fi
         ;;
     esac
