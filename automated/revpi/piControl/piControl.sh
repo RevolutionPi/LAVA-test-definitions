@@ -53,7 +53,7 @@ run() {
           dmesg | grep piControl
 
           check_dmesg "emerg,alert,crit,err,warn" "piControl"
-          check_return "${test_case_id}"
+          check_return "${test_case_id}-errors"
           # Catch errors or failures from other levels
           check_dmesg "notice,info,debug" "piControl.*fail|piControl.*err|piControl.*incorrect"
           ;;
