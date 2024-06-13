@@ -9,12 +9,12 @@ A set of testing scripts designed to work with LAVA.
 ├── automated				# test definitions
 │   ├── bin					# misc. tools to use with this repo
 │   ├── deployment			# test definitions for deploying images onto boards
+│   ├── device-config		# pictory configuration files for RevPi boards
 │   ├── health-checks		# definitions of health checks for various boards
 │   ├── lib					# reusable code
 │   ├── linux				# linux-specific tests
 │   ├── revpi				# revpi-specific tests
 │   └── utils				# various utilities used by jobs
-├── device-config			# pictory configuration files for RevPi boards
 ├── docs					# general documentation
 └── plans					# commonly used job definitions
 ```
@@ -49,4 +49,4 @@ In order to simplify the testsuites, the following naming schema will be used fo
 `$TYPE-$CONFIG_NR.yaml`
 
 - `$TYPE`: RevPi_Core, RevPi_Compact, etc.
-- `$CONFIG_NR`: Configuration number used with RevPi (See [Configuration RevPi devices](./device-config/README.md))
+- `$CONFIG_NR`: Configuration number used with RevPi (See [Configuration RevPi devices](./automated/device-config/README.md))

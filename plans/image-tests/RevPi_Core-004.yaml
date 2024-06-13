@@ -34,7 +34,7 @@ actions:
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
-          path: device-config/config_loader.yaml
+          path: automated/device-config/config_loader.yaml
           name: config_loader
           params:
             CONFIG: config004.rsc
