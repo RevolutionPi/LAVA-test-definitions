@@ -14,6 +14,53 @@ timeouts:
     minutes: 2
 actions:
   - deploy:
+      namespace: preconfiguration
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: preconfiguration
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: preconfiguration
+      timeout:
+        minutes: 30
+      definitions:
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: device-config/config_loader.yaml
+          name: config_loader
+          params:
+            CONFIG: config000.rsc
+            TYPE: *device_type
+        - repository:
+            metadata:
+              format: Lava-Test Test Definition 1.0
+              name: reboot-after-config
+              description: "Reboot after revpi config"
+            run:
+              steps:
+                - shutdown -r +1
+          from: inline
+          name: reboot-after-config
+          path: inline/reboot-after-config.yaml
+  - command:
+      name: wait_for_reboot
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - command:
+      name: wait_for_system_up
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - deploy:
       namespace: testsuite-I
       timeout:
         minutes: 4
@@ -31,14 +78,6 @@ actions:
       timeout:
         minutes: 30
       definitions:
-        - repository:
-            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
-          from: git
-          path: device-config/config_loader.yaml
-          name: config_loader
-          params:
-            CONFIG: config000.rsc
-            TYPE: *device_type
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
