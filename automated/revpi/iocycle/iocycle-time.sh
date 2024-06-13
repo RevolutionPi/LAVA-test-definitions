@@ -42,6 +42,9 @@ run() {
     "iocycle-time")
         ;;
     "iocycle-time-stress")
+        # using background_process_start and *_stop doesn't work here as stress
+        # spawns multiple processes in a weird way. Killing one doesn't stop the
+        # others.
         stress --cpu 4 &
         ;;
     esac
@@ -56,6 +59,10 @@ run() {
     fi
 
     check_return "${test_case_id}"
+
+    if [ "$test_case_id" = "iocycle-time-stress" ]; then
+        pkill stress
+    fi
 }
 
 # Test run.
