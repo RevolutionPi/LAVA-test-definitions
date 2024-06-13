@@ -9,6 +9,8 @@ ANALOG_END=10000
 ANALOG_STEP=1000
 ANALOG_RANGE=250
 
+PROCIMG_WAIT=1
+
 # Function to check if a module is NOT configured
 is_module_configured() {
     info_msg "$1" | grep -q "but NOT CONFIGURED"
@@ -175,13 +177,13 @@ piTest_Check_001() (
     # set output to low
     piTest_setIOValue "$test_case_name" "$output" "$LOW"
     # wait for process image
-    sleep 1
+    sleep "$PROCIMG_WAIT"
     piTest_validateIOValue "$test_case_name" "$input" "$LOW"
 
     # set output to high
     piTest_setIOValue "$test_case_name" "$output" "$HIGH"
     # wait for process image
-    sleep 1
+    sleep "$PROCIMG_WAIT"
     piTest_validateIOValue "$test_case_name" "$input" "$HIGH"
 )
 
@@ -198,14 +200,14 @@ piTest_Check_002() (
     for analog_value in $(seq $ANALOG_START $ANALOG_STEP $ANALOG_END); do
         piTest_setIOValue "$test_case_name" "$output" "$analog_value"
         # Wait for process image
-        sleep 1
+        sleep "$PROCIMG_WAIT"
         piTest_validateAIOValue "$test_case_name" "$input" "$analog_value"
     done
 
     # set output to zero
     piTest_setIOValue "$test_case_name" "$output" "$LOW"
     # wait for process image
-    sleep 1
+    sleep "$PROCIMG_WAIT"
     piTest_validateAIOValue "$test_case_name" "$input" "$LOW"
 )
 
@@ -233,7 +235,7 @@ test_pt_connect_digin1_relaisX() (
     fi
     piTest_set_bit "$variable_relay" "$bit_relay" "$LOW"
     # wait for process image
-    sleep 1
+    sleep "$PROCIMG_WAIT"
     piTest_validate_BitStatus "$variable_di" "$bit_di" "$val_di"
     ret=$?
     if [ "$ret" -eq 1 ]; then
@@ -242,7 +244,7 @@ test_pt_connect_digin1_relaisX() (
     fi
     piTest_set_bit "$variable_relay" "$bit_relay" "$HIGH"
     # wait for process image
-    sleep 1
+    sleep "$PROCIMG_WAIT"
     piTest_validate_BitStatus "$variable_di" "$bit_di" $((1 - val_di))
     ret=$?
     if [ "$ret" -eq 1 ]; then
