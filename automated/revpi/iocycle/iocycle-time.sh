@@ -53,12 +53,10 @@ run() {
     echo "$output"
     mean_ms=$(echo "$output" | jq -r '.mean_ms')
     if [ "$(echo "$mean_ms > $MEAN_MS" | bc)" -eq "1" ]; then
-        report_fail "${test_case_id}-mean_ms-${mean_ms}"
+        add_metric "${test_case_id}" fail "$mean_ms" milliseconds
     else
-        info_msg "${test_case_id}-mean_ms-${mean_ms}"
+        add_metric "${test_case_id}" pass "$mean_ms" milliseconds
     fi
-
-    check_return "${test_case_id}"
 
     if [ "$test_case_id" = "iocycle-time-stress" ]; then
         pkill stress
