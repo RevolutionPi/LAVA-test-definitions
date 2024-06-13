@@ -31,7 +31,7 @@ done
 
 install() {
     apt-get update -q
-    apt-get -y install bc
+    apt-get -y install bc fdisk
 }
 
 run() {
@@ -43,9 +43,9 @@ run() {
     if mount | grep -q "$DEVICE"; then
         umount "$DEVICE"
     fi
-    parted -s "${DEVICE%[0-9]}" mklabel msdos
-    parted -s "${DEVICE%[0-9]}" mkpart primary ext4 0% 100%
-    mkfs.ext4 -F "$DEVICE"
+
+    partition_disk "${DEVICE%[0-9]}"
+    format_partitions "${DEVICE%[0-9]}" ext4
 
     case "$test_case_id" in
     "usb-1")
