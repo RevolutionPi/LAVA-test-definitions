@@ -24,8 +24,12 @@ metadata:
     - Connect 4
     - Compact
     - Flat
+
+params:
+  CONFIG: ""
+  TYPE: ""
+
 run:
   steps:
-    - cd device-config
-    - bash ./config_loader.sh ./"$TYPE"/"$CONFIG"
-        || lava-test-raise "config_loader"
+    - cd ./automated/device-config
+    - ./config_loader.sh ./"$TYPE"/"$CONFIG"
