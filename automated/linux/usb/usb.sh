@@ -34,6 +34,22 @@ install() {
     apt-get -y install bc fdisk
 }
 
+check_available_dev() {
+    if [ ! -b "$1" ];then
+        error_msg "Block device $1 not found"
+    fi
+}
+
+# usage: ensure_mountable_partition DEVICE PARTITION
+ensure_mountable_partition() {
+	check_available_dev "$1"
+
+	if [ ! -b "$2" ] || ! (file -Ls "$2" | grep -q ext4); then
+        partition_disk "${DEVICE%[0-9]}"
+        format_partitions "${DEVICE%[0-9]}" ext4
+	fi
+}
+
 run() {
     local test_case_id="$1"
     local output=""
@@ -45,8 +61,7 @@ run() {
         exit_on_fail "$test_case_id-umount-left-over-mount"
     fi
 
-    partition_disk "${DEVICE%[0-9]}"
-    format_partitions "${DEVICE%[0-9]}" ext4
+    ensure_mountable_partition "${DEVICE%[0-9]}" "$DEVICE"
 
     case "$test_case_id" in
     "usb-1")
