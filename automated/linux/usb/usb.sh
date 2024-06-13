@@ -42,6 +42,7 @@ run() {
 
     if mount | grep -q "$DEVICE"; then
         umount "$DEVICE"
+        exit_on_fail "$test_case_id-umount-left-over-mount"
     fi
 
     partition_disk "${DEVICE%[0-9]}"
