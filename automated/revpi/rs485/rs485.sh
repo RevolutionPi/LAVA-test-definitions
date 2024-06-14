@@ -65,7 +65,6 @@ rs485() {
             echo $cnt > "$RSDEV"
         else
             error_msg "Invalid mode: $mode. Use 'tx' or 'rx'."
-            exit 1
         fi
     done
 
