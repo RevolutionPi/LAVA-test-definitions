@@ -34,10 +34,6 @@ install() {
     # No dependencies to install
 }
 
-init() {
-	stty -F "$RSDEV" -echo raw speed "$BAUD" > /dev/null 2>&1
-}
-
 get_ack() {
     local expected_ack="$1"
     read -r ack < "$RSDEV"
@@ -49,9 +45,12 @@ get_ack() {
 }
 
 rs485() {
-    init
     local mode="$1"
     local cnt=0
+    local previous_baud
+
+    previous_baud="$(stty -F "$RSDEV" -echo raw speed "$BAUD")"
+    exit_on_fail "$test_case_id-set-baud"
 
     while [ "$cnt" -lt "$LIMIT" ]; do
         if [ "$mode" = "tx" ]; then
@@ -69,6 +68,9 @@ rs485() {
             exit 1
         fi
     done
+
+    stty -F "$RSDEV" -echo raw speed "$previous_baud" > /dev/null
+    chek_return "$test_case_id-set-previous-baud"
 }
 
 run() {
