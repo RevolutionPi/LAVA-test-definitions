@@ -1,0 +1,44 @@
+---
+metadata:
+  name: rs485-low-baud
+  format: "Lava-Test Test Definition 1.0"
+  description: |
+    Test RS485 with low baud rate.
+
+    If RS485 is used with a low baud rate of something like 1200 baud it can
+    happen that it interferes with the PiBridge. piControl will throw lots of
+    errors in the kernel log then.
+
+    The only prerequisite is that the device has a proper config.rsc active.
+  maintainer:
+    - t.boehler@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Compact
+    - RevPi Flat
+    - RevPi Flat S
+params:
+  SKIP_INSTALL: "false"
+  RSDEV: "/dev/ttyRS485"
+  TESTS: "rs485-low-baud"
+
+run:
+  steps:
+    - cd ./automated/revpi/rs485-low-baud
+    - ./rs485-low-baud.sh
+        -t "$TESTS"
+        -d "$RSDEV"
+    - ../../utils/send-to-lava.sh ./output/result.txt
