@@ -42,12 +42,12 @@ check_available_dev() {
 
 # usage: ensure_mountable_partition DEVICE PARTITION
 ensure_mountable_partition() {
-	check_available_dev "$1"
+    check_available_dev "$1"
 
-	if [ ! -b "$2" ] || ! (file -Ls "$2" | grep -q ext4); then
+    if [ ! -b "$2" ] || ! (file -Ls "$2" | grep -q ext4); then
         partition_disk "${DEVICE%[0-9]}"
         format_partitions "${DEVICE%[0-9]}" ext4
-	fi
+    fi
 }
 
 run() {
