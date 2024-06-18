@@ -22,6 +22,7 @@ parser.add_argument(
     "--device-type",
     dest="device_type",
     nargs="?",
+    type=str,
     help="Device type to use for testing",
 )
 
@@ -29,6 +30,7 @@ parser.add_argument(
     "-u",
     "--url",
     dest="url",
+    type=str,
     help="URL of the image to be flashed",
 )
 
@@ -37,6 +39,7 @@ parser.add_argument(
     dest="flash",
     nargs="?",
     required=True,
+    type=str,
     help="Manifest used to flash the given image onto the DUT",
 )
 
@@ -45,6 +48,7 @@ parser.add_argument(
     "--testsuite",
     dest="testsuite",
     required=True,
+    type=str,
     help="Job testsuite to be used after flashing",
 )
 
@@ -64,7 +68,7 @@ parser.add_argument(
     help="Package URL to be installed and used for testing",
 )
 
-def validate_flash_file(device_type, image_url, file_flash_contents):
+def validate_flash_file(device_type: str, image_url: str | None, file_flash_contents: dict):
     # Check if 'device_type' has been predefined
     if not device_type: 
         if 'device_type' not in file_flash_contents or not file_flash_contents['device_type']:
@@ -94,7 +98,7 @@ def validate_flash_file(device_type, image_url, file_flash_contents):
             return False
     return True
 
-def get_image_name_from_url(url):
+def get_image_name_from_url(url: str):
     # check url-ending
     allowed_extensions = ['.xz', '.zip', '.tar.gz']
     url_extension = os.path.splitext(url)[1]
@@ -103,7 +107,7 @@ def get_image_name_from_url(url):
     return os.path.basename(url)
 
 
-def add_namespace_in_testsuite(content):
+def add_namespace_in_testsuite(content: dict):
     actions = content.get("actions", [])
 
     for action in actions:
@@ -136,7 +140,7 @@ def add_pkg_install(content, pkg_url):
     
     return content
 
-def create_job(device_type, device_tags, image_url, file_flash, file_testsuite, pkg_url) -> bool:
+def create_job(device_type: str, device_tags: str, image_url: str, file_flash: str, file_testsuite: str, pkg_url: str) -> bool:
     # Load the contents of file_flash
     try:
         with open(file_flash, "r") as file:
