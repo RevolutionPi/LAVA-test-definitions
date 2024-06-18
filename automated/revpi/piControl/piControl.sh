@@ -7,6 +7,7 @@ RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 TESTS="pc-1 pc-2"
 SKIP_INSTALL=false
+PICONTROL_DEV="/dev/piControl0"
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS]" 1>&2
@@ -58,8 +59,8 @@ run() {
           check_dmesg "notice,info,debug" "piControl.*fail|piControl.*err|piControl.*incorrect"
           ;;
       "pc-2")
-          if [ -e "/dev/piControl0" ]; then
-              report_fail "$test_case_id failed: /dev/piControl0 doesn't exist"
+          if [ -e "$PICONTROL_DEV" ]; then
+              report_fail "$test_case_id failed: $PICONTROL_DEV doesn't exist"
           fi
           ;;
     esac
