@@ -10,6 +10,8 @@ import os
 import sys
 import yaml
 
+LAVA_REPOSITORY_URL = 'https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git'
+
 parser = argparse.ArgumentParser(
     description=__doc__,
     epilog="Default behaviour: Generate a LAVA Job to flash and run tests on a given RevPi device.",
@@ -54,6 +56,12 @@ parser.add_argument(
     nargs="?",
     const="True",
     help="Tag used for selecting an appropriate device for testing",
+)
+
+parser.add_argument(
+    "--pkg-url",
+    dest="pkg_url",
+    help="Package URL to be installed and used for testing",
 )
 
 def validate_flash_file(device_type, image_url, file_flash_contents):
@@ -106,8 +114,29 @@ def add_namespace_in_testsuite(content):
 
     return content
 
+def add_pkg_install(content, pkg_url):
+    if pkg_url:
+        pkg_install = {
+            'from': 'git',
+            'name': 'install-testing-packages',
+            'params': {
+                'SKIP_INSTALL': 'false',
+                'SKIP_REBOOT': 'false',
+                'PKG_URLS': pkg_url
+            },
+            'path': 'automated/revpi/package/pkg-install.yaml',
+            'repository': LAVA_REPOSITORY_URL
+        }
 
-def create_job(device_type, device_tags, image_url, file_flash, file_testsuite) -> bool:
+        # Find the section with namespace 'preconfiguration' and add custom_test at the beginning of 'definitions'
+        for action in content['actions']:
+            if action.get('test', {}).get('namespace') == 'preconfiguration':
+                action['test']['definitions'].insert(0, pkg_install)
+                break
+    
+    return content
+
+def create_job(device_type, device_tags, image_url, file_flash, file_testsuite, pkg_url) -> bool:
     # Load the contents of file_flash
     try:
         with open(file_flash, "r") as file:
@@ -155,6 +184,9 @@ def create_job(device_type, device_tags, image_url, file_flash, file_testsuite) 
 
     # Add or modify namespace from "file_testsuite"
     file_testsuite_contents = add_namespace_in_testsuite(file_testsuite_contents)
+    
+    # Add test to install packages if pkg_url is provided
+    file_flash_contents = add_pkg_install(file_flash_contents, pkg_url)
 
     # Output updated contents to stdout with proper indentation
     formatted_output = yaml.dump(file_flash_contents, default_flow_style=False)
@@ -171,9 +203,10 @@ def main() -> int:
     file_flash = args.flash
     file_testsuite = args.testsuite
     device_tags = args.tags
+    pkg_url = args.pkg_url
 
     return int(
-        not create_job(device_type, device_tags, image_url, file_flash, file_testsuite)
+        not create_job(device_type, device_tags, image_url, file_flash, file_testsuite, pkg_url)
     )
 
 
