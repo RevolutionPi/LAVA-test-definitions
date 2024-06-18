@@ -10,3 +10,17 @@ include:
     file: "/yaml-lint.yml"
   - project: "revolutionpi/infrastructure/ci-templates"
     file: "/shell-lint.yml"
+
+py-type-check:
+  image: arm64v8/debian:bookworm
+  stage: lint
+  tags:
+    - self-hosted
+    - host-arm64
+  script:
+    - apt-get update
+    - apt-get install -y mypy
+    - mypy automated/utils/prepare_lava_job
+  rules:
+    - changes:
+        - automated/utils/prepare_lava_job
