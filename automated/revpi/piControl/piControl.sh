@@ -60,7 +60,7 @@ run() {
       "pc-2")
           info_msg "Image test: pc-2"
           if [ -e "/dev/piControl*" ]; then
-            report_fail "pc-2 failed: /dev/piControl* doesn't exist"
+              report_fail "pc-2 failed: /dev/piControl* doesn't exist"
           fi
           ;;
     esac
