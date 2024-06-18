@@ -58,9 +58,8 @@ run() {
           check_dmesg "notice,info,debug" "piControl.*fail|piControl.*err|piControl.*incorrect"
           ;;
       "pc-2")
-          info_msg "Image test: pc-2"
           if [ -e "/dev/piControl*" ]; then
-              report_fail "pc-2 failed: /dev/piControl* doesn't exist"
+              report_fail "$test_case_id failed: /dev/piControl* doesn't exist"
           fi
           ;;
     esac
