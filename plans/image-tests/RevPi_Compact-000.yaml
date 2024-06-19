@@ -111,6 +111,15 @@ actions:
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
+          path: automated/linux/cpu-governor/cpu-governor.yaml
+          name: cpu-governor
+          params:
+            SKIP_INSTALL: "true"
+            GOVERNOR: "performance"
+            TESTS: "cpu-governor"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
           path: automated/revpi/piControl/piControl.yaml
           name: piControl
           params:
