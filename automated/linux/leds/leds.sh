@@ -123,6 +123,9 @@ run() {
         "led-5")
             led5 "$test"
             ;;
+        *)
+            error_msg "Invalid test: $test"
+            ;;
     esac
 
     check_return "${test_case_id}"
