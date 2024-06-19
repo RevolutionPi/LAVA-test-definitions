@@ -5,6 +5,7 @@
 OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
+export DEBIAN_FRONTEND=noninteractive
 SKIP_INSTALL=false
 SKIP_REBOOT=false
 
@@ -48,8 +49,11 @@ wget -nv "$@"
 exit_on_fail "pkg-install-download"
 
 info_msg "Installing package(s)..."
-DEBIAN_FRONTEND=noninteractive apt-get install -y ./*.deb
-check_return "Install-Package"
+if ! apt-get install -y ./*.deb; then
+    error_fatal "Unable to install package(s)"
+else
+    add_metric pkg-install-apt-install pass "$#" packages
+fi
 
 rm -f ./*.deb
 
