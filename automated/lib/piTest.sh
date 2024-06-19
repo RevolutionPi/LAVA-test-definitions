@@ -9,7 +9,7 @@ ANALOG_END=10000
 ANALOG_STEP=1000
 ANALOG_RANGE=250
 
-PROCIMG_WAIT=0.2
+PROCIMG_WAIT=1
 
 # Function to check if a module is NOT configured
 is_module_configured() {
