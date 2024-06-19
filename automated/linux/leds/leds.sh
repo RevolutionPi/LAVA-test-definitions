@@ -29,6 +29,33 @@ install() {
     apt-get -y install tree
 }
 
+led1() {
+    local leds output res=0
+
+    leds=$(get_list_leds "$DUT")
+    if [ -z "$leds" ]; then
+        error_msg "List of LEDs for DUT $DUT empty"
+    fi
+
+    output="$(tree /sys/class/leds)"
+    if [ -z "$output" ]; then
+        error_msg "No LEDs in /sys/class/leds for DUT $DUT"
+    fi
+
+    info_msg "Found LEDs for $DUT: $output"
+
+    for led in $leds; do
+        if ! basename "$led" | grep "$led"; then
+            report_pass "led1-$led-found"
+        else
+            report_fail "led1-$led-found"
+            res=1
+        fi
+    done
+
+    return "$res"
+}
+
 led2_led3() {
     local brightness=""
 
@@ -88,8 +115,7 @@ run() {
 
     case "$test" in
         "led-1")
-            output=$(tree /sys/class/leds)
-            info_msg "$output"
+            led1
             ;;
         "led-2_led-3")
             led2_led3
