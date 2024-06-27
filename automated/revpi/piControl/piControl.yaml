@@ -26,7 +26,7 @@ metadata:
 
 params:
   SKIP_INSTALL: "False"
-  TESTS: "pc-1 pc-2"
+  TESTS: "pc-1 pc-2 pc-perms"
 
 run:
   steps:

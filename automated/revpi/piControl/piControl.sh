@@ -5,7 +5,7 @@
 OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
-TESTS="pc-1 pc-2"
+TESTS="pc-1 pc-2 pc-perms"
 SKIP_INSTALL=false
 PICONTROL_DEV="/dev/piControl0"
 
@@ -84,6 +84,13 @@ run() {
           else
               report_fail "$test_case_id failed: $PICONTROL_DEV doesn't exist"
           fi
+          ;;
+      "pc-perms")
+          [ "$(stat -c "%a" "$PICONTROL_DEV")" = "660" ]
+          check_return "$test_case_id-picontrol-dev-permissions-660"
+
+          [ "$(stat -c "%G" "$PICONTROL_DEV")" = "picontrol" ]
+          check_return "$test_case_id-picontrol-dev-group-picontrol"
           ;;
     esac
 }
