@@ -1,0 +1,202 @@
+---
+device_type: &device_type RevPi_Core
+job_name: 'RevPi Core - Testsuite'
+priority: medium
+visibility: public
+tags:
+  - configxxx
+timeouts:
+  job:
+    minutes: 60
+  action:
+    minutes: 10
+  connection:
+    minutes: 2
+actions:
+  - deploy:
+      namespace: preconfiguration
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: preconfiguration
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: preconfiguration
+      timeout:
+        minutes: 30
+      definitions:
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/device-config/config_loader.yaml
+          name: config_loader
+          params:
+            TYPE: *device_type
+        - repository:
+            metadata:
+              format: Lava-Test Test Definition 1.0
+              name: reboot-after-config
+              description: "Reboot after revpi config"
+            run:
+              steps:
+                - shutdown -r +1
+          from: inline
+          name: reboot-after-config
+          path: inline/reboot-after-config.yaml
+  - command:
+      name: wait_for_reboot
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - command:
+      name: wait_for_system_up
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - deploy:
+      namespace: testsuite-I
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: testsuite-I
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: testsuite-I
+      timeout:
+        minutes: 30
+      definitions:
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/system_info/system_info.yaml
+          name: system_info
+          params:
+            TESTS: "sysinfo-image-release sysinfo-uname sysinfo-dpkg"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/usb/usb.yaml
+          name: usb
+          params:
+            TESTS: "usb-1 usb-2 usb-4 usb-5"
+            SKIP_INSTALL: "false"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/leds/leds.yaml
+          name: leds
+          params:
+            DUT: *device_type
+            TEST: "led-1 led-2_led-3 led-5"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/tpm/tpm.yaml
+          name: tpm-test
+          params:
+            TEST: "tpm-1"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/cpu-governor/cpu-governor.yaml
+          name: cpu-governor
+          params:
+            SKIP_INSTALL: "true"
+            GOVERNOR: "performance"
+            TESTS: "cpu-governor"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/piControl/piControl.yaml
+          name: piControl
+          params:
+            TESTS: "pc-1 pc-2"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          name: interfaces
+          path: automated/revpi/interfaces/interfaces.yaml
+          params:
+            TEST: "pileft-1 pileft-2 piright-1 piright-2 dmesg"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/piTest/pt.yaml
+          name: pt-Core
+          params:
+            TEST: "pt-1 pt_test_digital_ios"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/iocycle/iocycle-time.yaml
+          name: cycleTime
+          params:
+            TEST: "iocycle-time iocycle-time-stress"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/ethernet/eth.yaml
+          name: eth
+          params:
+            SKIP_INSTALL: "false"
+            DUT: *device_type
+            TESTS: "eth-1 eth-3"
+            BITRATE_DEFAULT: 90
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/rtc/rtc.yaml
+          name: rtc-I
+          params:
+            SKIP_INSTALL: "true"
+            SKIP_REBOOT: "false"
+            TEST: "rtc-1 rtc-2a"
+  - command:
+      name: wait_for_reboot
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - command:
+      name: wait_for_system_up
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - deploy:
+      namespace: testsuite-II
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: testsuite-II
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: testsuite-II
+      timeout:
+        minutes: 2
+      definitions:
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/rtc/rtc.yaml
+          name: rtc-II
+          params:
+            SKIP_INSTALL: "true"
+            SKIP_REBOOT: "true"
+            TEST: "rtc-2b"
