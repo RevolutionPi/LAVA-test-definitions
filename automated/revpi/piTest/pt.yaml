@@ -36,8 +36,6 @@ metadata:
 params:
   SKIP_INSTALL: "True"
   TEST: "pt-1"
-  DIGITAL_IOS: ""
-  ANALOG_IOS: ""
 
 run:
   steps:
