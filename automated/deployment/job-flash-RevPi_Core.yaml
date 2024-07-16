@@ -34,7 +34,7 @@ notify:
         method: email
         user: automator
   criteria:
-    status: finished
+    status: incomplete
   verbosity: verbose
 
 actions:
