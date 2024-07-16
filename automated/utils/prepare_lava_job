@@ -68,6 +68,14 @@ parser.add_argument(
     help="Package URL to be installed and used for testing",
 )
 
+parser.add_argument(
+    "-n",
+    "--notify",
+    dest="notify",
+    action="store_true",
+    help="Notify upon incomplete job",
+)
+
 def validate_flash_file(device_type: str, image_url: str | None, file_flash_contents: dict):
     # Check if 'device_type' has been predefined
     if not device_type: 
@@ -140,7 +148,9 @@ def add_pkg_install(content, pkg_url):
     
     return content
 
-def create_job(device_type: str, device_tags: str, image_url: str, file_flash: str, file_testsuite: str, pkg_url: str) -> bool:
+def create_job(device_type: str, device_tags: str, image_url: str,
+               file_flash: str, file_testsuite: str, pkg_url: str,
+               notify: bool) -> bool:
     # Load the contents of file_flash
     try:
         with open(file_flash, "r") as file:
@@ -192,6 +202,9 @@ def create_job(device_type: str, device_tags: str, image_url: str, file_flash: s
     # Add test to install packages if pkg_url is provided
     file_flash_contents = add_pkg_install(file_flash_contents, pkg_url)
 
+    if not notify:
+        del file_flash_contents["notify"]
+
     # Output updated contents to stdout with proper indentation
     formatted_output = yaml.dump(file_flash_contents, default_flow_style=False)
     print(formatted_output)
@@ -208,9 +221,11 @@ def main() -> int:
     file_testsuite = args.testsuite
     device_tags = args.tags
     pkg_url = args.pkg_url
+    notify = args.notify
 
     return int(
-        not create_job(device_type, device_tags, image_url, file_flash, file_testsuite, pkg_url)
+        not create_job(device_type, device_tags, image_url, file_flash,
+                       file_testsuite, pkg_url, notify)
     )
 
 
