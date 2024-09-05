@@ -55,6 +55,15 @@ LEDS_FLAT="
 
 LEDS_COMPACT="$LEDS_CORE"
 
+# shellcheck disable=SC2034
+LEDS_ALL="$(echo "
+    $LEDS_CORE
+    $LEDS_CONNECT
+    $LEDS_CONNECT_4
+    $LEDS_FLAT
+    $LEDS_COMPACT
+    " | sort -u | sed -e '/^[[:space:]]*$/d')"
+
 get_list_leds() {
     case "$1" in
     RevPi_Compact)

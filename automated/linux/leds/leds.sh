@@ -43,8 +43,10 @@ led1() {
 
     info_msg "Found LEDs for $DUT: $output"
 
-    for led in $leds; do
-        if ! basename "$led" | grep "$led"; then
+    for led in $LEDS_ALL; do
+        if ! echo "$leds" | grep -q "$led"; then
+            report_skip "led1-$led-found"
+        elif ! basename "$led" | grep "$led"; then
             report_pass "led1-$led-found"
         else
             report_fail "led1-$led-found"
@@ -64,22 +66,24 @@ led2_led3() {
         return 1
     fi
 
-    # shellcheck disable=SC2086
-    # Set the positional parameters to the elements of the string
-    set -- $LEDS_STRING
-
-    # Iterate over the positional parameters
-    for leds_value; do
+    for led in $LEDS_ALL; do
         # Define the paths for the green and red brightness
-        brightness="${leds_value}/brightness"
+        brightness="${led}/brightness"
+        if ! echo "$LEDS_STRING" | grep -q "$led"; then
+            report_skip "${brightness}-toggle"
+            continue
+        fi
 
         # Turn on the LED green (set brightness to 1)
-        echo 1 > "$brightness"
-        check_return "${brightness}_ON"
+        if ! echo 1 > "$brightness"; then
+            # writing failed. fail this LED early, continue with the next
+            report_fail "${brightness}-toggle"
+            continue
+        fi
         sleep "$LED_TIME"
         # Turn off the LED (set brightness to 0)
         echo 0 > "$brightness"
-        check_return "${brightness}_OFF"
+        check_return "${brightness}-toggle"
     done
 }
 
