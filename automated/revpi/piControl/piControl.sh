@@ -92,11 +92,13 @@ run() {
               return
           fi
 
-          [ "$(stat -c "%a" "$PICONTROL_DEV")" = "660" ]
-          check_return "$test_case_id-picontrol-dev-permissions-660"
+          run_test_case \
+              "[ '$(stat -c "%a" "$PICONTROL_DEV")' = '660' ]" \
+              "$test_case_id-picontrol-dev-permissions-660"
 
-          [ "$(stat -c "%G" "$PICONTROL_DEV")" = "picontrol" ]
-          check_return "$test_case_id-picontrol-dev-group-picontrol"
+          run_test_case \
+              "[ '$(stat -c "%G" "$PICONTROL_DEV")' = 'picontrol' ]" \
+              "$test_case_id-picontrol-dev-group-picontrol"
           ;;
     esac
 }
