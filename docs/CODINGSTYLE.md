@@ -17,3 +17,23 @@ A shell script should have the file extension `.sh`.
 
 Logging is done through `sh-test-lib`'s `error_fatal`, `error_msg`, `warn_msg`,
 and `info_msg`.
+
+## Formatting
+
+### Indentation
+
+Indent with 4 spaces, no tabs.
+
+### Case statement
+
+Alternatives are not to be indented.
+
+```sh
+case "${expression}" in
+a)
+    variable="foo"
+    ;;
+b) variable="bar"
+*) ;;
+esac
+```
