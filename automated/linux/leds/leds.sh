@@ -15,13 +15,13 @@ usage() {
 }
 
 while getopts "s:d:t:l:h" o; do
-  case "$o" in
+    case "$o" in
     s) SKIP_INSTALL="${OPTARG}" ;;
     d) DUT="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     l) LED_TIME="${OPTARG}" ;;
     h|*) usage ;;
-  esac
+    esac
 done
 
 install() {
@@ -113,18 +113,18 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test" in
-        "led-1")
-            led1
-            ;;
-        "led-2_led-3")
-            led2_led3
-            ;;
-        "led-5")
-            led5 "$test"
-            ;;
-        *)
-            error_msg "Invalid test: $test"
-            ;;
+    "led-1")
+        led1
+        ;;
+    "led-2_led-3")
+        led2_led3
+        ;;
+    "led-5")
+        led5 "$test"
+        ;;
+    *)
+        error_msg "Invalid test: $test"
+        ;;
     esac
 
     check_return "${test_case_id}"

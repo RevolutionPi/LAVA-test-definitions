@@ -19,14 +19,14 @@ usage() {
 }
 
 while getopts "s:t:d:b:l:h" o; do
-  case "$o" in
+    case "$o" in
     s) SKIP_INSTALL="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     d) RSDEV="${OPTARG}" ;;
     b) BAUD="${OPTARG}" ;;
     l) LIMIT="${OPTARG}" ;;
     h|*) usage ;;
-  esac
+    esac
 done
 
 install() {
@@ -78,12 +78,12 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test" in
-        "rs485-tx")
-            rs485 tx
-            ;;
-        "rs485-rx")
-            rs485 rx
-            ;;
+    "rs485-tx")
+        rs485 tx
+        ;;
+    "rs485-rx")
+        rs485 rx
+        ;;
     esac
     check_return "${test_case_id}"
 }

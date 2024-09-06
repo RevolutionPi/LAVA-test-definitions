@@ -57,23 +57,23 @@ LEDS_COMPACT="$LEDS_CORE"
 
 get_list_leds() {
     case "$1" in
-        RevPi_Compact)
-            LEDS="$LEDS_COMPACT"
-            ;;
-        RevPi_Connect)
-            LEDS="$LEDS_CONNECT"
-            ;;
-        RevPi_Connect_4)
-            LEDS="$LEDS_CONNECT_4"
-            ;;
-        RevPi_Core*)
-            LEDS="$LEDS_CORE"
-            ;;
-        RevPi_Flat)
-            LEDS="$LEDS_FLAT"
-            ;;
-        *)
-            ;;
+    RevPi_Compact)
+        LEDS="$LEDS_COMPACT"
+        ;;
+    RevPi_Connect)
+        LEDS="$LEDS_CONNECT"
+        ;;
+    RevPi_Connect_4)
+        LEDS="$LEDS_CONNECT_4"
+        ;;
+    RevPi_Core*)
+        LEDS="$LEDS_CORE"
+        ;;
+    RevPi_Flat)
+        LEDS="$LEDS_FLAT"
+        ;;
+    *)
+        ;;
     esac
 
     echo "$LEDS"

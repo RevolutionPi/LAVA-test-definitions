@@ -20,13 +20,13 @@ usage() {
 }
 
 while getopts "s:t:c:T:h" o; do
-  case "$o" in
+    case "$o" in
     s) SKIP_INSTALL="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     c) C_TIME="${OPTARG}" ;;
     T) MEAN_MS="${OPTARG}" ;;
     h|*) usage ;;
-  esac
+    esac
 done
 
 install() {

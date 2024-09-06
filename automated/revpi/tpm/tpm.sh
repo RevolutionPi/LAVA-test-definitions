@@ -16,13 +16,13 @@ usage() {
 }
 
 while getopts "s:t:S:P:h" o; do
-   case "$o" in
+    case "$o" in
     s) SKIP_INSTALL="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     S) PISERIAL_SERIAL_NR="${OPTARG}" ;;
     P) PISERIAL_PASS="${OPTARG}" ;;
     h|*) usage ;;
-  esac
+    esac
 done
 
 install() {
@@ -35,29 +35,29 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test_case_id" in
-        "tpm-1")
-            piserial_output="$(piSerial -s)"
-            echo "piSerial serial number: $piserial_output"
-            if [ "$piserial_output" != "$PISERIAL_SERIAL_NR" ]; then
-                error_msg "${test_case_id} Serial number not ok! (output: $piserial_output, actual: $PISERIAL_SERIAL_NR)"
-            fi
+    "tpm-1")
+        piserial_output="$(piSerial -s)"
+        echo "piSerial serial number: $piserial_output"
+        if [ "$piserial_output" != "$PISERIAL_SERIAL_NR" ]; then
+            error_msg "${test_case_id} Serial number not ok! (output: $piserial_output, actual: $PISERIAL_SERIAL_NR)"
+        fi
 
-            piserial_output="$(piSerial -p)"
-            echo "piSerial password: $piserial_output"
-            if [ "$piserial_output" != "$PISERIAL_PASS" ]; then
-                error_msg "${test_case_id} Password not ok! (output: $piserial_output, actual: $PISERIAL_PASS)"
-            fi
-            ;;
-        "tpm-2")
-            if ! tpm2_getcap --capability="properties-fixed" ; then
-                error_msg "${test_case_id} fail!"
-            fi
-            ;;
-        "tpm-2b")
-            if ! tpm2_getcap properties-fixed ; then
-                error_msg "${test_case_id} fail!"
-            fi
-            ;;
+        piserial_output="$(piSerial -p)"
+        echo "piSerial password: $piserial_output"
+        if [ "$piserial_output" != "$PISERIAL_PASS" ]; then
+            error_msg "${test_case_id} Password not ok! (output: $piserial_output, actual: $PISERIAL_PASS)"
+        fi
+        ;;
+    "tpm-2")
+        if ! tpm2_getcap --capability="properties-fixed" ; then
+            error_msg "${test_case_id} fail!"
+        fi
+        ;;
+    "tpm-2b")
+        if ! tpm2_getcap properties-fixed ; then
+            error_msg "${test_case_id} fail!"
+        fi
+        ;;
     esac
 
     check_return "${test_case_id}"

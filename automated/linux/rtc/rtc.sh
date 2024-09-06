@@ -18,13 +18,13 @@ usage() {
 }
 
 while getopts "s:r:t:d:h" o; do
-  case "$o" in
+    case "$o" in
     s) SKIP_INSTALL="${OPTARG}" ;;
     r) SKIP_REBOOT="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     d) DATE_SET="${OPTARG}" ;;
     h|*) usage ;;
-  esac
+    esac
 done
 
 install() {
@@ -89,15 +89,15 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test" in
-        "rtc-1")
-            rtc_1
-            ;;
-        "rtc-2a")
-            rtc_2a
-            ;;
-        "rtc-2b")
-            rtc_2b
-            ;;
+    "rtc-1")
+        rtc_1
+        ;;
+    "rtc-2a")
+        rtc_2a
+        ;;
+    "rtc-2b")
+        rtc_2b
+        ;;
     esac
 
     check_return "${test_case_id}"

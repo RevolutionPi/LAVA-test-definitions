@@ -19,10 +19,10 @@ usage() {
 }
 
 while getopts "s:" o; do
-  case "${o}" in
+    case "${o}" in
     s) ;;
     *) usage ;;
-  esac
+    esac
 done
 
 prog_device() {

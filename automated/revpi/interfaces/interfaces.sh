@@ -14,11 +14,11 @@ usage() {
 }
 
 while getopts "s:t:h" o; do
-  case "$o" in
+    case "$o" in
     s) SKIP_INSTALL="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     h|*) usage ;;
-  esac
+    esac
 done
 
 install() {
@@ -77,21 +77,21 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test_case_id" in
-        "pileft-1")
-            check_iface1 pileft
-            ;;
-        "pileft-2")
-            check_iface2 pileft
-            ;;
-        "piright-1")
-            check_iface1 piright
-            ;;
-        "piright-2")
-            check_iface2 piright
-            ;;
-        "dmesg")
-            check_dmesg
-            ;;
+    "pileft-1")
+        check_iface1 pileft
+        ;;
+    "pileft-2")
+        check_iface2 pileft
+        ;;
+    "piright-1")
+        check_iface1 piright
+        ;;
+    "piright-2")
+        check_iface2 piright
+        ;;
+    "dmesg")
+        check_dmesg
+        ;;
     esac
 
     check_return "${test_case_id}"

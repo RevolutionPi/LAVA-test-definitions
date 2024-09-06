@@ -19,14 +19,14 @@ usage() {
 }
 
 while getopts "d:s:i:t:b:B:h" o; do
-  case "$o" in
-  d) DUT="${OPTARG}" ;;
-  s) SKIP_INSTALL="${OPTARG}" ;;
-  i) IP_ATE="${OPTARG}" ;;
-  t) TESTS="${OPTARG}" ;;
-  b) BITRATE_DEFAULT="${OPTARG}" ;;
-  h|*) usage ;;
-  esac
+    case "$o" in
+    d) DUT="${OPTARG}" ;;
+    s) SKIP_INSTALL="${OPTARG}" ;;
+    i) IP_ATE="${OPTARG}" ;;
+    t) TESTS="${OPTARG}" ;;
+    b) BITRATE_DEFAULT="${OPTARG}" ;;
+    h|*) usage ;;
+    esac
 done
 
 install() {

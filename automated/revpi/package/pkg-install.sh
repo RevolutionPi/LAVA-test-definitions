@@ -22,11 +22,11 @@ install() {
 }
 
 while getopts "r:s:h" o; do
-  case "$o" in
+    case "$o" in
     r) SKIP_REBOOT="${OPTARG}" ;;
     s) SKIP_INSTALL="${OPTARG}" ;;
     h|*) usage ;;
-  esac
+    esac
 done
 
 shift $((OPTIND - 1))

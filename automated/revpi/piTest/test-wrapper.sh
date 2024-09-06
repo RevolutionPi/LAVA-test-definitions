@@ -17,11 +17,11 @@ usage() {
 
 while getopts "t:s:d:a:h" o; do
     case "$o" in
-        t) TESTS="${OPTARG}" ;;
-        s) SKIP_INSTALL="${OPTARG}" ;;
-        d) DIGITAL_IOS="${OPTARG}" ;;
-        a) ANALOG_IOS="${OPTARG}" ;;
-        h|*) usage ;;
+    t) TESTS="${OPTARG}" ;;
+    s) SKIP_INSTALL="${OPTARG}" ;;
+    d) DIGITAL_IOS="${OPTARG}" ;;
+    a) ANALOG_IOS="${OPTARG}" ;;
+    h|*) usage ;;
     esac
 done
 
@@ -134,50 +134,50 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test_case_id" in
-        "pt-1")
-            pt_1
-            ;;
-        "pt_test_digital_ios")
-            pt_test_digital_ios "$DIGITAL_IOS"
-            ;;
+    "pt-1")
+        pt_1
+        ;;
+    "pt_test_digital_ios")
+        pt_test_digital_ios "$DIGITAL_IOS"
+        ;;
 
-        "pt_test_analog_ios")
-            pt_test_analog_ios "$ANALOG_IOS"
-            ;;
-        "test_pt_compact_d_1")
-            test_pt_compact_d_1
-            ;;
-        "test_pt_compact_a_1")
-            test_pt_compact_a_1
-            ;;
-        "test_pt_flat_da_1")
-            test_pt_flat_da_1
-            ;;
-        "test_pt_config_004")
-            test_pt_config_004
-            ;;
-        "test_pt_config_006")
-            test_pt_DIO_MIO_AIO_01 "test-pt-config-006"
-            ;;
-        "test_pt_config_011")
-            # Same configuration as config006 but with GW
-            test_pt_DIO_MIO_AIO_01 "test-pt-config-011"
-            ;;
-        "test_pt_config_010")
-            test_pt_DIO_MIO_AIO_02 "test-pt-config-010"
-            ;;
-        "test_pt_config_013")
-            test_pt_DIO_MIO_AIO_02 "test-pt-config-013"
-            ;;
-        "test_pt_connect_digin-1_relais-3")
-            test_pt_connect_digin1_relaisX "relais-3" "RevPiOutput"
-            ;;
-        "test_pt_connect_digin-1_relais-5")
-            test_pt_connect_digin1_relaisX "relais-5" "RevPiLED"
-            ;;
-        *)
-            report_fail "Undefined test..."
-            ;;
+    "pt_test_analog_ios")
+        pt_test_analog_ios "$ANALOG_IOS"
+        ;;
+    "test_pt_compact_d_1")
+        test_pt_compact_d_1
+        ;;
+    "test_pt_compact_a_1")
+        test_pt_compact_a_1
+        ;;
+    "test_pt_flat_da_1")
+        test_pt_flat_da_1
+        ;;
+    "test_pt_config_004")
+        test_pt_config_004
+        ;;
+    "test_pt_config_006")
+        test_pt_DIO_MIO_AIO_01 "test-pt-config-006"
+        ;;
+    "test_pt_config_011")
+        # Same configuration as config006 but with GW
+        test_pt_DIO_MIO_AIO_01 "test-pt-config-011"
+        ;;
+    "test_pt_config_010")
+        test_pt_DIO_MIO_AIO_02 "test-pt-config-010"
+        ;;
+    "test_pt_config_013")
+        test_pt_DIO_MIO_AIO_02 "test-pt-config-013"
+        ;;
+    "test_pt_connect_digin-1_relais-3")
+        test_pt_connect_digin1_relaisX "relais-3" "RevPiOutput"
+        ;;
+    "test_pt_connect_digin-1_relais-5")
+        test_pt_connect_digin1_relaisX "relais-5" "RevPiLED"
+        ;;
+    *)
+        report_fail "Undefined test..."
+        ;;
     esac
 
     check_return "${test_case_id}"

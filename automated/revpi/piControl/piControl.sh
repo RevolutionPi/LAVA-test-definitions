@@ -16,9 +16,9 @@ usage() {
 
 while getopts "s:t:h" o; do
     case "$o" in
-        s) SKIP_INSTALL="${OPTARG}" ;;
-        t) TESTS="${OPTARG}" ;;
-        h|*) usage ;;
+    s) SKIP_INSTALL="${OPTARG}" ;;
+    t) TESTS="${OPTARG}" ;;
+    h|*) usage ;;
     esac
 done
 
