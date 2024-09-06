@@ -23,7 +23,7 @@ metadata:
 
 params:
   SKIP_INSTALL: "false"
-  TEST: "iocycle-time iocycle-time-stress"
+  TESTS: "iocycle-time iocycle-time-stress"
   C_TIME: "300"
   MEAN_MS: "20"
 
@@ -32,7 +32,7 @@ run:
     - cd ./automated/revpi/iocycle
     - ./iocycle-time.sh
         -s "${SKIP_INSTALL}"
-        -t "${TEST}"
+        -t "${TESTS}"
         -c "${C_TIME}"
         -T "${MEAN_MS}"
     - ../../utils/send-to-lava.sh ./output/result.txt

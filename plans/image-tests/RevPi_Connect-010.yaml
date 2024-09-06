@@ -100,14 +100,14 @@ actions:
           name: leds
           params:
             DUT: *device_type
-            TEST: "led-1 led-2_led-3 led-5"
+            TESTS: "led-1 led-2_led-3 led-5"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/tpm/tpm.yaml
           name: tpm-test
           params:
-            TEST: "tpm-1"
+            TESTS: "tpm-1"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
@@ -130,21 +130,21 @@ actions:
           name: interfaces
           path: automated/revpi/interfaces/interfaces.yaml
           params:
-            TEST: "pileft-1 pileft-2 dmesg"
+            TESTS: "pileft-1 pileft-2 dmesg"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/piTest/pt.yaml
           name: pt-Connect-config010
           params:
-            TEST: "pt-1 test_pt_config_004"
+            TESTS: "pt-1 test_pt_config_004"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/iocycle/iocycle-time.yaml
           name: cycleTime
           params:
-            TEST: "iocycle-time iocycle-time-stress"
+            TESTS: "iocycle-time iocycle-time-stress"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
@@ -172,4 +172,4 @@ actions:
           params:
             SKIP_INSTALL: "true"
             SKIP_REBOOT: "false"
-            TEST: "rtc-1"
+            TESTS: "rtc-1"

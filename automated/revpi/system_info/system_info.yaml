@@ -25,12 +25,12 @@ metadata:
 
 params:
   SKIP_INSTALL: "false"
-  TEST: "sysinfo-image-release
-         sysinfo-uname
-         sysinfo-dpkg"
+  TESTS: "sysinfo-image-release
+          sysinfo-uname
+          sysinfo-dpkg"
 
 run:
   steps:
     - cd ./automated/revpi/system_info
-    - ./system_info.sh -s "${SKIP_INSTALL}" -t "${TEST}"
+    - ./system_info.sh -s "${SKIP_INSTALL}" -t "${TESTS}"
     - ../../utils/send-to-lava.sh ./output/result.txt

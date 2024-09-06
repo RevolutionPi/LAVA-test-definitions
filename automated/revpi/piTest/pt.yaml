@@ -35,14 +35,14 @@ metadata:
 
 params:
   SKIP_INSTALL: "True"
-  TEST: "pt-1"
+  TESTS: "pt-1"
 
 run:
   steps:
     - cd automated/revpi/piTest
     - ./test-wrapper.sh
       -s "${SKIP_INSTALL}"
-      -t "${TEST}"
+      -t "${TESTS}"
       -d "${DIGITAL_IOS}"
       -a "${ANALOG_IOS}"
     - ../../utils/send-to-lava.sh ./output/result.txt

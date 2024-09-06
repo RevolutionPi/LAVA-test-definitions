@@ -100,14 +100,14 @@ actions:
           name: leds
           params:
             DUT: *device_type
-            TEST: "led-1 led-2_led-3 led-5"
+            TESTS: "led-1 led-2_led-3 led-5"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/tpm/tpm.yaml
           name: tpm-test
           params:
-            TEST: "tpm-1"
+            TESTS: "tpm-1"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
@@ -130,7 +130,7 @@ actions:
           path: automated/revpi/piTest/pt.yaml
           name: pt-Compact-config000
           params:
-            TEST: "pt-1 test_pt_compact_d_1 test_pt_compact_a_1"
+            TESTS: "pt-1 test_pt_compact_d_1 test_pt_compact_a_1"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
@@ -158,4 +158,4 @@ actions:
           params:
             SKIP_INSTALL: "true"
             SKIP_REBOOT: "false"
-            TEST: "rtc-1"
+            TESTS: "rtc-1"

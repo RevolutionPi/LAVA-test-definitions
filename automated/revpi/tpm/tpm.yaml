@@ -25,14 +25,14 @@ metadata:
 
 params:
   SKIP_INSTALL: "false"
-  TEST: "tpm-1"
+  TESTS: "tpm-1"
 
 run:
   steps:
     - cd ./automated/revpi/tpm
     - ./tpm.sh
         -s "${SKIP_INSTALL}"
-        -t "${TEST}"
+        -t "${TESTS}"
         -S "${PISERIAL_SERIAL_NR}"
         -P "${PISERIAL_PASS}"
     - ../../utils/send-to-lava.sh ./output/result.txt

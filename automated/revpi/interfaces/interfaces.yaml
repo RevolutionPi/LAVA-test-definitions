@@ -23,10 +23,10 @@ metadata:
 
 params:
   SKIP_INSTALL: "True"
-  TEST: "pileft-1 pileft-2 dmesg"
+  TESTS: "pileft-1 pileft-2 dmesg"
 
 run:
   steps:
     - cd ./automated/revpi/interfaces
-    - ./interfaces.sh -s "${SKIP_INSTALL}" -t "${TEST}"
+    - ./interfaces.sh -s "${SKIP_INSTALL}" -t "${TESTS}"
     - ../../utils/send-to-lava.sh ./output/result.txt

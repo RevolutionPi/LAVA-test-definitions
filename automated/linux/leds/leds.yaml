@@ -26,11 +26,11 @@ metadata:
 params:
   SKIP_INSTALL: "False"
   DUT: ""
-  TEST: "led-1 led-2_led-3 led-5"
+  TESTS: "led-1 led-2_led-3 led-5"
   LED_TIME: 1
 
 run:
   steps:
     - cd ./automated/linux/leds
-    - ./leds.sh -s "${SKIP_INSTALL}" -d "${DUT}" -t "${TEST}" -l "${LED_TIME}"
+    - ./leds.sh -s "${SKIP_INSTALL}" -d "${DUT}" -t "${TESTS}" -l "${LED_TIME}"
     - ../../utils/send-to-lava.sh ./output/result.txt
