@@ -4,7 +4,7 @@ Upstream-Contact: Kunbus GmbH
 Source: https://gitlab.com/RevolutionPi/LAVA-test-definitions
 
 Files: *
-Copyright: 2022-2023 Kunbus GmbH
+Copyright: 2022-2024 Kunbus GmbH
 License: GPL-2.0-only
 
 Files: automated/lib/sh-test-lib
