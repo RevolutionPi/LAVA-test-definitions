@@ -28,8 +28,9 @@ run() {
     case "$test_case_id" in
     "cpu-governor")
         gov=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
-        [ "$gov" = "$GOVERNOR" ]
-        check_return "$test_case_id-$GOVERNOR"
+        run_test_case \
+            "[ '$gov' = '$GOVERNOR' ]" \
+            "$test_case_id-$GOVERNOR"
         ;;
     *) error_msg "Unknown test case: $test_case_id" ;;
     esac
