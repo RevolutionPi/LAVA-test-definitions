@@ -23,8 +23,7 @@ while getopts "s:t:h" o; do
 done
 
 install() {
-    apt-get update -q
-    apt-get -y install coreutils
+    install_deps coreutils
 }
 
 check_dmesg() {

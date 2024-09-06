@@ -18,8 +18,7 @@ EOF
 }
 
 install() {
-    apt-get update -q
-    apt-get install -qy wget
+    install_deps wget
 }
 
 while getopts "r:s:h" o; do

@@ -20,8 +20,7 @@ usage() {
 }
 
 install() {
-    apt-get update -q
-    apt-get -qy install iperf3 jq
+    install_deps "iperf3 jq"
 }
 
 run_iperf_test() {

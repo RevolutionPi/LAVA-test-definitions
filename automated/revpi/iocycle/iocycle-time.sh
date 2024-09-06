@@ -30,8 +30,7 @@ while getopts "s:t:c:T:h" o; do
 done
 
 install() {
-    apt-get update -q
-    apt-get -y install git stress python3-revpimodio2 jq bc
+    install_deps "git stress python3-revpimodio2 jq bc"
 }
 
 run() {

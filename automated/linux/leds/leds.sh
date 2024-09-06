@@ -25,8 +25,7 @@ while getopts "s:d:t:l:h" o; do
 done
 
 install() {
-    apt-get update -q
-    apt-get -y install tree
+    install_deps tree
 }
 
 led1() {

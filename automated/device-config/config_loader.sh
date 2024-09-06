@@ -21,8 +21,7 @@ EOF
 }
 
 install() {
-    apt-get update -q
-    apt-get -qy install pitest
+    install_deps pitest
 }
 
 run() {

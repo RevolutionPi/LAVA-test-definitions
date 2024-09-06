@@ -30,8 +30,7 @@ while getopts "s:d:m:t:r:w:h" o; do
 done
 
 install() {
-    apt-get update -q
-    apt-get -y install bc fdisk
+    install_deps "bc fdisk"
 }
 
 check_available_dev() {

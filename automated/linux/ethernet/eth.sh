@@ -30,8 +30,7 @@ while getopts "d:s:i:t:b:B:h" o; do
 done
 
 install() {
-    apt-get update -q
-    apt-get -y install iperf3 jq
+    install_deps "iperf3 jq"
 }
 
 check_ethtool() {
