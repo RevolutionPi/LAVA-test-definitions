@@ -86,6 +86,16 @@ run() {
           fi
           ;;
       "pc-perms")
+          # permissions for /dev/piControl0 have only been introduced in
+          # bookworm. skip this test for all versions before bookworm.
+          . /etc/os-release
+          if [ "$VERSION_ID" -lt 12 ]; then
+              info_msg "Release is $VERSION (<12), skipping $test_case_id"
+              report_skip "$test_case_id-picontrol-dev-permissions-660"
+              report_skip "$test_case_id-picontrol-dev-group-picontrol"
+              return
+          fi
+
           [ "$(stat -c "%a" "$PICONTROL_DEV")" = "660" ]
           check_return "$test_case_id-picontrol-dev-permissions-660"
 
