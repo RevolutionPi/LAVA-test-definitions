@@ -15,11 +15,11 @@ usage() {
 }
 
 while getopts "s:t:h" o; do
-  case "$o" in
-    s) SKIP_INSTALL="${OPTARG}" ;;
-    t) TESTS="${OPTARG}" ;;
-    h|*) usage ;;
-  esac
+    case "$o" in
+        s) SKIP_INSTALL="${OPTARG}" ;;
+        t) TESTS="${OPTARG}" ;;
+        h|*) usage ;;
+    esac
 done
 
 install() {
@@ -52,54 +52,54 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test_case_id" in
-      "pc-1")
-          local errors
-          local res
+    "pc-1")
+        local errors
+        local res
 
-          info_msg "Output piControl in dmesg"
-          dmesg | grep piControl
+        info_msg "Output piControl in dmesg"
+        dmesg | grep piControl
 
-          check_dmesg "emerg,alert,crit,err,warn" "piControl"
-          errors=$?
-          if [ $errors -gt 0 ]; then
-              res=fail
-          else
-              res=pass
-          fi
-          add_metric "$test_case_id-errors" "$res" "$errors" lines
+        check_dmesg "emerg,alert,crit,err,warn" "piControl"
+        errors=$?
+        if [ $errors -gt 0 ]; then
+            res=fail
+        else
+            res=pass
+        fi
+        add_metric "$test_case_id-errors" "$res" "$errors" lines
 
-          # Catch errors or failures from other levels
-          check_dmesg "notice,info,debug" "piControl.*fail|piControl.*err|piControl.*incorrect"
-          errors=$?
-          if [ $errors -gt 0 ]; then
-              res=fail
-          else
-              res=pass
-          fi
-          add_metric "$test_case_id-missed-errors" "$res" "$errors" lines
-          ;;
-      "pc-2")
-          run_test_case "[ -e '$PICONTROL_DEV' ]" "$test_case_id"
-          ;;
-      "pc-perms")
-          # permissions for /dev/piControl0 have only been introduced in
-          # bookworm. skip this test for all versions before bookworm.
-          . /etc/os-release
-          if [ "$VERSION_ID" -lt 12 ]; then
-              info_msg "Release is $VERSION (<12), skipping $test_case_id"
-              report_skip "$test_case_id-picontrol-dev-permissions-660"
-              report_skip "$test_case_id-picontrol-dev-group-picontrol"
-              return
-          fi
+        # Catch errors or failures from other levels
+        check_dmesg "notice,info,debug" "piControl.*fail|piControl.*err|piControl.*incorrect"
+        errors=$?
+        if [ $errors -gt 0 ]; then
+            res=fail
+        else
+            res=pass
+        fi
+        add_metric "$test_case_id-missed-errors" "$res" "$errors" lines
+        ;;
+    "pc-2")
+        run_test_case "[ -e '$PICONTROL_DEV' ]" "$test_case_id"
+        ;;
+    "pc-perms")
+        # permissions for /dev/piControl0 have only been introduced in
+        # bookworm. skip this test for all versions before bookworm.
+        . /etc/os-release
+        if [ "$VERSION_ID" -lt 12 ]; then
+            info_msg "Release is $VERSION (<12), skipping $test_case_id"
+            report_skip "$test_case_id-picontrol-dev-permissions-660"
+            report_skip "$test_case_id-picontrol-dev-group-picontrol"
+            return
+        fi
 
-          run_test_case \
-              "[ '$(stat -c "%a" "$PICONTROL_DEV")' = '660' ]" \
-              "$test_case_id-picontrol-dev-permissions-660"
+        run_test_case \
+            "[ '$(stat -c "%a" "$PICONTROL_DEV")' = '660' ]" \
+            "$test_case_id-picontrol-dev-permissions-660"
 
-          run_test_case \
-              "[ '$(stat -c "%G" "$PICONTROL_DEV")' = 'picontrol' ]" \
-              "$test_case_id-picontrol-dev-group-picontrol"
-          ;;
+        run_test_case \
+            "[ '$(stat -c "%G" "$PICONTROL_DEV")' = 'picontrol' ]" \
+            "$test_case_id-picontrol-dev-group-picontrol"
+        ;;
     esac
 }
 
