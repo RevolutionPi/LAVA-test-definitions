@@ -37,30 +37,28 @@ run() {
     case "$test_case_id" in
     "tpm-1")
         piserial_output="$(piSerial -s)"
-        echo "piSerial serial number: $piserial_output"
-        if [ "$piserial_output" != "$PISERIAL_SERIAL_NR" ]; then
-            error_msg "${test_case_id} Serial number not ok! (output: $piserial_output, actual: $PISERIAL_SERIAL_NR)"
-        fi
+        info_msg "piSerial serial number: $piserial_output"
+        run_test_case \
+            "[ '$piserial_output' = '$PISERIAL_SERIAL_NR' ]" \
+            "$test_case_id-serial"
 
         piserial_output="$(piSerial -p)"
-        echo "piSerial password: $piserial_output"
-        if [ "$piserial_output" != "$PISERIAL_PASS" ]; then
-            error_msg "${test_case_id} Password not ok! (output: $piserial_output, actual: $PISERIAL_PASS)"
-        fi
+        info_msg "piSerial password: $piserial_output"
+        run_test_case \
+            "[ '$piserial_output' = '$PISERIAL_PASS' ]" \
+            "$test_case_id-password"
         ;;
     "tpm-2")
-        if ! tpm2_getcap --capability="properties-fixed" ; then
-            error_msg "${test_case_id} fail!"
-        fi
+        run_test_case \
+            'tpm2_getcap --capability="properties-fixed"' \
+            "$test_case_id"
         ;;
     "tpm-2b")
-        if ! tpm2_getcap properties-fixed ; then
-            error_msg "${test_case_id} fail!"
-        fi
+        run_test_case \
+            'tpm2_getcap properties-fixed' \
+            "$test_case_id"
         ;;
     esac
-
-    check_return "${test_case_id}"
 }
 
 # Test run
