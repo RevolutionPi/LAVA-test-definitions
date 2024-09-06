@@ -79,11 +79,7 @@ run() {
           add_metric "$test_case_id-missed-errors" "$res" "$errors" lines
           ;;
       "pc-2")
-          if [ -e "$PICONTROL_DEV" ]; then
-              report_pass "$test_case_id"
-          else
-              report_fail "$test_case_id failed: $PICONTROL_DEV doesn't exist"
-          fi
+          run_test_case "[ -e '$PICONTROL_DEV' ]" "$test_case_id"
           ;;
       "pc-perms")
           # permissions for /dev/piControl0 have only been introduced in
