@@ -65,8 +65,8 @@ run() {
 create_out_dir "${OUTPUT}"
 
 if [ -z "$PISERIAL_SERIAL_NR" ] || [ -z "$PISERIAL_PASS" ]; then
-  echo "Options -S and -P are mandatory." >&2
-  usage
+    echo "Options -S and -P are mandatory." >&2
+    usage
 fi
 
 if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
