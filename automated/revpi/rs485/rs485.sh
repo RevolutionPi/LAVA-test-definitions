@@ -69,7 +69,7 @@ rs485() {
     done
 
     stty -F "$RSDEV" -echo raw speed "$previous_baud" > /dev/null
-    chek_return "$test_case_id-set-previous-baud"
+    check_return "$test_case_id-set-previous-baud"
 }
 
 run() {
