@@ -167,7 +167,44 @@ actions:
           params:
             SKIP_INSTALL: "true"
             SKIP_REBOOT: "false"
-            TESTS: "rtc-1"
+            TESTS: "rtc-1 rtc-2a"
+  - command:
+      name: wait_for_reboot
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - command:
+      name: wait_for_system_up
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - deploy:
+      namespace: testsuite-II
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: testsuite-II
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: testsuite-II
+      timeout:
+        minutes: 2
+      definitions:
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/rtc/rtc.yaml
+          name: rtc-II
+          params:
+            SKIP_INSTALL: "true"
+            SKIP_REBOOT: "true"
+            TESTS: "rtc-2b"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
