@@ -56,7 +56,7 @@ actions:
       timeout:
         minutes: 5
   - command:
-      name: wait_for_system_up
+      name: wait_for_ssh
       namespace: recovery
       timeout:
         minutes: 5
@@ -172,7 +172,7 @@ actions:
       timeout:
         minutes: 5
   - command:
-      name: wait_for_system_up
+      name: wait_for_ssh
       namespace: recovery
       timeout:
         minutes: 5
@@ -216,7 +216,7 @@ actions:
       timeout:
         minutes: 5
   - command:
-      name: wait_for_system_up
+      name: wait_for_ssh
       namespace: recovery
       timeout:
         minutes: 5
