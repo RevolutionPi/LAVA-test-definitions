@@ -27,10 +27,19 @@ params:
 run:
   steps:
     - cd automated/linux/wlan
-    - ./wlan.sh
-        -t "${TESTS}"
-        -I "${WLAN_INTERFACE}"
-        -S "${WLAN_SLEEP}"
-        -W "${WLAN_SSID}"
+    - |
+      if [ -n "${WLAN_24G}" ]; then
+        WLAN_SSID=${WLAN_SSID_24G}
+        WLAN_PASSWORD=${WLAN_PASSWORD_24G}
+      fi
+      if [ -n "${WLAN_5G}" ]; then
+        WLAN_SSID=${WLAN_SSID_5G}
+        WLAN_PASSWORD=${WLAN_PASSWORD_5G}
+      fi
+      ./wlan.sh \
+        -t "${TESTS}" \
+        -I "${WLAN_INTERFACE}" \
+        -S "${WLAN_SLEEP}" \
+        -W "${WLAN_SSID}" \
         -P "${WLAN_PASSWORD}"
     - ../../utils/send-to-lava.sh ./output/result.txt
