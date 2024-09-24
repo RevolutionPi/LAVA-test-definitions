@@ -242,7 +242,7 @@ actions:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/linux/wlan/wlan.yaml
-          name: wlan-test
+          name: wlan-test-5g
           params:
             TESTS:
               wlan-config-nm
@@ -251,3 +251,18 @@ actions:
               wlan-sleep
               wlan-2-nm-b
               wlan-2-nm-disconnect
+            WLAN_5G: WLAN_SSID_5G
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/wlan/wlan.yaml
+          name: wlan-test-24g
+          params:
+            TESTS:
+              wlan-config-nm
+              wlan-1-nm
+              wlan-2-nm-a
+              wlan-sleep
+              wlan-2-nm-b
+              wlan-2-nm-disconnect
+            WLAN_24G: WLAN_SSID_24G
