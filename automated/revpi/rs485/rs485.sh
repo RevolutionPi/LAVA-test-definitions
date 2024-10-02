@@ -7,14 +7,13 @@ RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 SKIP_INSTALL="true"
 RSDEV="/dev/ttyRS485"
-TESTS="rs485-tx rs485-rx"
+TESTS="rs485-client"
 BAUD=19200
-SLEEP_TIME="0.3"
 LIMIT=50
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS] [-d RSDEV] [-b BAUD] [-l LIMIT]" 1>&2
-    echo "Example: $0 -s true -t 'rs485-tx rs485-rx' -d /dev/ttyRS485 -b 19200 -l 12" 1>&2
+    echo "Example: $0 -s true -t 'rs485-client' -d /dev/ttyRS485 -b 19200 -l 12" 1>&2
     exit 1
 }
 
@@ -30,46 +29,18 @@ while getopts "s:t:d:b:l:h" o; do
 done
 
 install() {
-    :
-    # No dependencies to install
+    install_deps "python3-crcmod"
 }
 
-get_ack() {
-    local expected_ack="$1"
-    read -r ack < "$RSDEV"
-    ack=$(echo "$ack" | perl -p -e 's/\r//cg')
+rs485_client() {
+    local errors=0
 
-    if [ "$ack" -ne "$expected_ack" ]; then
-        error_msg "rs485 acknowledgment failed!"
+    if errors="$(./rs485.py "$RSDEV" -b "$BAUD" -l "$LIMIT" client)"; then
+        result="pass"
+    else
+        result="fail"
     fi
-}
-
-rs485() {
-    local mode="$1"
-    local cnt=0
-    local previous_baud
-
-    previous_baud="$(stty -F "$RSDEV" -echo raw speed "$BAUD")"
-    exit_on_fail "$test_case_id-set-baud"
-
-    while [ "$cnt" -lt "$LIMIT" ]; do
-        if [ "$mode" = "tx" ]; then
-            sleep "$SLEEP_TIME"
-            echo "$cnt" > "$RSDEV"
-            get_ack $((cnt + 1))
-            cnt=$((cnt + 1))
-        elif [ "$mode" = "rx" ]; then
-            get_ack "$cnt"
-            cnt=$((cnt + 1))
-            sleep "$SLEEP_TIME"
-            echo $cnt > "$RSDEV"
-        else
-            error_msg "Invalid mode: $mode. Use 'tx' or 'rx'."
-        fi
-    done
-
-    stty -F "$RSDEV" -echo raw speed "$previous_baud" > /dev/null
-    check_return "$test_case_id-set-previous-baud"
+    add_metric rs485 "$result" "$errors" errors
 }
 
 run() {
@@ -78,14 +49,9 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test" in
-    "rs485-tx")
-        rs485 tx
-        ;;
-    "rs485-rx")
-        rs485 rx
-        ;;
+    "rs485-client") rs485_client ;;
+    *) error_msg "Unknown test case '$test'" >&2
     esac
-    check_return "${test_case_id}"
 }
 
 # Test run.

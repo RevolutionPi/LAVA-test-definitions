@@ -155,7 +155,7 @@ actions:
           name: rs485-test
           params:
             RSDEV: "/dev/ttyRS485"
-            TESTS: "rs485-tx rs485-rx"
+            TESTS: "rs485-client"
             BAUD: "19200"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
