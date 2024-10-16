@@ -35,6 +35,13 @@ check_dmesg() {
         | grep -E "$param_grep" \
         | grep -v "loading out-of-tree module taints kernel.")"
 
+    # Check existance of HAT EEPROM according to document:
+    # https://gitlab.com/revolutionpi/revpi-hat-eeprom/blob/master/docs/RevPi-HAT-EEPROM-Format.md#custom-atoms
+    if [ ! -e /proc/device-tree/hat/custom_1 ]; then
+        dmesg_output="$(echo "$dmesg_output" \
+            | grep -v "No HAT eeprom detected: Fallback to default serial")"
+    fi
+
     if [ -n "$dmesg_output" ]; then
         info_msg "Something went wrong..."
         info_msg "log_level: $log_level"
