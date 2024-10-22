@@ -76,7 +76,7 @@ run() {
         ;;
     esac
 
-    check_return "${test_case_id}-${WLAN_SSID}"
+    check_return "${test_case_id}"
 }
 
 # Test run.
