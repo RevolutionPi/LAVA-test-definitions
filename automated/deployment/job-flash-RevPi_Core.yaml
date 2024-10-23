@@ -71,7 +71,7 @@ actions:
       images:
         recovery_image:
           url:
-            http://172.23.16.235:8082/artifactory/revpi-images-local/releases/2023-09-26/arm64-lite/2023-09-26-revpi-bullseye-arm64-lite.img.xz
+            https://artifactory.kunbus.com:443/artifactory/revpi-release-images/241009/bookworm/241009-revpi-bookworm-arm64-lite.img.xz
       namespace: recovery
       os: debian
       timeout:
