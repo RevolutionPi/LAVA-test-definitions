@@ -18,3 +18,4 @@
 | config013.rsc | DIO <- MIO <- AIO <- RevPi                                                            |
 | config014.rsc | DIO <- RO <- RevPi -> GW Modbus TCP                                                   |
 | config015.rsc | DIO <- RevPi -> RO -> GW Modbus TCP                                                   |
+| config016.rsc | GW Ethernet IP <- DIO <- MIO <- AIO <- RevPi -> AIO -> MIO -> DIO -> GW Modbus TCP    |
