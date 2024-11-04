@@ -20,7 +20,9 @@ usage() {
 
 while getopts "s:" o; do
     case "${o}" in
-    s) ;;
+    s)
+        # parameter for SKIP_INSTALL, ignored as nothing is installed
+        ;;
     *) usage ;;
     esac
 done
