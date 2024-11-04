@@ -681,7 +681,7 @@ get_test_program() {
 			if [ -d "$test_dir"/.git ]; then
 				echo Using repository "$PATH"
 			else
-				git clone "$test_git_url" "$test_dir"
+				git clone -q "$test_git_url" "$test_dir"
 			fi
 
 			cd "$test_dir" || exit 1
