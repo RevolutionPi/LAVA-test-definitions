@@ -9,6 +9,7 @@ import argparse
 import os
 import sys
 import yaml
+from typing import List
 
 LAVA_REPOSITORY_URL = 'https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git'
 
@@ -65,6 +66,7 @@ parser.add_argument(
 parser.add_argument(
     "--pkg-url",
     dest="pkg_url",
+    action="append",
     help="Package URL to be installed and used for testing",
 )
 
@@ -126,15 +128,15 @@ def add_namespace_in_testsuite(content: dict):
 
     return content
 
-def add_pkg_install(content, pkg_url):
-    if pkg_url:
+def add_pkg_install(content, pkg_urls: List[str]):
+    if len(pkg_urls) > 0:
         pkg_install = {
             'from': 'git',
             'name': 'install-testing-packages',
             'params': {
                 'SKIP_INSTALL': 'false',
                 'SKIP_REBOOT': 'false',
-                'PKG_URLS': pkg_url
+                'PKG_URLS': " ".join(pkg_urls)
             },
             'path': 'automated/revpi/package/pkg-install.yaml',
             'repository': LAVA_REPOSITORY_URL
@@ -149,7 +151,7 @@ def add_pkg_install(content, pkg_url):
     return content
 
 def create_job(device_type: str, device_tags: str, image_url: str,
-               file_flash: str, file_testsuite: str, pkg_url: str,
+               file_flash: str, file_testsuite: str, pkg_urls: List[str],
                notify: bool) -> bool:
     # Load the contents of file_flash
     try:
@@ -199,8 +201,8 @@ def create_job(device_type: str, device_tags: str, image_url: str,
     # Add or modify namespace from "file_testsuite"
     file_testsuite_contents = add_namespace_in_testsuite(file_testsuite_contents)
     
-    # Add test to install packages if pkg_url is provided
-    file_flash_contents = add_pkg_install(file_flash_contents, pkg_url)
+    # Add test to install packages if pkg_urls are provided
+    file_flash_contents = add_pkg_install(file_flash_contents, pkg_urls)
 
     if not notify:
         del file_flash_contents["notify"]
@@ -220,12 +222,12 @@ def main() -> int:
     file_flash = args.flash
     file_testsuite = args.testsuite
     device_tags = args.tags
-    pkg_url = args.pkg_url
+    pkg_urls = args.pkg_url
     notify = args.notify
 
     return int(
         not create_job(device_type, device_tags, image_url, file_flash,
-                       file_testsuite, pkg_url, notify)
+                       file_testsuite, pkg_urls, notify)
     )
 
 
