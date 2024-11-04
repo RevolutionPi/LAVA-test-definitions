@@ -44,7 +44,12 @@ prog_device() {
 
     image_size=$(xz --robot --list "${IMAGE}" | awk 'NR==2{print $5}')
 
-    usb_disk=$(find /sys/devices -iname "${LAVA_STATIC_INFO_0_usb_path:?}" -exec find {} -iname block -print0 \; 2>/dev/null | xargs -0 ls)
+    usb_disk=$(find /sys/devices \
+        -iname "${LAVA_STATIC_INFO_0_usb_path:?}" \
+        -exec find {} \
+        -iname block \
+        -print0 \; 2>/dev/null \
+        | xargs -0 ls)
     disk=$(lsblk -I 8 -dno NAME,RM | awk '{ if  ($2 == 1) { print $1 } }')
 
     if [ ! "${usb_disk}" == "${disk}" ]; then
@@ -57,7 +62,11 @@ prog_device() {
     info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programmed image onto storage device /dev/${disk}"
 
     info_msg "verifying disk vs image"
-    md5_disk=$(dd if="/dev/${disk}" bs=1M count="${image_size}" iflag=count_bytes | md5sum | awk '{ print $1 }')
+    md5_disk=$(dd if="/dev/${disk}" \
+        bs=1M count="${image_size}" \
+        iflag=count_bytes \
+        | md5sum \
+        | awk '{ print $1 }')
     info_msg "md5 checksum of image: ${md5_img}"
     info_msg "md5 checksum of disk: ${md5_disk}"
 
