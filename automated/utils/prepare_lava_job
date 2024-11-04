@@ -146,7 +146,7 @@ def add_pkg_install(content, pkg_urls: List[str]):
             if action.get('test', {}).get('namespace') == 'preconfiguration':
                 action['test']['definitions'].insert(0, pkg_install)
                 break
-    
+
     return content
 
 def create_job(device_type: str, device_tags: str, image_url: str,
@@ -166,7 +166,7 @@ def create_job(device_type: str, device_tags: str, image_url: str,
     except OSError:
         print(f"Could not read file with testsuite: {file_testsuite}", file=sys.stderr)
         return False
-    
+
     if not validate_flash_file(device_type, image_url, file_flash_contents):
         return False
 
@@ -199,7 +199,7 @@ def create_job(device_type: str, device_tags: str, image_url: str,
 
     # Add or modify namespace from "file_testsuite"
     file_testsuite_contents = add_namespace_in_testsuite(file_testsuite_contents)
-    
+
     # Add test to install packages if pkg_urls are provided
     file_flash_contents = add_pkg_install(file_flash_contents, pkg_urls)
 
