@@ -173,11 +173,6 @@ actions:
       namespace: recovery
       timeout:
         minutes: 5
-  - deploy:
-      namespace: testsuite-II
-      timeout:
-        minutes: 4
-      to: ssh
   - boot:
       connection: ssh
       method: ssh
