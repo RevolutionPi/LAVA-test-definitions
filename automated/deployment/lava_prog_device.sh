@@ -35,10 +35,12 @@ prog_device() {
     if [ -z "$IMAGE" ]; then
         error_fatal "No image found. Aborting."
     fi
+    info_msg "${IMAGE} will be programmed onto the DUT"
+    if [ "$(echo "$IMAGE" | wc -l)" -gt 1 ]; then
+        error_fatal "Multiple images found. Aborting."
+    fi
 
     image_size=$(xz --robot --list "${IMAGE}" | awk 'NR==2{print $5}')
-
-    info_msg "${IMAGE} will be programmed onto the DUT"
 
     usb_disk=$(find /sys/devices -iname "${LAVA_STATIC_INFO_0_usb_path:?}" -exec find {} -iname block -print0 \; 2>/dev/null | xargs -0 ls)
     disk=$(lsblk -I 8 -dno NAME,RM | awk '{ if  ($2 == 1) { print $1 } }')
