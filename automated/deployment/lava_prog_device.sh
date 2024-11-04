@@ -32,6 +32,10 @@ prog_device() {
     cd /lava-lxc || exit
 
     IMAGE=$(find . -maxdepth 1 -iname "*.xz" -type f)
+    if [ -z "$IMAGE" ]; then
+        error_fatal "No image found. Aborting."
+    fi
+
     image_size=$(xz --robot --list "${IMAGE}" | awk 'NR==2{print $5}')
 
     info_msg "${IMAGE} will be programmed onto the DUT"
