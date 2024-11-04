@@ -47,7 +47,6 @@ prog_device() {
 
     if [ ! "${usb_disk}" == "${disk}" ]; then
         error_fatal "Blockdevice from lsblk and sysfs are different (${disk} - ${usb_disk})"
-        return $?
     fi
 
     info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programming the image on storage device /dev/${disk}"
@@ -62,7 +61,6 @@ prog_device() {
 
     if [ "${md5_img}" != "${md5_disk}" ]; then
         error_fatal "md5 checksums of image and disk don't match!"
-        return $?
     fi
 }
 
