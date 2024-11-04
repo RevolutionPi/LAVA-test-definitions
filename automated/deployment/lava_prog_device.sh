@@ -28,8 +28,6 @@ while getopts "s:" o; do
 done
 
 prog_device() {
-    set +x
-
     # find image and extract
     cd /lava-lxc || exit
 
