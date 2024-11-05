@@ -29,10 +29,6 @@ while getopts "s:d:m:t:r:w:h" o; do
     esac
 done
 
-install() {
-    install_deps "bc fdisk"
-}
-
 check_available_dev() {
     if [ ! -b "$1" ];then
         error_msg "Block device $1 not found"
@@ -141,12 +137,7 @@ run() {
 # Test run.
 create_out_dir "${OUTPUT}"
 
-
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
+install_deps "bc fdisk" "$SKIP_INSTALL"
 
 for t in $TESTS; do
     run "$t"

@@ -18,17 +18,14 @@ usage() {
 while getopts "t:s:d:a:h" o; do
     case "$o" in
     t) TESTS="${OPTARG}" ;;
-    s) SKIP_INSTALL="${OPTARG}" ;;
+    s)
+        # nothing to install
+        ;;
     d) DIGITAL_IOS="${OPTARG}" ;;
     a) ANALOG_IOS="${OPTARG}" ;;
     h|*) usage ;;
     esac
 done
-
-install() {
-    :
-    # No dependencies to install
-}
 
 pt_1() {
     piTest_Check_config "test-pt1-pt2" "$(piTest -d)"
@@ -175,12 +172,6 @@ run() {
 
 # Test run.
 create_out_dir "${OUTPUT}"
-
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
 
 for t in $TESTS; do
     run "$t"

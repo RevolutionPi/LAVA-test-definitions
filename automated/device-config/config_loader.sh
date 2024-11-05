@@ -20,10 +20,6 @@ EOF
     exit 1
 }
 
-install() {
-    install_deps pitest
-}
-
 run() {
     local config="$1"
     local config_path="$2"
@@ -65,11 +61,7 @@ if [ -z "$CONFIG" ]; then
     usage
 fi
 
-if [ "$SKIP_INSTALL" = "true" ] || [ "$SKIP_INSTALL" = "True" ]; then
-    install
-else
-    info_msg "Package installation skipped"
-fi
+install_deps pitest "$SKIP_INSTALL"
 
 create_out_dir "$OUTPUT"
 

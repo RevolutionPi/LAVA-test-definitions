@@ -6,7 +6,6 @@ OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 TESTS="cpu-governor"
-SKIP_INSTALL=false
 GOVERNOR="performance"
 
 usage() {
@@ -15,10 +14,6 @@ Usage: $0 [-s] [-g GOVERNOR]
 EOF
 
     exit "$1"
-}
-
-install() {
-    :
 }
 
 run() {
@@ -38,7 +33,9 @@ run() {
 
 while getopts "s:g:h" o; do
     case "$o" in
-    s) SKIP_INSTALL="$OPTARG" ;;
+    s)
+        # nothing to install
+        ;;
     g) GOVERNOR="$OPTARG" ;;
     h) usage 0 ;;
     '?') usage 1 >&2 ;;
@@ -48,12 +45,6 @@ done
 shift $((OPTIND-1))
 
 create_out_dir "$OUTPUT"
-
-if [ "$SKIP_INSTALL" = "true" ] || [ "$SKIP_INSTALL" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
 
 for t in $TESTS; do
     run "$t"

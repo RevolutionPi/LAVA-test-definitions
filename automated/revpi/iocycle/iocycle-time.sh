@@ -29,10 +29,6 @@ while getopts "s:t:c:T:h" o; do
     esac
 done
 
-install() {
-    install_deps "git stress python3-revpimodio2 jq bc"
-}
-
 run() {
     local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
@@ -65,11 +61,7 @@ run() {
 # Test run.
 create_out_dir "${OUTPUT}"
 
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
+install_deps "git stress python3-revpimodio2 jq bc" "$SKIP_INSTALL"
 
 get_test_program "${TEST_GIT_URL}" "${TEST_DIR}" "${TEST_PROG_VERSION}" "${TEST_PROGRAM}"
 

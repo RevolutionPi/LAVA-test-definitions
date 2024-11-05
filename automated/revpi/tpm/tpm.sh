@@ -25,10 +25,6 @@ while getopts "s:t:S:P:h" o; do
     esac
 done
 
-install() {
-    install_deps "piserial tpm2-tools"
-}
-
 run() {
     local test_case_id="$1"
     local piserial_output=""
@@ -69,11 +65,7 @@ if [ -z "$PISERIAL_SERIAL_NR" ] || [ -z "$PISERIAL_PASS" ]; then
     usage
 fi
 
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
+install_deps "piserial tpm2-tools" "$SKIP_INSTALL"
 
 for t in $TESTS; do
     run "$t"

@@ -28,10 +28,6 @@ while getopts "s:t:d:b:l:h" o; do
     esac
 done
 
-install() {
-    install_deps "python3-crcmod"
-}
-
 rs485_client() {
     local errors=0
 
@@ -57,11 +53,7 @@ run() {
 # Test run.
 create_out_dir "${OUTPUT}"
 
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
+install_deps "python3-crcmod" "$SKIP_INSTALL"
 
 if [ ! -c "$RSDEV" ] ; then
 	error_msg "RS485 device $RSDEV not found!"

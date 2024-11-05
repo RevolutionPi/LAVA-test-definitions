@@ -29,10 +29,6 @@ while getopts "d:s:i:t:b:B:h" o; do
     esac
 done
 
-install() {
-    install_deps "iperf3 jq"
-}
-
 check_ethtool() {
     local interface="$1"
     local ret_ethtool=0
@@ -105,11 +101,7 @@ run() {
 # Test run.
 create_out_dir "${OUTPUT}"
 
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
+install_deps "iperf3 jq" "$SKIP_INSTALL"
 
 for t in $TESTS; do
     run "$t"

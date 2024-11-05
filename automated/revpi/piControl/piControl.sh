@@ -22,10 +22,6 @@ while getopts "s:t:h" o; do
     esac
 done
 
-install() {
-    install_deps coreutils
-}
-
 check_dmesg() {
     local log_level="$1"
     local param_grep="$2"
@@ -112,11 +108,7 @@ run() {
 # Test run.
 create_out_dir "${OUTPUT}"
 
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
+install_deps coreutils "$SKIP_INSTALL"
 
 for t in $TESTS; do
     run "$t"

@@ -6,7 +6,6 @@ OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 TESTS="pileft-1 pileft-2 dmesg"
-SKIP_INSTALL="True"
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS]" 1>&2
@@ -15,16 +14,13 @@ usage() {
 
 while getopts "s:t:h" o; do
     case "$o" in
-    s) SKIP_INSTALL="${OPTARG}" ;;
+    s)
+        # nothing to install
+        ;;
     t) TESTS="${OPTARG}" ;;
     h|*) usage ;;
     esac
 done
-
-install() {
-    :
-    # No dependencies to install
-}
 
 check_iface1() {
     local iface_name="$1"
@@ -99,12 +95,6 @@ run() {
 
 # Test run.
 create_out_dir "${OUTPUT}"
-
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
 
 for t in $TESTS; do
     run "$t"

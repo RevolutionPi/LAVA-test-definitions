@@ -24,10 +24,6 @@ while getopts "s:d:t:l:h" o; do
     esac
 done
 
-install() {
-    install_deps tree
-}
-
 led1() {
     local leds output res=0
 
@@ -137,11 +133,7 @@ run() {
 # Test run.
 create_out_dir "${OUTPUT}"
 
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
+install_deps tree "${SKIP_INSTALL}"
 
 for t in $TESTS; do
     run "$t"

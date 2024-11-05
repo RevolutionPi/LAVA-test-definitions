@@ -19,18 +19,15 @@ usage() {
 
 while getopts "s:r:t:d:h" o; do
     case "$o" in
-    s) SKIP_INSTALL="${OPTARG}" ;;
+    s)
+        # nothing to install
+        ;;
     r) SKIP_REBOOT="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     d) DATE_SET="${OPTARG}" ;;
     h|*) usage ;;
     esac
 done
-
-install() {
-    :
-    # No dependencies to install
-}
 
 check_hwclock() {
     EXPECTED_TIME="$1"
@@ -105,12 +102,6 @@ run() {
 
 # Test run.
 create_out_dir "${OUTPUT}"
-
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
 
 for t in $TESTS; do
     run "$t"

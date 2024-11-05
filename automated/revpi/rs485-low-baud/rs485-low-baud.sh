@@ -5,7 +5,6 @@
 OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
-SKIP_INSTALL="false"
 TESTS="rs485-low-baud"
 RSDEV="/dev/ttyRS485"
 
@@ -15,10 +14,6 @@ Usage: $0 [-s SKIP_INSTALL] [-t TESTS] [-d RSDEV]
 EOF
 
     exit "$1"
-}
-
-install() {
-    :
 }
 
 run() {
@@ -58,7 +53,9 @@ while getopts "t:d:s:h" o; do
     case "$o" in
     t) TESTS="$OPTARG";;
     d) RSDEV="$OPTARG" ;;
-    s) SKIP_INSTALL="$OPTARG" ;;
+    s)
+        # nothing to install
+        ;;
     h) usage 0 ;;
     '?') usage "1" >&2 ;;
     esac
@@ -67,12 +64,6 @@ done
 shift $((OPTIND-1))
 
 create_out_dir "$OUTPUT"
-
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
 
 for t in $TESTS; do
     run "$t"

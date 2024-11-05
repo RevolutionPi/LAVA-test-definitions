@@ -19,10 +19,6 @@ usage() {
     exit 1
 }
 
-install() {
-    install_deps "iperf3 jq"
-}
-
 run_iperf_test() {
     local test_name="$1"
     local remote_server="$2"
@@ -203,11 +199,7 @@ info_msg "IPERF_SERVER_1: ${SERVER_1}"
 info_msg "IPERF_SERVER_2: ${SERVER_2}"
 info_msg "IPERF_SERVER_3: ${SERVER_3}"
 
-if [ "${SKIP_INSTALL}" = "true" ] || [ "${SKIP_INSTALL}" = "True" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
+install_deps "iperf3 jq" "$SKIP_INSTALL"
 
 for t in ${TESTS}; do
     run "${t}"

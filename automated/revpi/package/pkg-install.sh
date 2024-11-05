@@ -17,10 +17,6 @@ EOF
     exit 1
 }
 
-install() {
-    install_deps wget
-}
-
 while getopts "r:s:h" o; do
     case "$o" in
     r) SKIP_REBOOT="${OPTARG}" ;;
@@ -38,11 +34,7 @@ fi
 # Test run.
 create_out_dir "${OUTPUT}"
 
-if [ "$SKIP_INSTALL" = "True" ] || [ "$SKIP_INSTALL" = "true" ]; then
-    info_msg "Package installation skipped"
-else
-    install
-fi
+install_deps wget "$SKIP_INSTALL"
 
 wget -nv "$@"
 exit_on_fail "pkg-install-download"
