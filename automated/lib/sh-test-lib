@@ -296,7 +296,7 @@ remove_pkgs() {
     info_msg "Removing ${pkgs} ..."
     dist_name
     case "${dist}" in
-      debian|ubuntu)
+      debian|ubuntu|raspbian)
         # shellcheck disable=SC2086
         DEBIAN_FRONTEND=noninteractive apt-get -y purge ${pkgs}
         ;;
@@ -403,7 +403,7 @@ dist_info() {
     if ! command -v lsb_release > /dev/null; then
         dist_name
         case "${dist}" in
-          debian|ubuntu) install_deps "lsb-release" ;;
+          debian|ubuntu|raspbian) install_deps "lsb-release" ;;
           centos|fedora) install_deps "redhat-lsb-core" ;;
           *) warn_msg "Unsupported distro: dist_info skipped"
         esac
@@ -423,7 +423,7 @@ add_key() {
         error_msg "About to use apt-key, please run this script as root."
     dist_name
     case "${dist}" in
-      debian|ubuntu) wget -O - "${url}" | apt-key add - ;;
+      debian|ubuntu|raspbian) wget -O - "${url}" | apt-key add - ;;
       centos|fedora) infor_msg "add_key isn't needed on ${dist}" ;;
       *) warn_msg "Unsupported distro: add_key skipped"
     esac
@@ -440,7 +440,7 @@ add_repo() {
     case "${dist}" in
       # Detect Debian/Ubuntu codename and add repo automatically. The same url
       # should work on all distributions supported by the repo.
-      debian|ubuntu)
+      debian|ubuntu|raspbian)
         dist_info
         if [ -z "$2" ]; then
             # shellcheck disable=SC2039
