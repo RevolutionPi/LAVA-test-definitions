@@ -128,7 +128,7 @@ def add_namespace_in_testsuite(content: dict):
     return content
 
 def add_pkg_install(content, pkg_urls: List[str]):
-    if len(pkg_urls) > 0:
+    if pkg_urls is not None and len(pkg_urls) > 0:
         pkg_install = {
             'from': 'git',
             'name': 'install-testing-packages',
