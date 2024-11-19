@@ -42,25 +42,18 @@ prog_device() {
 
     image_size=$(xz --robot --list "${IMAGE}" | awk 'NR==2{print $5}')
 
-    usb_disk=$(find /sys/devices \
-        -iname "${LAVA_STATIC_INFO_0_usb_path:?}" \
-        -exec find {} \
-        -iname block \
-        -print0 \; 2>/dev/null \
-        | xargs -0 ls)
-    disk=$(lsblk -I 8 -dno NAME,RM | awk '{ if  ($2 == 1) { print $1 } }')
-
-    if [ ! "${usb_disk}" == "${disk}" ]; then
-        error_fatal "Blockdevice from lsblk and sysfs are different (${disk} - ${usb_disk})"
+    usb_disk=/dev/blockDUT
+    if [ ! -b "${usb_disk}" ]; then
+        error_fatal "Blockdevice not found: ${usb_disk}"
     fi
 
-    info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programming the image on storage device /dev/${disk}"
-    md5_img=$(xz -dc "${IMAGE}" | tee >(dd of=/dev/sda bs=1M) | md5sum | cut -d ' ' -f 1)
+    info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programming the image on storage device ${usb_disk}"
+    md5_img=$(xz -dc "${IMAGE}" | tee >(dd of="$usb_disk" bs=1M) | md5sum | cut -d ' ' -f 1)
     sync
-    info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programmed image onto storage device /dev/${disk}"
+    info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programmed image onto storage device ${usb_disk}"
 
     info_msg "verifying disk vs image"
-    md5_disk=$(dd if="/dev/${disk}" \
+    md5_disk=$(dd if="${usb_disk}" \
         bs=1M count="${image_size}" \
         iflag=count_bytes \
         | md5sum \
