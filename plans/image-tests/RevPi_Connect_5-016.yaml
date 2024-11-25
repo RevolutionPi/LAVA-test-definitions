@@ -1,0 +1,268 @@
+---
+device_type: &device_type RevPi_Connect_5
+job_name: 'RevPi Connect 5 - Testsuite Config016'
+priority: medium
+visibility: public
+tags:
+  - config016
+timeouts:
+  job:
+    minutes: 60
+  action:
+    minutes: 10
+  connection:
+    minutes: 2
+actions:
+  - deploy:
+      namespace: preconfiguration
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: preconfiguration
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: preconfiguration
+      timeout:
+        minutes: 30
+      definitions:
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/device-config/config_loader.yaml
+          name: config_loader
+          params:
+            CONFIG: config016.rsc
+            TYPE: *device_type
+        - repository:
+            metadata:
+              format: Lava-Test Test Definition 1.0
+              name: reboot-after-config
+              description: "Reboot after revpi config"
+            run:
+              steps:
+                - shutdown -r +1
+          from: inline
+          name: reboot-after-config
+          path: inline/reboot-after-config.yaml
+  - command:
+      name: wait_for_reboot
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - command:
+      name: wait_for_ssh
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - deploy:
+      namespace: testsuite-I
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: testsuite-I
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: testsuite-I
+      timeout:
+        minutes: 30
+      definitions:
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/system_info/system_info.yaml
+          name: system_info
+          params:
+            TESTS: "sysinfo-image-release sysinfo-uname sysinfo-dpkg"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/usb/usb.yaml
+          name: usb
+          params:
+            TESTS: "usb-1 usb-2 usb-4 usb-5"
+            SKIP_INSTALL: "false"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/leds/leds.yaml
+          name: leds
+          params:
+            DUT: *device_type
+            TESTS: "led-1 led-2_led-3 led-5"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/tpm/tpm.yaml
+          name: tpm-test
+          params:
+            TESTS: "tpm-2b"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/cpu-governor/cpu-governor.yaml
+          name: cpu-governor
+          params:
+            SKIP_INSTALL: "true"
+            GOVERNOR: "performance"
+            TESTS: "cpu-governor"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/piControl/piControl.yaml
+          name: piControl
+          params:
+            TESTS: "pc-1 pc-2 pc-perms"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/piTest/pt.yaml
+          name: pt-Connect-5-config016
+          params:
+            TESTS: "pt-1 test_pt_config_016"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/iocycle/iocycle-time.yaml
+          name: cycleTime
+          params:
+            TESTS: "iocycle-time iocycle-time-stress"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/ethernet/eth.yaml
+          name: eth
+          params:
+            SKIP_INSTALL: "false"
+            DUT: *device_type
+            TESTS: "eth-1 eth-3"
+            BITRATE_DEFAULT: 90
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/rs485/rs485.yaml
+          name: rs485-0-test
+          params:
+            RSDEV: "/dev/ttyRS485"
+            TESTS: "rs485-client"
+            BAUD: "19200"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/rtc/rtc.yaml
+          name: rtc-I
+          params:
+            SKIP_INSTALL: "true"
+            SKIP_REBOOT: "false"
+            TESTS: "rtc-1 rtc-2a"
+  - command:
+      name: wait_for_reboot
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - command:
+      name: wait_for_ssh
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - deploy:
+      namespace: testsuite-II
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: testsuite-II
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: testsuite-II
+      timeout:
+        minutes: 2
+      definitions:
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/rtc/rtc.yaml
+          name: rtc-II
+          params:
+            SKIP_INSTALL: "true"
+            SKIP_REBOOT: "true"
+            TESTS: "rtc-2b"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/wlan/wlan.yaml
+          name: wlan-test
+          params:
+            TESTS: "wlan-enable-ext-antenna"
+  - command:
+      name: wait_for_reboot
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - command:
+      name: wait_for_ssh
+      namespace: recovery
+      timeout:
+        minutes: 5
+  - deploy:
+      namespace: testsuite-III
+      timeout:
+        minutes: 4
+      to: ssh
+  - boot:
+      connection: ssh
+      method: ssh
+      namespace: testsuite-III
+      prompts:
+        - 'root@RevPi[0-9]+:'
+      timeout:
+        minutes: 2
+  - test:
+      namespace: testsuite-III
+      timeout:
+        minutes: 4
+      definitions:
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/wlan/wlan.yaml
+          name: wlan-test-5g
+          params:
+            TESTS:
+              wlan-config-nm
+              wlan-1-nm
+              wlan-2-nm-a
+              wlan-sleep
+              wlan-2-nm-b
+              wlan-2-nm-disconnect
+            WLAN_5G: WLAN_SSID_5G
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/linux/wlan/wlan.yaml
+          name: wlan-test-24g
+          params:
+            TESTS:
+              wlan-config-nm
+              wlan-1-nm
+              wlan-2-nm-a
+              wlan-sleep
+              wlan-2-nm-b
+              wlan-2-nm-disconnect
+            WLAN_24G: WLAN_SSID_24G
