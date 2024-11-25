@@ -159,7 +159,7 @@ actions:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/rs485/rs485.yaml
-          name: rs485-test
+          name: rs485-0-test
           params:
             RSDEV: "/dev/ttyRS485"
             TESTS: "rs485-client"
