@@ -54,12 +54,14 @@ LEDS_FLAT="
 "
 
 LEDS_COMPACT="$LEDS_CORE"
+LEDS_CONNECT_5="$LEDS_CONNECT_4"
 
 # shellcheck disable=SC2034
 LEDS_ALL="$(echo "
     $LEDS_CORE
     $LEDS_CONNECT
     $LEDS_CONNECT_4
+    $LEDS_CONNECT_5
     $LEDS_FLAT
     $LEDS_COMPACT
     " | sort -u | sed -e '/^[[:space:]]*$/d')"
@@ -74,6 +76,9 @@ get_list_leds() {
         ;;
     RevPi_Connect_4)
         LEDS="$LEDS_CONNECT_4"
+        ;;
+    RevPi_Connect_5)
+        LEDS="$LEDS_CONNECT_5"
         ;;
     RevPi_Core*)
         LEDS="$LEDS_CORE"
