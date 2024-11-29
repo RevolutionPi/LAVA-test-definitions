@@ -130,7 +130,7 @@ actions:
           path: automated/revpi/piTest/pt.yaml
           name: pt-Connect-5-config016
           params:
-            TESTS: "pt-1 test_pt_config_016"
+            TESTS: "pt-1 pt_test_digital_ios"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
