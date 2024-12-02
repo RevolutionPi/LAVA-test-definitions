@@ -52,12 +52,10 @@ check_iperf3() {
     case "$check_nr" in
     1)
         output_iperf3=$(iperf3 -t 1800 -4 -c "$IP_ATE" -t 10 -J)
-        echo "$output_iperf3"
         bitrate_average=$(echo "$output_iperf3" | jq -r '.end.sum_sent.bits_per_second' | awk '{ printf "%.2f", $1 / 1000000 }')
         ;;
     2)
         output_iperf3=$(iperf3 -t 1800 -4 -R -c "$IP_ATE" -t 10 -J)
-        echo "$output_iperf3"
         bitrate_average=$(echo "$output_iperf3" | jq -r '.end.sum_received.bits_per_second' | awk '{ printf "%.2f", $1 / 1000000 }')
         ;;
     *)
