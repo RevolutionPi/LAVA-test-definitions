@@ -1,0 +1,44 @@
+---
+metadata:
+  name: hdmi tests
+  format: Lava-Test Test Definition 1.0
+  description: |
+    The test verifies HDMI output functionality by analyzing dmesg logs
+    for specific vc4-related messages. It checks for errors such as missing
+    CRTC or sizes and confirms correct operation by detecting the frame buffer
+    device. Additionally, it checks if the desktop environment is running
+    when the system image is the 'default' one.
+
+    The test script should run on the DUT to validate HDMI status directly.
+
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+    - raspbian
+
+  scope:
+    - functional
+  devices:
+    - RevPi Compact
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Connect 5
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+
+params:
+  SKIP_REBOOT: "true"
+  TESTS: "hdmi-status-check start-desktop"
+
+run:
+  steps:
+    - cd ./automated/revpi/hdmi
+    - ./hdmi.sh -r "${SKIP_REBOOT}" -t "${TESTS}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
