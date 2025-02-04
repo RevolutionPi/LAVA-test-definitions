@@ -220,6 +220,11 @@ actions:
       timeout:
         minutes: 5
   - command:
+      name: hdmi_on
+      namespace: recovery
+      timeout:
+        minutes: 1
+  - command:
       name: wait_for_ssh
       namespace: recovery
       timeout:
@@ -269,3 +274,13 @@ actions:
               wlan-2-nm-b
               wlan-2-nm-disconnect
             WLAN_24G: WLAN_SSID_24G
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
+          path: automated/revpi/hdmi/hdmi.yaml
+          name: ui-desktop-start
+          params:
+            TESTS:
+              hdmi-status-check
+              start-desktop
+            SKIP_REBOOT: true
