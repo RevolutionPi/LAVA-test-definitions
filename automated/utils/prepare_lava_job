@@ -109,7 +109,7 @@ def validate_flash_file(device_type: str, image_url: str | None, file_flash_cont
 
 def get_image_name_from_url(url: str):
     # check url-ending
-    allowed_extensions = ['.xz', '.zip', '.tar.gz']
+    allowed_extensions = ['.xz', '.zst', '.zip', '.tar.gz']
     url_extension = os.path.splitext(url)[1]
     if url_extension not in allowed_extensions:
         return "image from - " + url
