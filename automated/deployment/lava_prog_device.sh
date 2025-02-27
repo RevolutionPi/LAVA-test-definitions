@@ -48,7 +48,7 @@ prog_device() {
     fi
 
     info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programming the image on storage device ${usb_disk}"
-    md5_img=$(xz -dc "${IMAGE}" | tee >(dd of="$usb_disk" bs=1M) | md5sum | cut -d ' ' -f 1)
+    md5_img=$(xz -dcT0 "${IMAGE}" | tee >(dd of="$usb_disk" bs=1M) | md5sum | cut -d ' ' -f 1)
     sync
     info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programmed image onto storage device ${usb_disk}"
 
