@@ -50,6 +50,7 @@ actions:
         - fdisk
         # decompressing the downloaded image archive
         - xz-utils
+        - zstd
       timeout:
         minutes: 5
   # Boot the LXC.
