@@ -27,20 +27,67 @@ while getopts "s:" o; do
     esac
 done
 
+get_uncompressed_image_size() {
+    local compression_format="$1"
+    local file="$2"
+
+    case "$compression_format" in
+        xz)
+            printf "%d" "$(xz --robot --list "$file" | awk 'NR==2{print $5}')"
+            ;;
+        zstd)
+            printf "%d" "$(zstd --list -vv "$file" 2>/dev/null | awk '/Decompressed Size:/ { print $3 }')"
+            ;;
+        *)
+            printf "Unsupported compression: %s\n" "$compression_format" >&2
+            return 1
+    esac
+}
+
+get_decompress_prog() {
+    local compression_format="$1"
+
+    case "$compression_format" in
+        xz)
+            printf "xz -dcT0"
+            ;;
+        zstd)
+            printf "zstd -dcfT0"
+            ;;
+        *)
+            printf "Unsupported compression %s\n" "$compression_format" >&2
+            return 1
+            ;;
+    esac
+}
+
 prog_device() {
     # find image and extract
     cd /lava-lxc || exit
 
+    IMAGE_COMPRESSION=xz
     IMAGE=$(find . -maxdepth 1 -iname "*.xz" -type f)
     if [ -z "$IMAGE" ]; then
-        error_fatal "No image found. Aborting."
+        # fallback to zstd compressed image
+        IMAGE_COMPRESSION=zstd
+        IMAGE=$(find . -maxdepth 1 -iname "*.zst" -type f)
+        if [ -z "$IMAGE" ]; then
+            error_fatal "No image found. Aborting."
+        fi
     fi
     info_msg "${IMAGE} will be programmed onto the DUT"
     if [ "$(echo "$IMAGE" | wc -l)" -gt 1 ]; then
         error_fatal "Multiple images found. Aborting."
     fi
 
-    image_size=$(xz --robot --list "${IMAGE}" | awk 'NR==2{print $5}')
+    local image_size=
+    if ! image_size="$(get_uncompressed_image_size "$IMAGE_COMPRESSION" "$IMAGE")"; then
+        error_fatal "Unable to get uncompressed image size"
+    fi
+    local decompress_cmd=
+    if ! decompress_cmd="$(get_decompress_prog "$IMAGE_COMPRESSION")"; then
+        error_fatal "Unable to obtain decompression arguments"
+    fi
 
     usb_disk=/dev/blockDUT
     if [ ! -b "${usb_disk}" ]; then
@@ -48,7 +95,7 @@ prog_device() {
     fi
 
     info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programming the image on storage device ${usb_disk}"
-    md5_img=$(xz -dcT0 "${IMAGE}" | tee >(dd of="$usb_disk" bs=1M) | md5sum | cut -d ' ' -f 1)
+    md5_img=$($decompress_cmd "${IMAGE}" | tee >(dd of="$usb_disk" bs=1M) | md5sum | cut -d ' ' -f 1)
     sync
     info_msg "$(date "+%Y-%m-%d_%H-%M-%S"): programmed image onto storage device ${usb_disk}"
 
