@@ -1,0 +1,3 @@
+{% extends "revpi.jinja2" %}
+
+{% set DEVICE_TYPE = "RevPi_Flat" %}
