@@ -1,0 +1,62 @@
+{% block flash_revpi %}
+    - deploy:
+        to: lxc
+        namespace: tlxc
+        os: debian
+        packages:
+          - iputils-ping
+          - netcat-traditional
+          - usbutils
+          - fdisk
+          - xz-utils
+          - zstd
+        timeout:
+          minutes: 5
+    - boot:
+        method: lxc
+        namespace: tlxc
+        prompts:
+          - root@(.*):/#
+        timeout:
+          minutes: 5
+    - deploy:
+        to: recovery
+        connection-namespace: tlxc
+        images:
+          recovery_image:
+            url:
+              https://artifactory.kunbus.com:443/artifactory/revpi-release-images/241009/bookworm/241009-revpi-bookworm-arm64-lite.img.xz
+        namespace: recovery
+        os: debian
+        timeout:
+          minutes: 10
+    - boot:
+        commands: recovery
+        method: recovery
+        namespace: recovery
+        timeout:
+          minutes: 5
+    - test:
+        definitions:
+          - from: git
+            name: auto-programming-device
+            path: automated/deployment/lava_prog_device.yaml
+            repository: https://github.com/RevolutionPi/LAVA-test-definitions.git
+        namespace: tlxc
+        timeout:
+          minutes: 15
+    - boot:
+        commands: exit
+        method: recovery
+        namespace: recovery
+        timeout:
+          minutes: 5
+    - command:
+        name: run_factory_reset
+        namespace: recovery
+    - command:
+        name: wait_for_ssh
+        namespace: recovery
+        timeout:
+          minutes: 5
+{% endblock flash_revpi %}

@@ -1,0 +1,19 @@
+{% block test_revpi %}
+    - deploy:
+        namespace: {{ TEST_NAMESPACE }}
+        timeout:
+          minutes: 1
+        to: ssh
+    - boot:
+        namespace: {{ TEST_NAMESPACE }}
+        method: ssh
+        connection: ssh
+        prompts: ["root@RevPi[0-9]+:"]
+        timeout:
+          minutes: 1
+    - test:
+        namespace: {{ TEST_NAMESPACE }}
+        timeout:
+          minutes: {{ test_timeout }}
+        definitions:
+{% endblock test_revpi %}
