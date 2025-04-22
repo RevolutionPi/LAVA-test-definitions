@@ -77,6 +77,16 @@ parser.add_argument(
     help="Notify upon incomplete job",
 )
 
+parser.add_argument(
+    "-p",
+    "--priority",
+    dest="priority",
+    type=str,
+    choices=["low", "medium", "high"],
+    default="medium",
+    help="The priority of the job",
+)
+
 def validate_flash_file(device_type: str, image_url: str | None, file_flash_contents: dict):
     # Check if 'device_type' has been predefined
     if not device_type: 
@@ -151,7 +161,7 @@ def add_pkg_install(content, pkg_urls: List[str]):
 
 def create_job(device_type: str, device_tags: str, image_url: str,
                file_flash: str, file_testsuite: str, pkg_urls: List[str],
-               notify: bool) -> bool:
+               notify: bool, priority: str) -> bool:
     # Load the contents of file_flash
     try:
         with open(file_flash, "r") as file:
@@ -178,6 +188,8 @@ def create_job(device_type: str, device_tags: str, image_url: str,
         image_url = file_flash_contents["actions"][2]["deploy"]["images"][
             "recovery_image"
         ]["url"]
+
+    file_flash_contents["priority"] = priority
 
     # Update job_name
     file_flash_contents["job_name"] = "Flash & Test Image: " + get_image_name_from_url(
@@ -223,10 +235,11 @@ def main() -> int:
     device_tags = args.tags
     pkg_urls = args.pkg_url
     notify = args.notify
+    priority = args.priority
 
     return int(
         not create_job(device_type, device_tags, image_url, file_flash,
-                       file_testsuite, pkg_urls, notify)
+                       file_testsuite, pkg_urls, notify, priority)
     )
 
 
