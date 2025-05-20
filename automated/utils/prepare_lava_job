@@ -87,7 +87,7 @@ parser.add_argument(
     help="The priority of the job",
 )
 
-def validate_flash_file(device_type: str, image_url: str | None, file_flash_contents: dict):
+def validate_flash_file(device_type: str, image_url: str | None, file_flash_contents: dict) -> bool:
     # Check if 'device_type' has been predefined
     if not device_type: 
         if 'device_type' not in file_flash_contents or not file_flash_contents['device_type']:
@@ -117,7 +117,7 @@ def validate_flash_file(device_type: str, image_url: str | None, file_flash_cont
             return False
     return True
 
-def get_image_name_from_url(url: str):
+def get_image_name_from_url(url: str) -> str:
     # check url-ending
     allowed_extensions = ['.xz', '.zst', '.zip', '.tar.gz']
     url_extension = os.path.splitext(url)[1]
@@ -126,7 +126,7 @@ def get_image_name_from_url(url: str):
     return os.path.basename(url)
 
 
-def add_namespace_in_testsuite(content: dict):
+def add_namespace_in_testsuite(content: dict) -> dict:
     actions = content.get("actions", [])
 
     for action in actions:
@@ -137,7 +137,7 @@ def add_namespace_in_testsuite(content: dict):
 
     return content
 
-def add_pkg_install(content, pkg_urls: List[str]):
+def add_pkg_install(content, pkg_urls: List[str]) -> dict:
     if pkg_urls is not None and len(pkg_urls) > 0:
         pkg_install = {
             'from': 'git',
