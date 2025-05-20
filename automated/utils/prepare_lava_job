@@ -89,7 +89,7 @@ parser.add_argument(
 
 def validate_flash_file(device_type: str, image_url: str | None, file_flash_contents: dict) -> bool:
     # Check if 'device_type' has been predefined
-    if not device_type: 
+    if not device_type:
         if 'device_type' not in file_flash_contents or not file_flash_contents['device_type']:
             print("device_type not found", file=sys.stderr)
             return False
