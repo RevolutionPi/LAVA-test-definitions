@@ -11,7 +11,9 @@ import sys
 import yaml
 from typing import List
 
-LAVA_REPOSITORY_URL = 'https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git'
+LAVA_REPOSITORY_URL = (
+    "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git"
+)
 
 parser = argparse.ArgumentParser(
     description=__doc__,
@@ -87,24 +89,30 @@ parser.add_argument(
     help="The priority of the job",
 )
 
-def validate_flash_file(device_type: str, image_url: str | None, file_flash_contents: dict) -> bool:
+
+def validate_flash_file(
+    device_type: str, image_url: str | None, file_flash_contents: dict
+) -> bool:
     # Check if 'device_type' has been predefined
     if not device_type:
-        if 'device_type' not in file_flash_contents or not file_flash_contents['device_type']:
+        if (
+            "device_type" not in file_flash_contents
+            or not file_flash_contents["device_type"]
+        ):
             print("device_type not found", file=sys.stderr)
             return False
 
     if not image_url:
         # Check if 'image_url' in 'deploy' exists
         try:
-            for action in file_flash_contents['actions']:
-                if 'deploy' in action:
-                    deploy_data = action['deploy']
-                    if 'images' in deploy_data:
-                        images_data = deploy_data['images']
+            for action in file_flash_contents["actions"]:
+                if "deploy" in action:
+                    deploy_data = action["deploy"]
+                    if "images" in deploy_data:
+                        images_data = deploy_data["images"]
                         for image_key, image_value in images_data.items():
-                            if 'url' in image_value:
-                                image_url = image_value['url']
+                            if "url" in image_value:
+                                image_url = image_value["url"]
                                 break
                         if image_url:
                             break
@@ -117,9 +125,10 @@ def validate_flash_file(device_type: str, image_url: str | None, file_flash_cont
             return False
     return True
 
+
 def get_image_name_from_url(url: str) -> str:
     # check url-ending
-    allowed_extensions = ['.xz', '.zst', '.zip', '.tar.gz']
+    allowed_extensions = [".xz", ".zst", ".zip", ".tar.gz"]
     url_extension = os.path.splitext(url)[1]
     if url_extension not in allowed_extensions:
         return "image from - " + url
@@ -137,31 +146,40 @@ def add_namespace_in_testsuite(content: dict) -> dict:
 
     return content
 
+
 def add_pkg_install(content: dict, pkg_urls: List[str]) -> dict:
     if pkg_urls is not None and len(pkg_urls) > 0:
         pkg_install = {
-            'from': 'git',
-            'name': 'install-testing-packages',
-            'params': {
-                'SKIP_INSTALL': 'false',
-                'SKIP_REBOOT': 'false',
-                'PKG_URLS': " ".join(pkg_urls)
+            "from": "git",
+            "name": "install-testing-packages",
+            "params": {
+                "SKIP_INSTALL": "false",
+                "SKIP_REBOOT": "false",
+                "PKG_URLS": " ".join(pkg_urls),
             },
-            'path': 'automated/revpi/package/pkg-install.yaml',
-            'repository': LAVA_REPOSITORY_URL
+            "path": "automated/revpi/package/pkg-install.yaml",
+            "repository": LAVA_REPOSITORY_URL,
         }
 
         # Find the section with namespace 'preconfiguration' and add custom_test at the beginning of 'definitions'
-        for action in content['actions']:
-            if action.get('test', {}).get('namespace') == 'preconfiguration':
-                action['test']['definitions'].insert(0, pkg_install)
+        for action in content["actions"]:
+            if action.get("test", {}).get("namespace") == "preconfiguration":
+                action["test"]["definitions"].insert(0, pkg_install)
                 break
 
     return content
 
-def create_job(device_type: str, device_tags: str, image_url: str,
-               file_flash: str, file_testsuite: str, pkg_urls: List[str],
-               notify: bool, priority: str) -> bool:
+
+def create_job(
+    device_type: str,
+    device_tags: str,
+    image_url: str,
+    file_flash: str,
+    file_testsuite: str,
+    pkg_urls: List[str],
+    notify: bool,
+    priority: str,
+) -> bool:
     # Load the contents of file_flash
     try:
         with open(file_flash, "r") as file:
@@ -238,8 +256,16 @@ def main() -> int:
     priority = args.priority
 
     return int(
-        not create_job(device_type, device_tags, image_url, file_flash,
-                       file_testsuite, pkg_urls, notify, priority)
+        not create_job(
+            device_type,
+            device_tags,
+            image_url,
+            file_flash,
+            file_testsuite,
+            pkg_urls,
+            notify,
+            priority,
+        )
     )
 
 
