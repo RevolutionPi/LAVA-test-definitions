@@ -119,6 +119,13 @@ actions:
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
+          path: automated/linux/file-perms/file-perms.yaml
+          name: file-perms
+          params:
+            TESTS: "keyrings apt-sources sudoers etc"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
           path: automated/revpi/piControl/piControl.yaml
           name: piControl
           params:
