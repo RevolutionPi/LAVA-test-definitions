@@ -1,0 +1,46 @@
+---
+metadata:
+  name: Test file permissions
+  format: Lava-Test Test Definition 1.0
+  description: |
+    Test that some files have the correct permissions set.
+
+    The RevPi images are built with debos. Some files included in the images
+    are copied by the "overlay" action, which sets the permissions of the files
+    inside the image to the same permissions that the original files have. To
+    avoid mistakes in the image building process, the file permissions will be
+    checked to ensure a secure system.
+  maintainer:
+    - t.boehler@kunbus.com
+  os:
+    - debian
+    - raspbian
+  scope:
+    - functional
+  devices:
+    - Core
+    - Core 3
+    - Core 3+
+    - Core S
+    - Core SE
+    - Connect
+    - Connect+
+    - Connect S
+    - Connect SE
+    - Connect 4
+    - Connect 5
+    - Compact
+    - Flat
+    - Flat S
+
+params:
+  SKIP_INSTALL: "false"
+  TESTS: keyrings apt-sources sudoers etc
+
+run:
+  steps:
+    - cd ./automated/linux/file-perms
+    - ./file-perms.sh
+        -s "$SKIP_INSTALL"
+        -t "$TESTS"
+    - ../../utils/send-to-lava.sh ./output/result.txt
