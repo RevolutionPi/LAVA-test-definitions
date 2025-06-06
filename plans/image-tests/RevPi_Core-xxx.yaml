@@ -19,7 +19,6 @@ actions:
         minutes: 4
       to: ssh
   - boot:
-      connection: ssh
       method: ssh
       namespace: preconfiguration
       prompts:
@@ -65,7 +64,6 @@ actions:
         minutes: 4
       to: ssh
   - boot:
-      connection: ssh
       method: ssh
       namespace: testsuite-I
       prompts:
@@ -186,7 +184,6 @@ actions:
         minutes: 4
       to: ssh
   - boot:
-      connection: ssh
       method: ssh
       namespace: testsuite-II
       prompts:
