@@ -308,6 +308,9 @@ def main():
     error = 0
     ser = serial.Serial(args.device, baudrate=args.baudrate)
 
+    if ser.in_waiting > 0:
+        ser.read(ser.in_waiting)
+
     if args.mode == Mode.Client:
         error = serial_client(ser, args.timeout, args.limit)
     elif args.mode == Mode.Server:
