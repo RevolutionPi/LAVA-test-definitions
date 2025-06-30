@@ -241,6 +241,7 @@ def serial_server(ser: serial.Serial, limit: int) -> int:
     """
     Start the server to validate RS485 packets. If given a limit > 0, the
     server will only accept "limit" amount of packets before exiting.
+    Additionally, if no packet is received during 60 seconds, it will exit.
 
     :param serial.Serial ser: The serial device used for receiving and sending
     packets.
@@ -251,11 +252,20 @@ def serial_server(ser: serial.Serial, limit: int) -> int:
 
     count = 0
     error = 0
+
+    # Set a 60-second timeout for receiving packets
+    ser.timeout = 60
+
     while True:
         if limit > 0 and count >= limit:
             break
 
         packet = ser.read(9)
+
+        if len(packet) == 0:
+            print("Timeout: No packet received for 60 seconds, exiting server.", file=sys.stderr)
+            break
+
         rs485_packet = RS485Packet.from_struct(packet)
         count = count + 1
 
