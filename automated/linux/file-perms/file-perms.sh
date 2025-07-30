@@ -33,10 +33,25 @@ while getopts "s:t:h" o; do
     esac
 done
 
+_check_permission_file() {
+    local expected_permissions="$1"
+    local actual_permission
+    local ret=0
+    shift
+
+    actual_permission="$(stat -c "%a" "$1")"
+    if [ "$actual_permission" != "$expected_permissions" ]; then
+        ret=1
+    fi
+
+    echo "$actual_permission"
+    return "$ret"
+}
+
 # check for correct permissions of file
 # $1: permissions in octal format
 # $2..: files
-check_permission_file() {
+check_permission_files() {
     local expected_permissions="$1"
     local actual_permission
     local test_case
@@ -44,8 +59,7 @@ check_permission_file() {
 
     for f; do
         test_case="file-perms_$f"
-        actual_permission="$(stat -c "%a" "$f")"
-        if [ "$actual_permission" = "$expected_permissions" ]; then
+        if actual_permission="$(_check_permission_file "$expected_permissions" "$f")"; then
             report_pass "$test_case"
         else
             printf "%s: %s (expected %s)\n" "$f" "$actual_permission" "$expected_permissions"
@@ -60,7 +74,7 @@ check_permission_dir() {
 
     for d; do
         # shellcheck disable=SC2046
-        check_permission_file "$expected_permissions" $(find "$d" -type f -print)
+        check_permission_files "$expected_permissions" $(find "$d" -type f -print)
     done
 }
 
@@ -71,7 +85,7 @@ run() {
     keyrings)
         report_set_start "file-perms_keyrings"
         # shellcheck disable=SC2086
-        check_permission_file 644 $KEYRING_FILES
+        check_permission_files 644 $KEYRING_FILES
         # shellcheck disable=SC2086
         check_permission_dir 644 $KEYRING_DIR
         report_set_stop
@@ -79,7 +93,7 @@ run() {
     apt-sources)
         report_set_start "file-perms_apt-sources"
         # shellcheck disable=SC2086
-        check_permission_file 644 $APT_SOURCES_FILES
+        check_permission_files 644 $APT_SOURCES_FILES
         # shellcheck disable=SC2086
         check_permission_dir 644 $APT_SOURCES_DIR
         report_set_stop
@@ -87,7 +101,7 @@ run() {
     sudoers)
         report_set_start "file-perms_sudoers"
         # shellcheck disable=SC2086
-        check_permission_file 440 $SUDOERS_FILES
+        check_permission_files 440 $SUDOERS_FILES
         # shellcheck disable=SC2086
         check_permission_dir 440 $SUDOERS_DIR
         report_set_stop
@@ -95,7 +109,7 @@ run() {
     etc)
         report_set_start "file-perms_etc"
         # shellcheck disable=SC2086
-        check_permission_file 644 $ETC_FILES
+        check_permission_files 644 $ETC_FILES
         report_set_stop
         ;;
     esac
