@@ -16,8 +16,8 @@ SUDOERS_DIR="/etc/sudoers.d"
 
 ETC_FILES="
     /etc/hosts
-    /etc/hostname
 "
+HOSTNAME_FILE="/etc/hostname"
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS]"
@@ -78,6 +78,31 @@ check_permission_dir() {
     done
 }
 
+check_multiple_permission_file() {
+    local file="$1"
+    local actual_permission
+    local test_case="file-perms-multiple_$file"
+    local passed
+    shift
+
+    for perm; do
+        if actual_permission="$(_check_permission_file "$perm" "$file")"; then
+            passed=1
+        fi
+
+        if [ "$passed" ]; then
+            break
+        fi
+    done
+
+    if [ "$passed" ]; then
+        report_pass "$test_case"
+    else
+        printf "%s: %s (expected one of '%s')\n" "$file" "$actual_permission" "$*"
+        report_fail "$test_case"
+    fi
+}
+
 run() {
     local test_case_id="$1"
 
@@ -110,6 +135,7 @@ run() {
         report_set_start "file-perms_etc"
         # shellcheck disable=SC2086
         check_permission_files 644 $ETC_FILES
+        check_multiple_permission_file "$HOSTNAME_FILE" 644 444
         report_set_stop
         ;;
     esac
