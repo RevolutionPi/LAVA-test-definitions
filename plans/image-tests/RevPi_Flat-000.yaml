@@ -118,6 +118,13 @@ actions:
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
+          path: automated/linux/wlan-disabled/wlan-disabled.yaml
+          name: wlan-disabled
+          params:
+            TESTS: "wlan-disabled"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
           path: automated/linux/file-perms/file-perms.yaml
           name: file-perms
           params:
