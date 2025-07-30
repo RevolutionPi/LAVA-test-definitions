@@ -1,0 +1,25 @@
+---
+metadata:
+  name: Test if WLAN is disabled by deafult
+  format: "Lava-Test Test Definition 1.0"
+  description: "Test if WLAN is disable by default"
+  maintainer:
+    - t.boehler@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Connect 4
+    - RevPi Connect 5
+    - RevPi Flat
+
+params:
+  TESTS: wlan-disabled
+
+run:
+  steps:
+    - cd automated/linux/wlan-disabled
+    - ./wlan-disabled.sh \
+        -t "${TESTS}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
