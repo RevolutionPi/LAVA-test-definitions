@@ -25,12 +25,8 @@ while getopts "r:t:h" o; do
     esac
 done
 
-check_default_image() {
-    local test_case_id="$1"
-    local skip_msg="Image is not 'default', exiting test."
-
+is_default_image() {
     grep -q "default" /etc/revpi/image-release
-    exit_on_skip "${test_case_id}" "${skip_msg}"
 }
 
 check_desktop() {
@@ -38,7 +34,11 @@ check_desktop() {
     local do_isolate="$2"
     local fail_msg="Desktop environment is not running."
 
-    check_default_image "${test_case_id}_check-default-image"
+    if ! is_default_image; then
+        info_msg "Image is not 'default'. Skipping test."
+        report_skip "$test_case_id"
+        return
+    fi
 
     if [ "$do_isolate" = "isolate" ]; then
         systemctl isolate graphical.target
