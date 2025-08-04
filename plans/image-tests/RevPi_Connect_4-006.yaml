@@ -140,7 +140,7 @@ actions:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/piTest/pt.yaml
-          name: pt-Connect-4-config006
+          name: piTest_piBridge
           params:
             TESTS: "pt-1 test_pt_config_006"
         - repository:

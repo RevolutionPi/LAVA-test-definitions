@@ -140,7 +140,7 @@ actions:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/piTest/pt.yaml
-          name: pt-Flat-config000
+          name: piTest_piBridge
           params:
             TESTS: "pt-1 test_pt_flat_da_1"
         - repository:

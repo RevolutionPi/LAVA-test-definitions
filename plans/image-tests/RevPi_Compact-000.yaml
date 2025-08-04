@@ -133,7 +133,7 @@ actions:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/piTest/pt.yaml
-          name: pt-Compact-config000
+          name: piTest_piBridge
           params:
             TESTS: "pt-1 test_pt_compact_d_1 test_pt_compact_a_1"
         - repository:

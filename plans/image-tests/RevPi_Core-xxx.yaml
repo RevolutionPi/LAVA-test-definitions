@@ -139,7 +139,7 @@ actions:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
           path: automated/revpi/piTest/pt.yaml
-          name: pt-Core
+          name: piTest_piBridge
           params:
             TESTS: "pt-1 pt_test_digital_ios"
         - repository:
