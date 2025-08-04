@@ -1,0 +1,5 @@
+---
+extends: default
+
+ignore:
+  - lava_test_plans/
