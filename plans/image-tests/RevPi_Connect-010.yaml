@@ -86,6 +86,14 @@ actions:
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
+          path: automated/revpi/resize-fs/resize-fs.yaml
+          name: resize-fs
+          params:
+            TESTS: "last-partition-resize"
+            BLOCKDEV: "mmcblk0"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
           path: automated/linux/usb/usb.yaml
           name: usb
           params:
