@@ -1,0 +1,38 @@
+---
+metadata:
+  name: resize-fs
+  format: "Lava-Test Test Definition 1.0"
+  description:
+    Test that the data partition and the file system on it were resized to the
+    maximum size.
+  maintainer:
+    - t.boehler@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Connect 5
+    - RevPi Compact
+    - RevPi Flat
+    - RevPi Flat S
+
+params:
+  TESTS: "last-partition-resize"
+  BLOCKDEV: mmcblk0
+
+run:
+  steps:
+    - cd ./automated/revpi/resize-fs
+    - ./resize-fs.sh -b "$BLOCKDEV"
+    - ../../utils/send-to-lava.sh ./output/result.txt
