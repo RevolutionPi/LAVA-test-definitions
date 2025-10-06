@@ -88,6 +88,9 @@ run() {
     "dmesg")
         check_dmesg
         ;;
+    *)
+        report_fail "Undefined test \"$test_case_id\""
+        ;;
     esac
 
     check_return "${test_case_id}"
