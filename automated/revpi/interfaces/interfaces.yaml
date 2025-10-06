@@ -14,12 +14,11 @@ metadata:
     - RevPi Core 3
     - RevPi Core 3+
     - RevPi Core S
-    - RevPi Core SE
     - RevPi Connect
     - RevPi Connect+
     - RevPi Connect S
-    - RevPi Connect SE
     - RevPi Connect 4
+    - RevPi Connect 5
 
 params:
   SKIP_INSTALL: "True"
