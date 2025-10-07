@@ -1,48 +1,9 @@
-{% set LAVA_JOB_TIMEOUT = LAVA_JOB_TIMEOUT|default(60) %}
-{% set LAVA_CONNECTION_TIMEOUT = LAVA_CONNECTION_TIMEOUT|default(2) %}
-{% set LAVA_ACTION_TIMEOUT = LAVA_ACTION_TIMEOUT|default(10) %}
-{% block global_settings %}
-timeouts:
-  job:
-    minutes: {{ LAVA_JOB_TIMEOUT }}
-  connection:
-    minutes: {{ LAVA_CONNECTION_TIMEOUT }}
-  action:
-    minutes: {{ LAVA_ACTION_TIMEOUT }}
-{% endblock global_settings %}
+{% include "include/common/timeouts.jinja2" %}
+{% include "include/common/job-metadata.jinja2" %}
+{% include "include/common/protocols.jinja2" %}
+{% include "include/common/notifications.jinja2" %}
 
-{% set LAVA_JOB_PRIORITY = LAVA_JOB_PRIORITY|default(10) %}
-{% set LAVA_JOB_VISIBILITY = LAVA_JOB_VISIBILITY|default("public") %}
-device_type: {{ DEVICE_TYPE }}
-job_name:  {{ LAVA_JOB_NAME }}
-priority: {{ LAVA_JOB_PRIORITY }}
-visibility: {{ LAVA_JOB_VISIBILITY }}
-
-{% block protocols %}
-protocols:
-  lava-lxc:
-    distribution: debian
-    mirror: http://mirror.bytemark.co.uk/debian
-    security_mirror:
-      http://security.debian.org/debian-security bookworm-security
-    name: lxc-revpi
-    release: bookworm
-    template: debian
-{% endblock protocols %}
-
-{% set NOTIFY_METHOD = NOTIFY_METHOD|default("email") %}
-{% set NOTIFY_USER = NOTIFY_USER|default("automator") %}
-{% set NOTIFY_STATUS = NOTIFY_STATUS|default("incomplete") %}
-{% block notify %}
-notify:
-  recipients:
-    - to:
-        method: {{ NOTIFY_METHOD }}
-        user: {{ NOTIFY_USER }}
-  criteria:
-    status: {{ NOTIFY_STATUS }}
-  verbosity: verbose
-{% endblock notify %}
+tags: {{ TAGS }}
 
 actions:
 {% block actions %}
