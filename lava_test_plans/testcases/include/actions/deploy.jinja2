@@ -1,0 +1,22 @@
+    - deploy:
+        to: {{ deploy_to }}
+        namespace: {{ namespace }}
+{% if connection_namespace|default('') %}
+        connection-namespace: {{ connection_namespace }}
+{% endif %}
+{% if os|default('') %}
+        os: {{ os }}
+{% endif %}
+{% if packages|default([]) %}
+        packages:
+{% for package in packages %}
+          - {{ package }}
+{% endfor %}
+{% endif %}
+{% if recovery_image_url|default('') %}
+        images:
+          recovery_image:
+            url: {{ recovery_image_url }}
+{% endif %}
+        timeout:
+          minutes: {{ timeout_minutes|default(5) }}

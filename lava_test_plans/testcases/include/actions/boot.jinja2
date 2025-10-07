@@ -1,0 +1,14 @@
+    - boot:
+{% if boot_commands|default('') %}
+        commands: {{ boot_commands }}
+{% endif %}
+        method: {{ boot_method }}
+        namespace: {{ namespace }}
+{% if boot_prompts|default([]) %}
+        prompts:
+{% for prompt in boot_prompts %}
+          - {{ prompt }}
+{% endfor %}
+{% endif %}
+        timeout:
+          minutes: {{ timeout_minutes|default(5) }}

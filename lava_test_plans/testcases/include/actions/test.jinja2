@@ -1,0 +1,38 @@
+    - test:
+        namespace: {{ namespace }}
+        timeout:
+          minutes: {{ timeout_minutes|default(15) }}
+{% if test_definitions|default([]) %}
+        definitions:
+{% for definition in test_definitions %}
+          - repository: {{ definition.repository }}
+            from: {{ definition.from }}
+            path: {{ definition.path }}
+            name: {{ definition.name }}
+{% if definition.params|default({}) %}
+            params:
+{% for param_key, param_value in definition.params.items() %}
+                {{ param_key }}: {{ param_value }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% else %}
+        definitions:
+{% endif %}
+{% if inline_definitions|default([]) %}
+{% for inline_def in inline_definitions %}
+          - repository:
+              metadata:
+                format: {{ inline_def.format|default("Lava-Test Test Definition 1.0") }}
+                name: {{ inline_def.name }}
+                description: {{ inline_def.description }}
+              run:
+                steps:
+{% for step in inline_def.steps %}
+                  - {{ step }}
+{% endfor %}
+            from: inline
+            name: {{ inline_def.name }}
+            path: inline/{{ inline_def.name }}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,7 @@
+    - command:
+        name: {{ command_name }}
+        namespace: {{ namespace }}
+{% if timeout_minutes|default('') %}
+        timeout:
+          minutes: {{ timeout_minutes }}
+{% endif %}
