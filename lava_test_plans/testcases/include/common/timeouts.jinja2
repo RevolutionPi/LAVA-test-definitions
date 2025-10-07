@@ -1,0 +1,11 @@
+{% set LAVA_JOB_TIMEOUT = LAVA_JOB_TIMEOUT|default(60) %}
+{% set LAVA_CONNECTION_TIMEOUT = LAVA_CONNECTION_TIMEOUT|default(2) %}
+{% set LAVA_ACTION_TIMEOUT = LAVA_ACTION_TIMEOUT|default(10) %}
+
+timeouts:
+  job:
+    minutes: {{ LAVA_JOB_TIMEOUT }}
+  connection:
+    minutes: {{ LAVA_CONNECTION_TIMEOUT }}
+  action:
+    minutes: {{ LAVA_ACTION_TIMEOUT }}

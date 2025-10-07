@@ -1,0 +1,12 @@
+{% set NOTIFY_METHOD = NOTIFY_METHOD|default("email") %}
+{% set NOTIFY_USER = NOTIFY_USER|default("automator") %}
+{% set NOTIFY_STATUS = NOTIFY_STATUS|default("incomplete") %}
+
+notify:
+  recipients:
+    - to:
+        method: {{ NOTIFY_METHOD }}
+        user: {{ NOTIFY_USER }}
+  criteria:
+    status: {{ NOTIFY_STATUS }}
+  verbosity: verbose

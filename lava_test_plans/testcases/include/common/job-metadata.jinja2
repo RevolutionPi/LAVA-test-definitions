@@ -1,0 +1,7 @@
+{% set LAVA_JOB_PRIORITY = LAVA_JOB_PRIORITY|default(10) %}
+{% set LAVA_JOB_VISIBILITY = LAVA_JOB_VISIBILITY|default("public") %}
+
+device_type: {{ DEVICE_TYPE }}
+job_name:  {{ LAVA_JOB_NAME }}
+priority: {{ LAVA_JOB_PRIORITY }}
+visibility: {{ LAVA_JOB_VISIBILITY }}
