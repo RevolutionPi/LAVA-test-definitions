@@ -9,10 +9,11 @@
 {% set test_path_file = 'automated/health-checks/tests/health-check-test.yaml' %}
 {% set test_target_redirect_to_kmsg = false %}
 
-{% block test_revpi %}
-  {{ super() }}
-        - repository: {{ TEST_DEFINITIONS_REPOSITORY }}
-          from: git
-          path: {{ test_path_file }}
-          name: {{ TEST_NAME }}
-{% endblock test_revpi %}
+{% set test_definitions = [
+    {
+        "repository": TEST_DEFINITIONS_REPOSITORY,
+        "from": "git",
+        "path": test_path_file,
+        "name": TEST_NAME
+    }
+] %}
