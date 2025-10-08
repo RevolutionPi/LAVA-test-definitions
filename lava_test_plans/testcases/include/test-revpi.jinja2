@@ -1,18 +1,19 @@
 {% block test_revpi %}
-    - deploy:
-        namespace: {{ TEST_NAMESPACE }}
-        timeout:
-          minutes: 1
-        to: ssh
-    - boot:
-        namespace: {{ TEST_NAMESPACE }}
-        method: ssh
-        prompts: ["root@RevPi[0-9]+:"]
-        timeout:
-          minutes: 1
-    - test:
-        namespace: {{ TEST_NAMESPACE }}
-        timeout:
-          minutes: {{ test_timeout }}
-        definitions:
+{# Deploy SSH connection #}
+{% set deploy_to = "ssh" %}
+{% set namespace = TEST_NAMESPACE %}
+{% set timeout_minutes = 1 %}
+{% include "include/actions/deploy.jinja2" %}
+
+{# Boot - SSH #}
+{% set boot_method = "ssh" %}
+{% set namespace = TEST_NAMESPACE %}
+{% set boot_prompts = ["'root@RevPi[0-9]+:'"] %}
+{% set timeout_minutes = 1 %}
+{% include "include/actions/boot.jinja2" %}
+
+{# Test #}
+{% set namespace = TEST_NAMESPACE %}
+{% set timeout_minutes = test_timeout %}
+{% include "include/actions/test.jinja2" %}
 {% endblock test_revpi %}
