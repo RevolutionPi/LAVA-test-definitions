@@ -1,0 +1,333 @@
+{% extends "revpi.jinja2" %}
+
+{# Configuration variables - override in specific testcase files #}
+{% set TAGS = ("config" + TAG_NR if TAG_NR else "configxxx") %}
+{% set LAVA_JOB_NAME = DEVICE_TYPE + " - Testsuite " + TAGS %}
+
+{% set HAS_FLASH = HAS_FLASH | default(true) %}
+{% set HAS_CYCLETIME = HAS_CYCLETIME | default(true) %}
+{% set HAS_INTERFACES = HAS_INTERFACES | default(true) %}
+{% set HAS_WLAN = HAS_WLAN | default(false) %}
+{% set HAS_HDMI = HAS_HDMI | default(true) %}
+{% set INTERFACES_TESTS = INTERFACES_TESTS | default("pileft-1 pileft-2 piright-1 piright-2 dmesg") %}
+{% set PITEST_TESTS = PITEST_TESTS | default("pt-1 pt_test_digital_ios") %}
+{% set RS485_DEVICES = RS485_DEVICES | default(["/dev/ttyRS485-0"]) %}
+{% set TPM_TEST = TPM_TEST | default("tpm-1") %}
+
+{% block flash_revpi %}
+{% if HAS_FLASH %}
+{% include "include/flash-revpi.jinja2" %}
+{% endif %}
+{% endblock flash_revpi %}
+
+{% block test_revpi %}
+{# Phase 1: Preconfiguration #}
+{% set deploy_to = "ssh" %}
+{% set namespace = "preconfiguration" %}
+{% set timeout_minutes = 4 %}
+{% include "include/actions/deploy.jinja2" %}
+
+{% set boot_method = "ssh" %}
+{% set namespace = "preconfiguration" %}
+{% set boot_prompts = ["'root@RevPi[0-9]+:'"] %}
+{% set timeout_minutes = 2 %}
+{% include "include/actions/boot.jinja2" %}
+
+{% set namespace = "preconfiguration" %}
+{% set timeout_minutes = 30 %}
+{% set config_params = {"TYPE": DEVICE_TYPE} %}
+{% if TAGS %}
+{% set _ = config_params.update({"CONFIG": TAGS + ".rsc"}) %}
+{% endif %}
+{% set test_definitions = [
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/device-config/config_loader.yaml",
+        "name": "config_loader",
+        "params": config_params
+    }
+] %}
+{% set inline_definitions = [
+    {
+        "name": "reboot-after-config",
+        "description": "Reboot after revpi config",
+        "steps": ["shutdown -r +1"]
+    }
+] %}
+{% include "include/actions/test.jinja2" %}
+
+{# Commands after preconfiguration #}
+{% set command_name = "wait_for_reboot" %}
+{% set namespace = "recovery" %}
+{% set timeout_minutes = 5 %}
+{% include "include/actions/command.jinja2" %}
+
+{% set command_name = "wait_for_ssh" %}
+{% set namespace = "recovery" %}
+{% set timeout_minutes = 5 %}
+{% include "include/actions/command.jinja2" %}
+
+{# Phase 2: Testsuite-I #}
+{% set deploy_to = "ssh" %}
+{% set namespace = "testsuite-I" %}
+{% set timeout_minutes = 4 %}
+{% include "include/actions/deploy.jinja2" %}
+
+{% set boot_method = "ssh" %}
+{% set namespace = "testsuite-I" %}
+{% set boot_prompts = ["'root@RevPi[0-9]+:'"] %}
+{% set timeout_minutes = 2 %}
+{% include "include/actions/boot.jinja2" %}
+
+{# Base test definitions for testsuite-I #}
+{% set base_tests = [
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/revpi/system_info/system_info.yaml",
+        "name": "system_info",
+        "params": {"TESTS": "sysinfo-image-release sysinfo-uname sysinfo-dpkg"}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/revpi/resize-fs/resize-fs.yaml",
+        "name": "resize-fs",
+        "params": {"TESTS": "last-partition-resize", "BLOCKDEV": "mmcblk0"}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/linux/usb/usb.yaml",
+        "name": "usb",
+        "params": {"TESTS": "usb-1 usb-2 usb-4 usb-5", "SKIP_INSTALL": "false"}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/linux/leds/leds.yaml",
+        "name": "leds",
+        "params": {"DUT": DEVICE_TYPE, "TESTS": "led-1 led-2_led-3 led-5"}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/revpi/tpm/tpm.yaml",
+        "name": "tpm-test",
+        "params": {"TESTS": TPM_TEST}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/linux/cpu-governor/cpu-governor.yaml",
+        "name": "cpu-governor",
+        "params": {"SKIP_INSTALL": "false", "GOVERNOR": "performance", "TESTS": "cpu-governor"}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/linux/file-perms/file-perms.yaml",
+        "name": "file-perms",
+        "params": {"TESTS": "keyrings apt-sources sudoers etc"}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/revpi/piControl/piControl.yaml",
+        "name": "piControl",
+        "params": {"TESTS": "pc-1 pc-2 pc-perms"}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/revpi/piTest/pt.yaml",
+        "name": "piTest_piBridge",
+        "params": {"TESTS": PITEST_TESTS}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/linux/ethernet/eth.yaml",
+        "name": "eth",
+        "params": {"SKIP_INSTALL": "false", "DUT": DEVICE_TYPE, "TESTS": "eth-1 eth-3", "BITRATE_DEFAULT": 90}
+    }
+] %}
+
+{# Add optional tests #}
+{% if HAS_INTERFACES %}
+{% set _ = base_tests.append({
+    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "from": "git",
+    "path": "automated/revpi/interfaces/interfaces.yaml", 
+    "name": "interfaces",
+    "params": {"TESTS": INTERFACES_TESTS}
+}) %}
+{% endif %}
+
+{% if HAS_CYCLETIME %}
+{% set _ = base_tests.append({
+    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "from": "git",
+    "path": "automated/revpi/iocycle/iocycle-time.yaml",
+    "name": "cycleTime",
+    "params": {"TESTS": "iocycle-time iocycle-time-stress"}
+}) %}
+{% endif %}
+
+{% if HAS_RS485 %}
+{# Add RS485 tests for each device #}
+{% for rs485_dev in RS485_DEVICES %}
+{% set _ = base_tests.append({
+    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "from": "git",
+    "path": "automated/revpi/rs485/rs485.yaml",
+    "name": "rs485-" + loop.index0|string + "-test",
+    "params": {"RSDEV": rs485_dev, "TESTS": "rs485-client", "BAUD": "19200"}
+}) %}
+{% endfor %}
+{% endif %}
+
+{% set _ = base_tests.append({
+    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "from": "git",
+    "path": "automated/linux/rtc/rtc.yaml",
+    "name": "rtc-I",
+    "params": {"SKIP_INSTALL": "false", "SKIP_REBOOT": "false", "TESTS": "rtc-1 rtc-2a"}
+}) %}
+
+{% set namespace = "testsuite-I" %}
+{% set timeout_minutes = 30 %}
+{% set test_definitions = base_tests %}
+{% set inline_definitions = [] %}
+{% include "include/actions/test.jinja2" %}
+
+{# Commands between phases #}
+{% set command_name = "wait_for_reboot" %}
+{% set namespace = "recovery" %}
+{% set timeout_minutes = 5 %}
+{% include "include/actions/command.jinja2" %}
+
+{% if HAS_HDMI %}
+{% set command_name = "hdmi_on" %}
+{% set namespace = "recovery" %}
+{% set timeout_minutes = 1 %}
+{% include "include/actions/command.jinja2" %}
+{% endif %}
+
+{% set command_name = "wait_for_ssh" %}
+{% set namespace = "recovery" %}
+{% set timeout_minutes = 5 %}
+{% include "include/actions/command.jinja2" %}
+
+{# Phase 3: Testsuite-II #}
+{% set deploy_to = "ssh" %}
+{% set namespace = "testsuite-II" %}
+{% set timeout_minutes = 4 %}
+{% include "include/actions/deploy.jinja2" %}
+
+{% set boot_method = "ssh" %}
+{% set namespace = "testsuite-II" %}
+{% set boot_prompts = ["'root@RevPi[0-9]+:'"] %}
+{% set timeout_minutes = 2 %}
+{% include "include/actions/boot.jinja2" %}
+
+{# Base testsuite-II tests #}
+{% set phase2_tests = [
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/linux/rtc/rtc.yaml",
+        "name": "rtc-II",
+        "params": {"SKIP_INSTALL": "false", "SKIP_REBOOT": "true", "TESTS": "rtc-2b"}
+    }
+] %}
+
+{% if HAS_HDMI %}
+{% set _ = phase2_tests.append({
+    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "from": "git",
+    "path": "automated/revpi/hdmi/hdmi.yaml",
+    "name": "ui-desktop-start",
+    "params": {"TESTS": "hdmi-status-check start-desktop", "SKIP_REBOOT": true}
+}) %}
+{% endif %}
+
+{% if HAS_WLAN %}
+{% set _ = base_tests.append({
+    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "from": "git",
+    "path": "automated/linux/wlan-disabled/wlan-disabled.yaml",
+    "name": "wlan-disabled", 
+    "params": {"TESTS": "wlan-disabled"}
+}) %}
+{% endif %}
+
+{% if HAS_WLAN and DEVICE_TYPE in ["RevPi_Connect_4", "RevPi_Connect_5", "RevPi_Flat"] %}
+{% set _ = phase2_tests.append({
+    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "from": "git", 
+    "path": "automated/linux/wlan/wlan.yaml",
+    "name": "wlan-test",
+    "params": {"TESTS": "wlan-enable-ext-antenna"}
+}) %}
+{% endif %}
+
+{% set namespace = "testsuite-II" %}
+{% set timeout_minutes = 2 %}
+{% set test_definitions = phase2_tests %}
+{% set inline_definitions = [] %}
+{% include "include/actions/test.jinja2" %}
+
+{# Phase 4: Testsuite-III (only for devices with WLAN) #}
+{% if HAS_WLAN and DEVICE_TYPE in ["RevPi_Connect_4", "RevPi_Connect_5", "RevPi_Flat"] %}
+{# Commands before phase 3 #}
+{% set command_name = "wait_for_reboot" %}
+{% set namespace = "recovery" %}
+{% set timeout_minutes = 5 %}
+{% include "include/actions/command.jinja2" %}
+
+{% set command_name = "hdmi_on" %}
+{% set namespace = "recovery" %}
+{% set timeout_minutes = 1 %}
+{% include "include/actions/command.jinja2" %}
+
+{% set command_name = "wait_for_ssh" %}
+{% set namespace = "recovery" %}
+{% set timeout_minutes = 5 %}
+{% include "include/actions/command.jinja2" %}
+
+{% set deploy_to = "ssh" %}
+{% set namespace = "testsuite-III" %}
+{% set timeout_minutes = 4 %}
+{% include "include/actions/deploy.jinja2" %}
+
+{% set boot_method = "ssh" %}
+{% set namespace = "testsuite-III" %}
+{% set boot_prompts = ["'root@RevPi[0-9]+:'"] %}
+{% set timeout_minutes = 2 %}
+{% include "include/actions/boot.jinja2" %}
+
+{% set namespace = "testsuite-III" %}
+{% set timeout_minutes = 4 %}
+{% set test_definitions = [
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/linux/wlan/wlan.yaml",
+        "name": "wlan-test-5g",
+        "params": {"TESTS": "wlan-config-nm wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_5G": "WLAN_SSID_5G"}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git", 
+        "path": "automated/linux/wlan/wlan.yaml",
+        "name": "wlan-test-24g",
+        "params": {"TESTS": "wlan-config-nm wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_24G": "WLAN_SSID_24G"}
+    }
+] %}
+{% set inline_definitions = [] %}
+{% include "include/actions/test.jinja2" %}
+{% endif %}
+
+{% endblock test_revpi %}
