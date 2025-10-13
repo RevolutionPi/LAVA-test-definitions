@@ -1,0 +1,8 @@
+{% extends "include/revpi-testsuite.jinja2" %}
+
+{% set DEVICE_TYPE = "RevPi_Connect" %}
+{% set TAG_NR = "010" %}
+{% set HAS_RS485 = true %}
+{% set RS485_DEVICES = ["/dev/ttyRS485-0"] %}
+{% set HAS_INTERFACES = true %}
+{% set INTERFACES_TESTS = "pileft-1 pileft-2 dmesg" %}
