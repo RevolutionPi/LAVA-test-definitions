@@ -1,0 +1,8 @@
+{% extends "include/revpi-testsuite.jinja2" %}
+
+{% set DEVICE_TYPE = "RevPi_Compact" %}
+{% set TAG_NR = "000" %}
+{% set HAS_RS485 = true %}
+{% set RS485_DEVICES = ["/dev/ttyRS485-0"] %}
+{% set HAS_INTERFACES = false %}
+{% set HAS_CYCLETIME = false %}
