@@ -48,6 +48,18 @@
         "params": config_params
     }
 ] %}
+{# Add optional package install #}
+{% if PKG_URLS %}
+{% set _ = test_definitions.append(
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/revpi/package/pkg-install.yaml",
+        "name": "install-testing-packages",
+        "params": {"PKG_URLS": PKG_URLS, "SKIP_INSTALL": "false", "SKIP_REBOOT": "false"}
+    }
+) %}
+{% endif %}
 {% set inline_definitions = [
     {
         "name": "reboot-after-config",
