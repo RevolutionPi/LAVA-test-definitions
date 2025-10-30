@@ -265,7 +265,7 @@
 }) %}
 {% endif %}
 
-{% if HAS_WLAN %}
+{% if HAS_WLAN and DEVICE_TYPE in ["RevPi_Connect_4", "RevPi_Connect_5", "RevPi_Flat"] %}
 {% set _ = phase2_tests.append({
     "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
     "from": "git",
@@ -273,9 +273,7 @@
     "name": "wlan-disabled", 
     "params": {"TESTS": "wlan-disabled"}
 }) %}
-{% endif %}
 
-{% if HAS_WLAN and DEVICE_TYPE in ["RevPi_Connect_4", "RevPi_Connect_5", "RevPi_Flat"] %}
 {% set _ = phase2_tests.append({
     "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
     "from": "git", 
