@@ -1,0 +1,15 @@
+{# include/revpi-flat-base.jinja2 #}
+{% extends "include/revpi-testsuite.jinja2" %}
+
+{# Common configuration for ALL Flat devices #}
+{% set HAS_CYCLETIME = false %}
+{% set HAS_HDMI = false %}
+{% set HAS_INTERFACES = false %}
+{% set HAS_RS485 = true %}
+{% set HAS_WLAN = true %}
+{% set TPM_TEST = "tpm-1" %}
+{% set PITEST_TESTS = "pt-1 test_pt_flat_da_1" %}
+{% set RS485_DEVICES = ["/dev/ttyRS485-0", "/dev/ttyRS485-1"] %}
+
+{# Flat S can be flashed by default, Flat cannot #}
+{% set CAN_FLASH = CAN_FLASH if CAN_FLASH is defined else true %}
