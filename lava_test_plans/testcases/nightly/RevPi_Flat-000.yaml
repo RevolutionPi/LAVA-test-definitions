@@ -1,0 +1,5 @@
+{% extends "include/revpi-flat-base.jinja2" %}
+
+{% set DEVICE_TYPE = "RevPi_Flat" %}
+{% set TAG_NR = "000" %}
+{% set CAN_FLASH = false %}
