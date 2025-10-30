@@ -1,0 +1,7 @@
+{# RevPi_Connect_4-006.yaml #}
+{% extends "include/revpi-connect-base.jinja2" %}
+
+{% set DEVICE_TYPE = "RevPi_Connect_4" %}
+{% set HAS_INTERFACES = false %}
+{% set HAS_WLAN = true %}
+{% set TAG_NR = "006" %}
