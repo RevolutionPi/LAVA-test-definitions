@@ -1,0 +1,7 @@
+{# RevPi_Connect_5-016.yaml #}
+{% extends "include/revpi-connect-base.jinja2" %}
+
+{% set DEVICE_TYPE = "RevPi_Connect_5" %}
+{% set HAS_WLAN = true %}
+{% set INTERFACES_TESTS = "pileft-1 pileft-2 piright-1 piright-2 dmesg" %}
+{% set TAG_NR = "016" %}
