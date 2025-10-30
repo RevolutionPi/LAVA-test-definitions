@@ -266,7 +266,7 @@
 {% endif %}
 
 {% if HAS_WLAN %}
-{% set _ = base_tests.append({
+{% set _ = phase2_tests.append({
     "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
     "from": "git",
     "path": "automated/linux/wlan-disabled/wlan-disabled.yaml",
