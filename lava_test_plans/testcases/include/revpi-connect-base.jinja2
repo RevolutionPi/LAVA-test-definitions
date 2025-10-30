@@ -1,0 +1,11 @@
+{# include/revpi-connect-base.jinja2 #}
+{% extends "include/revpi-testsuite.jinja2" %}
+
+{# Common configuration for ALL Connect devices #}
+{% set HAS_INTERFACES = HAS_INTERFACES if HAS_INTERFACES is defined else true %}
+{% set HAS_RS485 = HAS_RS485 if HAS_RS485 is defined else true %}
+{% set HAS_WLAN = HAS_WLAN if HAS_WLAN is defined else false %}
+{% set INTERFACES_TESTS = INTERFACES_TESTS if INTERFACES_TESTS is defined else "pileft-1 pileft-2 dmesg" %}
+{% set PITEST_TESTS = "pt-1 pt_test_digital_ios" %}
+{% set RS485_DEVICES = ["/dev/ttyRS485-0"] %}
+{% set TPM_TEST = "tpm-2b" %}
