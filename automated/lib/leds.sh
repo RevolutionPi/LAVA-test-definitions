@@ -71,14 +71,14 @@ get_list_leds() {
     RevPi_Compact)
         LEDS="$LEDS_COMPACT"
         ;;
-    RevPi_Connect)
-        LEDS="$LEDS_CONNECT"
-        ;;
     RevPi_Connect_4)
         LEDS="$LEDS_CONNECT_4"
         ;;
     RevPi_Connect_5)
         LEDS="$LEDS_CONNECT_5"
+        ;;
+    RevPi_Connect*)
+        LEDS="$LEDS_CONNECT"
         ;;
     RevPi_Core*)
         LEDS="$LEDS_CORE"
