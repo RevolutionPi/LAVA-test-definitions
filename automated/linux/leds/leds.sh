@@ -24,13 +24,24 @@ while getopts "s:d:t:l:h" o; do
     esac
 done
 
+# Validate and get LEDs list for the specified DUT
+validate_and_get_leds() {
+    local dut="$1" leds
+
+    leds="$(get_list_leds "$dut")"
+    if [ -z "$leds" ]; then
+        warn_msg "No LEDs specified for DUT '$dut'"
+        return 1
+    fi
+
+    echo "$leds"
+    return 0
+}
+
 led1() {
     local leds output res=0
 
-    leds=$(get_list_leds "$DUT")
-    if [ -z "$leds" ]; then
-        error_msg "List of LEDs for DUT $DUT empty"
-    fi
+    leds="$(validate_and_get_leds "$DUT")" || return 1
 
     output="$(tree /sys/class/leds)"
     if [ -z "$output" ]; then
@@ -54,18 +65,14 @@ led1() {
 }
 
 led2_led3() {
-    local brightness=""
+    local brightness="" leds_string
 
-    LEDS_STRING=$(get_list_leds "$DUT")
-    if [ -z "$LEDS_STRING" ]; then
-        warn_msg "No LEDs specified for DUT '$DUT'"
-        return 1
-    fi
+    leds_string="$(validate_and_get_leds "$DUT")" || return 1
 
     for led in $LEDS_ALL; do
         # Define the paths for the green and red brightness
         brightness="${led}/brightness"
-        if ! echo "$LEDS_STRING" | grep -q "$led"; then
+        if ! echo "$leds_string" | grep -q "$led"; then
             report_skip "${brightness}-toggle"
             continue
         fi
@@ -84,17 +91,13 @@ led2_led3() {
 }
 
 led5() {
-    local test="$1"
+    local test="$1" leds_string
 
-    LEDS_STRING=$(get_list_leds "$DUT")
-    if [ -z "$LEDS_STRING" ]; then
-        warn_msg "No LEDs specified for DUT '$DUT'"
-        return 1
-    fi
+    leds_string="$(validate_and_get_leds "$DUT")" || return 1
 
     # shellcheck disable=SC2086
     # Set the positional parameters to the elements of the string
-    set -- $LEDS_STRING
+    set -- $leds_string
 
     # Iterate over the positional parameters
     for leds_value; do
