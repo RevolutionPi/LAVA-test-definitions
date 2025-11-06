@@ -1,0 +1,51 @@
+---
+metadata:
+  name: picontrol-usage-tests
+  format: "Lava-Test Test Definition 1.0"
+  description: |
+    Test piControl performance and timing using the `picontrol-usage` tool.
+    Measures access times for cyclic read/write operations to /dev/piControl0,
+    simulating real-world applications like CODESYS and RevPiModIO to detect
+    performance regressions and validate timing requirements across RevPi
+    devices.
+  maintainer:
+    - r.gsponer@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Connect 5
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Compact
+    - RevPi Flat
+    - RevPi Flat-S
+
+params:
+  SKIP_INSTALL: "false"
+  TESTS: "picontrol-usage picontrol-usage-write picontrol-usage-stress"
+  RUNTIME_SEC: "60"
+  BYTES: "512"
+  MAX_MS: "5"
+  PROCESSES: "1"
+
+run:
+  steps:
+    - cd ./automated/revpi/piControl
+    - ./picontrol-usage.sh
+        -s "${SKIP_INSTALL}"
+        -t "${TESTS}"
+        -r "${RUNTIME_SEC}"
+        -b "${BYTES}"
+        -m "${MAX_MS}"
+        -p "${PROCESSES}"
+    - ../../utils/send-to-lava.sh ./output/result.txt
