@@ -9,6 +9,7 @@
 {% set HAS_INTERFACES = HAS_INTERFACES | default(true) %}
 {% set HAS_WLAN = HAS_WLAN | default(false) %}
 {% set HAS_HDMI = HAS_HDMI | default(true) %}
+{% set INSTALL_PICONTROL_DKMS = INSTALL_PICONTROL_DKMS | default(false) %}
 {% set INTERFACES_TESTS = INTERFACES_TESTS | default("pileft-1 pileft-2 piright-1 piright-2 dmesg") %}
 {% set PITEST_TESTS = PITEST_TESTS | default("pt-1 pt_test_digital_ios") %}
 {% set RS485_DEVICES = RS485_DEVICES | default(["/dev/ttyRS485-0"]) %}
@@ -50,23 +51,36 @@
 ] %}
 {# Add optional package install #}
 {% if PKG_URLS %}
+{% set pkg_install_params = {"PKG_URLS": PKG_URLS, "SKIP_INSTALL": "false"} %}
+{% if INSTALL_PICONTROL_DKMS %}
+{% set _ = pkg_install_params.update({"SKIP_REBOOT": "true"}) %}
+{% else %}
+{% set _ = pkg_install_params.update({"SKIP_REBOOT": "false"}) %}
+{% endif %}
 {% set _ = test_definitions.append(
     {
         "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
         "from": "git",
         "path": "automated/revpi/package/pkg-install.yaml",
         "name": "install-testing-packages",
-        "params": {"PKG_URLS": PKG_URLS, "SKIP_INSTALL": "false", "SKIP_REBOOT": "false"}
+        "params": pkg_install_params
     }
 ) %}
 {% endif %}
-{% set inline_definitions = [
-    {
-        "name": "reboot-after-config",
-        "description": "Reboot after revpi config",
-        "steps": ["shutdown -r +1"]
-    }
-] %}
+
+{% set inline_definitions = [] %}
+{% if INSTALL_PICONTROL_DKMS %}
+{% set _ = inline_definitions.append({
+    "name": "install-picontrol-dkms",
+    "description": "Install picontrol-dkms package",
+    "steps": ["apt install picontrol-dkms -y"]
+}) %}
+{% endif %}
+{% set _ = inline_definitions.append({
+    "name": "reboot-after-config",
+    "description": "Reboot after revpi config",
+    "steps": ["shutdown -r +1"]
+}) %}
 {% include "include/actions/test.jinja2" %}
 
 {# Commands after preconfiguration #}
