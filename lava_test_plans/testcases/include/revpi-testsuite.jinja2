@@ -200,13 +200,22 @@
 {% endfor %}
 {% endif %}
 
-{% set _ = base_tests.append({
-    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
-    "from": "git",
-    "path": "automated/linux/rtc/rtc.yaml",
-    "name": "rtc-I",
-    "params": {"SKIP_INSTALL": "false", "SKIP_REBOOT": "false", "TESTS": "rtc-1 rtc-2a"}
-}) %}
+{% set _ = base_tests.extend([
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/linux/rtc/rtc.yaml",
+        "name": "rtc-I",
+        "params": {"SKIP_INSTALL": "false", "SKIP_REBOOT": "false", "TESTS": "rtc-1 rtc-2a"}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/revpi/system_info/system_info.yaml",
+        "name": "system_info_dmesg",
+        "params": {"TESTS": "sysinfo-dmesg"}
+    }
+]) %}
 
 {% set namespace = "testsuite-I" %}
 {% set timeout_minutes = 30 %}
