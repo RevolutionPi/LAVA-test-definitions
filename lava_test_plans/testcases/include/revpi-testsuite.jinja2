@@ -167,6 +167,19 @@
     {
         "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
         "from": "git",
+        "path": "automated/revpi/piControl/picontrol-usage.yaml",
+        "name": "picontrol-usage",
+        "params": {
+            "TESTS": PICONTROL_USAGE_TESTS | default("picontrol-usage picontrol-usage-write picontrol-usage-stress"),
+            "RUNTIME_SEC": PICONTROL_USAGE_RUNTIME | default("60"),
+            "MAX_MS": PICONTROL_USAGE_MAX_MS | default("5"),
+            "BYTES": PICONTROL_USAGE_BYTES | default("512"),
+            "PROCESSES": PICONTROL_USAGE_PROCESSES | default("1")
+            }
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
         "path": "automated/linux/ethernet/eth.yaml",
         "name": "eth",
         "params": {"SKIP_INSTALL": "false", "DUT": DEVICE_TYPE, "TESTS": "eth-1 eth-3", "BITRATE_DEFAULT": 90}
