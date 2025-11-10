@@ -39,12 +39,23 @@ rs485_client() {
     add_metric rs485 "$result" "$errors" errors
 }
 
+rs485_dev_present() {
+    # the RS485 device being present is a prerequisite for all tests. exit and
+    # mark all remaining tests as skipped if the RS485 device isn't present.
+    # the rs485-dev-present test should always be the first test among the rs485
+    # tests.
+    [ -L "$RSDEV" ] && [ -c "$RSDEV" ]
+    exit_on_fail rs485-dev-present \
+        rs485-client
+}
+
 run() {
     local test="$1"
     test_case_id="${test}"
     info_msg "Running ${test_case_id} test..."
 
     case "$test" in
+    rs485-dev-present) rs485_dev_present ;;
     "rs485-client") rs485_client ;;
     *) error_msg "Unknown test case '$test'" >&2
     esac
@@ -55,9 +66,9 @@ create_out_dir "${OUTPUT}"
 
 install_deps "python3-crcmod" "$SKIP_INSTALL"
 
-if [ ! -c "$RSDEV" ] ; then
-	error_msg "RS485 device $RSDEV not found!"
-fi
+# rs485-dev-present test is always first
+# if it fails it marks all others as skipped
+TESTS="rs485-dev-present $TESTS"
 
 for t in $TESTS; do
     run "$t"
