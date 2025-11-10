@@ -17,7 +17,7 @@ metadata:
     - RevPi Flat S
 
 params:
-  TESTS: wlan-disabled
+  TESTS: "wlan-disabled bluetooth-disabled"
 
 run:
   steps:

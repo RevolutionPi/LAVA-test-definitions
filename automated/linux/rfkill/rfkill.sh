@@ -6,7 +6,7 @@ OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 
-TESTS="wlan-disabled"
+TESTS="wlan-disabled bluetooth-disabled"
 
 usage() {
     echo "Usage: $0 [-t tests]"
@@ -89,6 +89,9 @@ run() {
     case "${test_case_id}" in
     wlan-disabled)
         rfkill_check_devices_state wlan-disabled wlan blocked
+        ;;
+    bluetooth-disabled)
+        rfkill_check_devices_state bluetooth-disabled bluetooth blocked
         ;;
     *)
         report_fail "Undefined test..."
