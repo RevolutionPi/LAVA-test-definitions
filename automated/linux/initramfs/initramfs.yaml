@@ -1,0 +1,44 @@
+---
+metadata:
+  name: initramfs-tests
+  format: "Lava-Test Test Definition 1.0"
+  description: |
+    Various tests around initramfs.
+
+    - initramfs-boot: Check whether the device was booted with an initramfs
+    - initramfs-tools: Check whether the package `initramfs-tools` is
+      installed. This needs to be installed so that the initramfs is
+      automatically generated when installing the kernel.
+  maintainer:
+    - t.boehler@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Connect 5
+    - RevPi Compact
+    - RevPi Flat
+    - RevPi Flat S
+
+params:
+  SKIP_INSTALL: "True"
+  TESTS: "initramfs-boot initramfs-tools initramfs-file"
+
+run:
+  steps:
+    - cd ./automated/linux/initramfs
+    - ./initramfs.sh
+        -s "$SKIP_INSTALL"
+        -t "$TESTS"
+    - ../../utils/send-to-lava.sh ./output/result.txt
