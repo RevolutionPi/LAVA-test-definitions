@@ -11,3 +11,7 @@ indent_size = 4
 
 [*.yaml]
 indent_size = 2
+
+[lava_test_plans/**.jinja2]
+indent_style = space
+indent_size = 4
