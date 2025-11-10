@@ -1,8 +1,9 @@
 ---
 metadata:
-  name: Test if WLAN is disabled by deafult
+  name: rfkill
   format: "Lava-Test Test Definition 1.0"
-  description: "Test if WLAN is disable by default"
+  description: |
+    Test if wireless devices are disabled by default
   maintainer:
     - t.boehler@kunbus.com
   os:
@@ -13,13 +14,14 @@ metadata:
     - RevPi Connect 4
     - RevPi Connect 5
     - RevPi Flat
+    - RevPi Flat S
 
 params:
   TESTS: wlan-disabled
 
 run:
   steps:
-    - cd automated/linux/wlan-disabled
-    - ./wlan-disabled.sh \
+    - cd automated/linux/rfkill
+    - ./rfkill.sh \
         -t "${TESTS}"
     - ../../utils/send-to-lava.sh ./output/result.txt
