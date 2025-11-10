@@ -88,7 +88,7 @@ run() {
 
     case "${test_case_id}" in
     wlan-disabled)
-        rfkill_check_devices_state check-wlan-disabled wlan blocked
+        rfkill_check_devices_state wlan-disabled wlan blocked
         ;;
     *)
         report_fail "Undefined test..."
