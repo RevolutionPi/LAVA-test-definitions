@@ -21,7 +21,7 @@ metadata:
 
 params:
   SKIP_INSTALL: "false"
-  TESTS: "rs485-dev-perms rs485-client"
+  TESTS: "rs485-dev-perms rs485-dev-group rs485-client"
   RSDEV: ""
   BAUD: "19200"
   LIMIT: 50
