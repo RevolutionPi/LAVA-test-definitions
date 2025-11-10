@@ -27,11 +27,13 @@ metadata:
     - RevPi Flat S
 
 params:
+  SKIP_INSTALL: "false"
   TESTS: "wlan-disabled bluetooth-disabled"
 
 run:
   steps:
     - cd automated/linux/rfkill
-    - ./rfkill.sh \
+    - ./rfkill.sh
+        -s "${SKIP_INSTALL}"
         -t "${TESTS}"
     - ../../utils/send-to-lava.sh ./output/result.txt

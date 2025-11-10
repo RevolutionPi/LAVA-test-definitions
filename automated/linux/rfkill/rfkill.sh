@@ -5,7 +5,7 @@
 OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
-
+SKIP_INSTALL="false"
 TESTS="wlan-disabled bluetooth-disabled"
 
 usage() {
@@ -13,8 +13,9 @@ usage() {
     exit "$1"
 }
 
-while getopts "t:h" o; do
+while getopts "s:t:h" o; do
     case "$o" in
+    s) SKIP_INSTALL="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     h) usage ;;
     *) usage 1 >&2 ;;
@@ -102,7 +103,7 @@ run() {
 # Test run.
 create_out_dir "${OUTPUT}"
 
-install_deps "rfkill jq"
+install_deps "rfkill jq" "$SKIP_INSTALL"
 
 for t in $TESTS; do
     run "$t"
