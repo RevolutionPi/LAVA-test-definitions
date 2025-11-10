@@ -202,7 +202,7 @@
     "from": "git",
     "path": "automated/revpi/rs485/rs485.yaml",
     "name": "rs485-" + loop.index0|string + "-test",
-    "params": {"RSDEV": rs485_dev, "TESTS": "rs485-client", "BAUD": "19200"}
+    "params": {"RSDEV": rs485_dev, "TESTS": "rs485-dev-perms rs485-dev-group rs485-client", "BAUD": "19200"}
 }) %}
 {% endfor %}
 {% endif %}
