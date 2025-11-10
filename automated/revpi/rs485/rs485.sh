@@ -36,7 +36,7 @@ rs485_client() {
     else
         result="fail"
     fi
-    add_metric rs485 "$result" "$errors" errors
+    add_metric rs485-client "$result" "$errors" errors
 }
 
 rs485_dev_present() {
