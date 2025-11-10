@@ -170,6 +170,13 @@
         "path": "automated/linux/ethernet/eth.yaml",
         "name": "eth",
         "params": {"SKIP_INSTALL": "false", "DUT": DEVICE_TYPE, "TESTS": "eth-1 eth-3", "BITRATE_DEFAULT": 90}
+    },
+    {
+        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "from": "git",
+        "path": "automated/linux/rfkill/rfkill.yaml",
+        "name": "rfkill",
+        "params": {"TESTS": "wlan-disabled"}
     }
 ] %}
 
@@ -280,15 +287,6 @@
     "params": {"TESTS": "hdmi-status-check start-desktop", "SKIP_REBOOT": true}
 }) %}
 {% endif %}
-
-{% if HAS_WLAN and DEVICE_TYPE in ["RevPi_Connect_4", "RevPi_Connect_5", "RevPi_Flat"] %}
-{% set _ = phase2_tests.append({
-    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
-    "from": "git",
-    "path": "automated/linux/wlan-disabled/wlan-disabled.yaml",
-    "name": "wlan-disabled", 
-    "params": {"TESTS": "wlan-disabled"}
-}) %}
 
 {% set _ = phase2_tests.append({
     "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",

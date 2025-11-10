@@ -134,8 +134,8 @@ actions:
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
-          path: automated/linux/wlan-disabled/wlan-disabled.yaml
-          name: wlan-disabled
+          path: automated/linux/rfkill/rfkill.yaml
+          name: rfkill
           params:
             TESTS: "wlan-disabled"
         - repository:
