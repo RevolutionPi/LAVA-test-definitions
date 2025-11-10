@@ -137,7 +137,7 @@ actions:
           path: automated/linux/rfkill/rfkill.yaml
           name: rfkill
           params:
-            TESTS: "wlan-disabled"
+            TESTS: "wlan-disabled bluetooth-disabled"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
