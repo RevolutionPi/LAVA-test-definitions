@@ -116,6 +116,14 @@ actions:
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
+          path: automated/linux/initramfs/initramfs.yaml
+          name: initramfs
+          params:
+            SKIP_INSTALL: "false"
+            TESTS: "initramfs-boot initramfs-tools initramfs-file"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
           path: automated/linux/cpu-governor/cpu-governor.yaml
           name: cpu-governor
           params:
