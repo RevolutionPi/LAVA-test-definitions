@@ -21,34 +21,65 @@ while getopts "t:h" o; do
     esac
 done
 
-check_wlan_disabled() {
-    local test_case="check-wlan-disabled"
+# check device states
+rfkill_check_devices_state() {
+    local test_case_id="$1"
+    local dev_type="$2"
+    local state="$3"
     local rfkill_output
-    local wlan_states
-    local wlan_device wlan_soft_state wlan_hard_state
+    local dev_ifs dev_ifs_len dev_idx=0
+    local dev_if dev_if_state dev_if_dev
+    local failed=""
 
     if ! rfkill_output="$(rfkill --json)"; then
         error_msg "failed to run rfkill"
     fi
 
-    if ! wlan_states="$(echo "$rfkill_output" | jq -r '.rfkilldevices[] | select(.type == "wlan") | [.] | map(.device + ":" + .soft + ":" + .hard) | .[]')"; then
-        error_msg "failed to run jq"
+    if ! dev_ifs="$(echo "$rfkill_output" |
+        jq -r ".rfkilldevices | map(select(.type == \"$dev_type\"))")"; then
+        printf "Unable to get devices of type '%s'\n" "$dev_type" >&2
+        report_fail "$test_case_id"
+        return 1
     fi
 
-    report_set_start "$test_case"
-    for line in $wlan_states; do
-        wlan_device="$(echo "$line" | cut -d':' -f1)"
-        wlan_soft_state="$(echo "$line" | cut -d':' -f2)"
-        wlan_hard_state="$(echo "$line" | cut -d':' -f3)"
+    if ! dev_ifs_len="$(printf "%s\n" "$dev_ifs" | jq -r '. | length')"; then
+        printf "Unable to determine amount of devices of type '%s'\n" \
+            "$dev_type" >&2
+        report_fail "$test_case_id"
+        return 1
+    fi
 
-        if [ "$wlan_soft_state" = "unblocked" ] \
-            && [ "$wlan_hard_state" = "unblocked" ]; then
-            report_fail "$test_case-$wlan_device"
+    if [ "$dev_ifs_len" -eq 0 ]; then
+        printf "No devices of type '%s' found, skipping\n" "$dev_type"
+        report_skip "$test_case_id"
+        return 0
+    fi
+
+    report_set_start "$test_case_id-devices"
+    while [ "$dev_idx" -lt "$dev_ifs_len" ]; do
+        dev_if="$(printf "%s\n" "$dev_ifs" | jq -r ".[$dev_idx]")"
+        dev_if_state="$(printf "%s\n" "$dev_if" | jq -r '.soft')"
+        dev_if_dev="$(printf "%s\n" "$dev_if" | jq -r '.device')"
+        if [ "$dev_if_state" != "$state" ]; then
+            printf "%s dev '%s' has wrong state (expected: %s, actual: %s)\n" \
+                "$dev_type" "$dev_if_dev" "$state" "$dev_if_state"
+            failed=true
+            report_fail "$test_case_id-$dev_if_dev"
         else
-            report_pass "$test_case-$wlan_device"
+            report_pass "$test_case_id-$dev_if_dev"
         fi
+
+        dev_idx=$((dev_idx + 1))
     done
     report_set_stop
+
+    if [ "$failed" ]; then
+        report_fail "$test_case_id"
+    else
+        report_pass "$test_case_id"
+    fi
+
+    return 0
 }
 
 run() {
@@ -56,15 +87,13 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "${test_case_id}" in
-    "wlan-disabled")
-        check_wlan_disabled
+    wlan-disabled)
+        rfkill_check_devices_state check-wlan-disabled wlan blocked
         ;;
     *)
         report_fail "Undefined test..."
         ;;
     esac
-
-    check_return "${test_case_id}"
 }
 
 # Test run.
