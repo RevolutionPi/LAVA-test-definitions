@@ -6,14 +6,14 @@ OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 SKIP_INSTALL="true"
-RSDEV="/dev/ttyRS485"
+RSDEV="/dev/ttyRS485-0"
 TESTS="rs485-client"
 BAUD=19200
 LIMIT=50
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS] [-d RSDEV] [-b BAUD] [-l LIMIT]" 1>&2
-    echo "Example: $0 -s true -t 'rs485-client' -d /dev/ttyRS485 -b 19200 -l 12" 1>&2
+    echo "Example: $0 -s true -t 'rs485-client' -d /dev/ttyRS485-0 -b 19200 -l 12" 1>&2
     exit 1
 }
 
