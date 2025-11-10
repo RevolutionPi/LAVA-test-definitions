@@ -7,7 +7,7 @@ RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 SKIP_INSTALL="true"
 RSDEV="/dev/ttyRS485-0"
-TESTS="rs485-client"
+TESTS="rs485-dev-perms rs485-client"
 BAUD=19200
 LIMIT=50
 
@@ -46,7 +46,20 @@ rs485_dev_present() {
     # tests.
     [ -L "$RSDEV" ] && [ -c "$RSDEV" ]
     exit_on_fail rs485-dev-present \
-        rs485-client
+        "rs485-dev-perms rs485-client"
+}
+
+rs485_dev_perms() {
+    local dev_perms=""
+
+    if ! dev_perms="$(stat -Lc "%a" "$RSDEV")"; then
+        printf "Unable to stat rs485 dev '%s'\n" "$RSDEV" >&2
+        report_fail rs485-dev-perms
+        return 1
+    fi
+
+    [ "$dev_perms" = "660" ]
+    check_return rs485-dev-perms
 }
 
 run() {
@@ -56,6 +69,7 @@ run() {
 
     case "$test" in
     rs485-dev-present) rs485_dev_present ;;
+    rs485-dev-perms) rs485_dev_perms ;;
     "rs485-client") rs485_client ;;
     *) error_msg "Unknown test case '$test'" >&2
     esac
