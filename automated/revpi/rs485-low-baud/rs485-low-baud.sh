@@ -25,7 +25,8 @@ run() {
         local previous_baud
         local errors
         previous_baud="$(stty -F "$RSDEV" -echo raw speed 1200)"
-        exit_on_fail "$test_case_id-set-baud"
+        exit_on_fail "$test_case_id-set-baud" \
+            "$test_case_id $test_case_id-set-previous-baud"
 
         dmesg_capture_start
 
