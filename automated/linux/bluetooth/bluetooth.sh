@@ -48,11 +48,7 @@ run() {
         mac_address="$(get_mac_address "${device_info}")"
         bluetoothctl pair "${mac_address}"
         device_info="$(bluetoothctl info "${mac_address}")"
-        if echo "${device_info}" | grep -q "Paired: yes"; then
-            info_msg "Pairing successful with device ${mac_address}"
-        else
-            error_msg "Pairing failed with device ${mac_address}"
-        fi
+        echo "${device_info}" | grep -q "Paired: yes"
         ;;
     "bt-remove")
         device_info="$(bluetoothctl devices | grep "${BT_REMOTE}")"
