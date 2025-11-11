@@ -32,7 +32,7 @@ done
 check_ethtool() {
     local interface="$1"
     local ret_ethtool=0
-    ret_ethtool=$(ethtool "$interface")
+    ret_ethtool="$(ethtool "$interface")"
     echo "$ret_ethtool"
      # Iterate over the positional parameters
     for param in $ETH_PARAM; do
@@ -51,12 +51,12 @@ check_iperf3() {
     local bitrate_average=0
     case "$check_nr" in
     1)
-        output_iperf3=$(iperf3 -t 1800 -4 -c "$IP_ATE" -t 10 -J)
-        bitrate_average=$(echo "$output_iperf3" | jq -r '.end.sum_sent.bits_per_second' | awk '{ printf "%.2f", $1 / 1000000 }')
+        output_iperf3="$(iperf3 -t 1800 -4 -c "$IP_ATE" -t 10 -J)"
+        bitrate_average="$(echo "$output_iperf3" | jq -r '.end.sum_sent.bits_per_second' | awk '{ printf "%.2f", $1 / 1000000 }')"
         ;;
     2)
-        output_iperf3=$(iperf3 -t 1800 -4 -R -c "$IP_ATE" -t 10 -J)
-        bitrate_average=$(echo "$output_iperf3" | jq -r '.end.sum_received.bits_per_second' | awk '{ printf "%.2f", $1 / 1000000 }')
+        output_iperf3="$(iperf3 -t 1800 -4 -R -c "$IP_ATE" -t 10 -J)"
+        bitrate_average="$(echo "$output_iperf3" | jq -r '.end.sum_received.bits_per_second' | awk '{ printf "%.2f", $1 / 1000000 }')"
         ;;
     *)
         error_msg "Undefined test..."
@@ -88,7 +88,7 @@ run() {
         check_return "${test_case_id}"
         ;;
     "eth-3")
-        output=$(ip a show eth0 | grep inet)
+        output="$(ip a show eth0 | grep inet)"
         info_msg "$output"
         check_iperf3 1
         check_iperf3 2
