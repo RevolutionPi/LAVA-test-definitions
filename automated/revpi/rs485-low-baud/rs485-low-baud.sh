@@ -71,7 +71,7 @@ while getopts "t:d:s:h" o; do
         # nothing to install
         ;;
     h) usage 0 ;;
-    '?') usage "1" >&2 ;;
+    *) usage "1" >&2 ;;
     esac
 done
 

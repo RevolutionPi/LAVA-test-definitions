@@ -73,7 +73,7 @@ while getopts "b:ht:" o; do
     b) BLOCKDEV="$OPTARG" ;;
     h) usage 0 ;;
     t) TESTS="$OPTARG" ;;
-    '?') usage 1 >&2 ;;
+    *) usage 1 >&2 ;;
     esac
 done
 
