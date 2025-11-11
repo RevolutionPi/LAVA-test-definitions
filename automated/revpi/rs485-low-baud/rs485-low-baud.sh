@@ -23,6 +23,7 @@ run() {
     case "$test_case_id" in
     "rs485-low-baud")
         local previous_baud
+        local send_fail=0
         local errors
         previous_baud="$(stty -F "$RSDEV" -echo raw speed 1200)"
         exit_on_fail "$test_case_id-set-baud" \
@@ -30,16 +31,26 @@ run() {
 
         dmesg_capture_start
 
-        for _i in $(seq 1 100); do
-            echo "test" > "$RSDEV" || error_msg "Failure sending message on $RSDEV"
+        for i in $(seq 1 100); do
+            if ! echo "test" > "$RSDEV"; then
+                warn_msg "Failed to send message on $RSDEV ($i/100)"
+                send_fail=$((send_fail + 1))
+            fi
         done
 
         errors="$(dmesg_capture_result | grep "piControl")"
+
+        if [ "$send_fail" -gt 0 ]; then
+            printf "Sending message failed %d times\n" "$send_fail" >&2
+        fi
 
         if [ -n "$errors" ]; then
             echo "$errors"
             printf \
                 "Errors occured in piControl during rs485 low baud test\n" >&2
+        fi
+
+        if [ "$send_fail" -gt 0 ] || [ -n "$errors" ]; then
             report_fail "$test_case_id"
         else
             report_pass "$test_case_id"
