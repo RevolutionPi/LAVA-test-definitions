@@ -26,10 +26,14 @@ metadata:
 
 params:
   SKIP_INSTALL: "False"
-  TESTS: "pc-1 pc-2 pc-perms"
+  TESTS: "pc-1 pc-2 pc-perms pc-cycle-time-sample"
+  EFFECTIVE_MIN_CYCLE_TIME: ""
 
 run:
   steps:
     - cd ./automated/revpi/piControl/
-    - ./piControl.sh -s "${SKIP_INSTALL}" -t "${TESTS}"
+    - ./piControl.sh
+      -e "${EFFECTIVE_MIN_CYCLE_TIME}"
+      -s "${SKIP_INSTALL}"
+      -t "${TESTS}"
     - ../../utils/send-to-lava.sh ./output/result.txt

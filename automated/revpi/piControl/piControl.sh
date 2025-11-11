@@ -5,17 +5,20 @@
 OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
-TESTS="pc-1 pc-2 pc-perms"
+TESTS="pc-1 pc-2 pc-perms pc-cycle-time-sample"
 SKIP_INSTALL=false
 PICONTROL_DEV="/dev/piControl0"
+PICONTROL_SYSFS_PATH="/sys/class/piControl/piControl0"
+EFFECTIVE_MIN_CYCLE_TIME=15000
 
 usage() {
-    echo "Usage: $0 [-s <true|false>] [-t TESTS]" 1>&2
+    echo "Usage: $0 [-e <min cycle time in us] [-s <true|false>] [-t TESTS]" 1>&2
     exit 1
 }
 
-while getopts "s:t:h" o; do
+while getopts "e:s:t:h" o; do
     case "$o" in
+    e) EFFECTIVE_MIN_CYCLE_TIME="${OPTARG}" ;;
     s) SKIP_INSTALL="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
     h|*) usage ;;
@@ -47,6 +50,29 @@ check_dmesg() {
 
         return "$(echo "$dmesg_output" | wc -l)"
     fi
+}
+
+pc_cycle_time_sample() {
+    local last_cycle_time cycle_duration cycle_diff
+
+    last_cycle_time="$(cat $PICONTROL_SYSFS_PATH/last_cycle)"
+    cycle_duration="$(cat $PICONTROL_SYSFS_PATH/cycle_duration)"
+
+    # the cycle_duration can be set as low as 500 microseconds, which is "as
+    # fast as possible". devices usually hover around 12000-15000 microseconds
+    # depending on the setup, so make sure the lowest realistic value is taken
+    # for the test
+    if [ "$cycle_duration" -lt "$EFFECTIVE_MIN_CYCLE_TIME" ]; then
+        cycle_duration="$EFFECTIVE_MIN_CYCLE_TIME"
+    fi
+
+    cycle_diff="$(printf "%d" \
+        "$((last_cycle_time - cycle_duration))" | cut -d'-' -f2)"
+
+    info_msg "cycle_duration: $cycle_duration, last_cycle_time: $last_cycle_time, cycle_diff: $cycle_diff"
+
+    [ "$cycle_diff" -lt 1500 ]
+    check_return pc-cycle-time-sample
 }
 
 run() {
@@ -102,6 +128,7 @@ run() {
             "[ '$(stat -c "%G" "$PICONTROL_DEV")' = 'picontrol' ]" \
             "$test_case_id-picontrol-dev-group-picontrol"
         ;;
+    pc-cycle-time-sample) pc_cycle_time_sample ;;
     *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 }
