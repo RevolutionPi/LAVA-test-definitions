@@ -38,7 +38,9 @@ run() {
 
         if [ -n "$errors" ]; then
             echo "$errors"
-            error_msg "Errors occured in piControl during rs485 low baud test"
+            printf \
+                "Errors occured in piControl during rs485 low baud test\n" >&2
+            report_fail "$test_case_id"
         else
             report_pass "$test_case_id"
         fi
