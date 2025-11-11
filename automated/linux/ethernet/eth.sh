@@ -36,12 +36,8 @@ check_ethtool() {
     echo "$ret_ethtool"
      # Iterate over the positional parameters
     for param in $ETH_PARAM; do
-        if echo "$ret_ethtool" | grep -E -o "$param"
-        then
-            report_pass "eth-1_$interface-${param%:*}"
-        else
-            report_fail "eth-1_$interface-${param%:*}"
-        fi
+        echo "$ret_ethtool" | grep -E -o "$param"
+        check_return "eth-1_$interface-${param%:*}"
     done
 }
 
