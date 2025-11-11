@@ -143,7 +143,7 @@ actions:
           path: automated/revpi/piControl/piControl.yaml
           name: piControl
           params:
-            TESTS: "pc-1 pc-2 pc-perms"
+            TESTS: "pc-1 pc-2 pc-perms pc-cycle-time-sample pc-set-cycle-time"
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
