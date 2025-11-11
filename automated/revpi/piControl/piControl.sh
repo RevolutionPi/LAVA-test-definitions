@@ -5,7 +5,7 @@
 OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
-TESTS="pc-1 pc-2 pc-perms pc-cycle-time-sample"
+TESTS="pc-1 pc-2 pc-perms pc-cycle-time-sample pc-set-cycle-time"
 SKIP_INSTALL=false
 PICONTROL_DEV="/dev/piControl0"
 PICONTROL_SYSFS_PATH="/sys/class/piControl/piControl0"
@@ -75,6 +75,46 @@ pc_cycle_time_sample() {
     check_return pc-cycle-time-sample
 }
 
+pc_set_cycle_time() {
+    local initial_cycle_time cycle_time_steps=5000 cycle_time
+    local last_cycle_time=0 last_cycle_diff=0
+    local err=""
+
+    cycle_time="$(cat $PICONTROL_SYSFS_PATH/cycle_duration)"
+    if [ "$cycle_time" -lt "$EFFECTIVE_MIN_CYCLE_TIME" ]; then
+        info_msg "cycle time of $cycle_time is too low, starting with $EFFECTIVE_MIN_CYCLE_TIME instead"
+        cycle_time="$EFFECTIVE_MIN_CYCLE_TIME"
+    fi
+
+    # max piControl cycle time is 45000
+    while [ "$cycle_time" -le "45000" ] \
+        && [ -z "$err" ] ; do
+        printf "%d\n" "$cycle_time" \
+            > $PICONTROL_SYSFS_PATH/cycle_duration
+        # let picontrol settle
+        sleep 0.5
+
+        last_cycle_time="$(cat $PICONTROL_SYSFS_PATH/last_cycle)"
+        last_cycle_diff="$(printf "%d" \
+            "$((last_cycle_time - cycle_time))" | cut -d'-' -f2)"
+
+        if [ "$last_cycle_diff" -gt "1500" ]; then
+            err="last cycle deviates by over 1500 (set: $cycle_time, measured: $last_cycle_time)"
+            warn_msg "$err"
+            break
+        fi
+
+        cycle_time=$((cycle_time + cycle_time_steps))
+    done
+
+    # restore initial cycle time before the test ran
+    printf "%d\n" "$initial_cycle_time" \
+        > $PICONTROL_SYSFS_PATH/cycle_duration
+
+    [ -z "$err" ]
+    check_return pc-set-cycle-time
+}
+
 run() {
     local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
@@ -129,6 +169,7 @@ run() {
             "$test_case_id-picontrol-dev-group-picontrol"
         ;;
     pc-cycle-time-sample) pc_cycle_time_sample ;;
+    pc-set-cycle-time) pc_set_cycle_time ;;
     *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 }
