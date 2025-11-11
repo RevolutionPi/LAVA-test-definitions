@@ -6,7 +6,7 @@ OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 TESTS="rs485-low-baud"
-RSDEV="/dev/ttyRS485"
+RSDEV="/dev/ttyRS485-0"
 
 usage() {
     cat << EOF

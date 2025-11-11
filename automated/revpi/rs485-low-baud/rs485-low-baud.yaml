@@ -32,7 +32,7 @@ metadata:
     - RevPi Flat S
 params:
   SKIP_INSTALL: "false"
-  RSDEV: "/dev/ttyRS485"
+  RSDEV: "/dev/ttyRS485-0"
   TESTS: "rs485-low-baud"
 
 run:
