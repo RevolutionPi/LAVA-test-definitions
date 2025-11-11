@@ -41,13 +41,13 @@ run() {
         hcitool scan
         ;;
     "bt-2")
-        device_info=$(bluetoothctl --timeout "${BT_SCAN_TIMEOUT}" scan on | grep "NEW.* ${BT_REMOTE}")
+        device_info="$(bluetoothctl --timeout "${BT_SCAN_TIMEOUT}" scan on | grep "NEW.* ${BT_REMOTE}")"
         if [ -z "${device_info}" ]; then
            err_msg "No device info available... Check Bluetooth in Worker!"
         fi
-        mac_address=$(get_mac_address "${device_info}")
+        mac_address="$(get_mac_address "${device_info}")"
         bluetoothctl pair "${mac_address}"
-        device_info=$(bluetoothctl info "${mac_address}")
+        device_info="$(bluetoothctl info "${mac_address}")"
         if echo "${device_info}" | grep -q "Paired: yes"; then
             info_msg "Pairing successful with device ${mac_address}"
         else
@@ -55,8 +55,8 @@ run() {
         fi
         ;;
     "bt-remove")
-        device_info=$(bluetoothctl devices | grep "${BT_REMOTE}")
-        mac_address=$(get_mac_address "${device_info}")
+        device_info="$(bluetoothctl devices | grep "${BT_REMOTE}")"
+        mac_address="$(get_mac_address "${device_info}")"
         bluetoothctl remove "${mac_address}"
         ;;
     *)
