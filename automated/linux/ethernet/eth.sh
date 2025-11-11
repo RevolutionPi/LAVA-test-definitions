@@ -88,6 +88,7 @@ run() {
         check_iperf3 1
         check_iperf3 2
         ;;
+    *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 }
 

@@ -138,6 +138,7 @@ run() {
         check_multiple_permission_file "$HOSTNAME_FILE" 644 444
         report_set_stop
         ;;
+    *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 }
 

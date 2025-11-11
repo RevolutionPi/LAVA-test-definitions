@@ -102,6 +102,7 @@ run() {
             "[ '$(stat -c "%G" "$PICONTROL_DEV")' = 'picontrol' ]" \
             "$test_case_id-picontrol-dev-group-picontrol"
         ;;
+    *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 }
 

@@ -129,6 +129,7 @@ run() {
             add_metric "$test_case_id-read-speed" fail "$speed" MB/s
         fi
         ;;
+    *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 
     check_return "${test_case_id}"

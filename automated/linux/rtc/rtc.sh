@@ -95,6 +95,7 @@ run() {
     "rtc-2b")
         rtc_2b
         ;;
+    *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 
     check_return "${test_case_id}"

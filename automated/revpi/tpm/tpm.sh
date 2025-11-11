@@ -54,6 +54,7 @@ run() {
             'tpm2_getcap properties-fixed' \
             "$test_case_id"
         ;;
+    *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 }
 

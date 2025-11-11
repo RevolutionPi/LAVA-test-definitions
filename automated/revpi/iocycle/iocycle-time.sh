@@ -42,6 +42,7 @@ run() {
         # others.
         stress --cpu 4 &
         ;;
+    *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 
     output=$("${TEST_SCRIPT_DIR}"/pibridge-cycle-time -s "${C_TIME}" 2>/dev/null)
