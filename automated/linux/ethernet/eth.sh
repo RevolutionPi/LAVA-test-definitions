@@ -62,7 +62,7 @@ check_iperf3() {
         info_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $BITRATE_DEFAULT Mbit/s -> eth-3_$check_nr/2 OK"
         add_metric "eth-3-$check_nr" pass "$bitrate_average" "Mbit/s"
     else
-        error_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $BITRATE_DEFAULT Mbit/s -> eth-3_$check_nr/2 FAIL"
+        warn_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $BITRATE_DEFAULT Mbit/s -> eth-3_$check_nr/2 FAIL"
         add_metric "eth-3-$check_nr" fail "$bitrate_average" "Mbit/s"
     fi
 }
