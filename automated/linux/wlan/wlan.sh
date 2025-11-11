@@ -6,7 +6,14 @@ OUTPUT="$(pwd)/output"
 RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 
-TESTS="wlan-config-nm wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect"
+TESTS="
+    wlan-config-nm
+    wlan-1-nm
+    wlan-2-nm-a
+    wlan-sleep
+    wlan-2-nm-b
+    wlan-2-nm-disconnect
+"
 WLAN_INTERFACE="wlan0"
 WLAN_SSID=""
 WLAN_PASSWORD=""
