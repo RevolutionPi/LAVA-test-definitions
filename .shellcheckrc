@@ -1,1 +1,2 @@
 disable=SC3043
+enable=add-default-case
