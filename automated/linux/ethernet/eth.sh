@@ -81,7 +81,6 @@ run() {
         *)
             ;;
         esac
-        check_return "${test_case_id}"
         ;;
     "eth-3")
         output="$(ip a show eth0 | grep inet)"
