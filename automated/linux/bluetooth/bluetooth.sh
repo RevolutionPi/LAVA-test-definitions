@@ -39,6 +39,7 @@ run() {
     case "${test_case_id}" in
     "bt-1")
         hcitool scan
+        check_return "$test_case_id"
         ;;
     "bt-2")
         device_info="$(bluetoothctl --timeout "${BT_SCAN_TIMEOUT}" scan on | grep "NEW.* ${BT_REMOTE}")"
@@ -49,18 +50,23 @@ run() {
         bluetoothctl pair "${mac_address}"
         device_info="$(bluetoothctl info "${mac_address}")"
         echo "${device_info}" | grep -q "Paired: yes"
+        check_return "$test_case_id"
         ;;
     "bt-remove")
         device_info="$(bluetoothctl devices | grep "${BT_REMOTE}")"
-        mac_address="$(get_mac_address "${device_info}")"
-        bluetoothctl remove "${mac_address}"
+        if [ -z "$device_info" ]; then
+            warn_msg "Device $BT_REMOTE is not paired, skipping $test_case_id"
+            report_skip "$test_case_id"
+        else
+            mac_address="$(get_mac_address "${device_info}")"
+            bluetoothctl remove "${mac_address}"
+            check_return "$test_case_id"
+        fi
         ;;
     *)
         report_fail "Undefined test..."
         ;;
     esac
-
-    check_return "${test_case_id}"
 }
 
 # Test run.
