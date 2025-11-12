@@ -1,0 +1,6 @@
+{# RevPi_Connect_SE-017.yaml #}
+{% extends "include/revpi-connect-base.jinja2" %}
+
+{% set DEVICE_TYPE = "RevPi_Connect_SE" %}
+{% set HAS_INTERFACES = false %}
+{% set TAG_NR = "017" %}
