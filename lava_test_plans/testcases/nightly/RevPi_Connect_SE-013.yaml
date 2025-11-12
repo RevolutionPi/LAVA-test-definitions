@@ -1,8 +1,6 @@
-{% extends "include/revpi-testsuite.jinja2" %}
+{# RevPi_Connect_SE-013.yaml #}
+{% extends "include/revpi-connect-base.jinja2" %}
 
 {% set DEVICE_TYPE = "RevPi_Connect_SE" %}
-{% set TAG_NR = "013" %}
-{% set HAS_RS485 = true %}
-{% set RS485_DEVICES = ["/dev/ttyRS485-0"] %}
 {% set HAS_INTERFACES = false %}
-{% set INTERFACES_TESTS = "pileft-1 pileft-2 dmesg" %}
+{% set TAG_NR = "013" %}
