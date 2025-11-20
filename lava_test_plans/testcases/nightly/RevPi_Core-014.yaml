@@ -1,7 +1,7 @@
 {% extends "include/revpi-testsuite.jinja2" %}
 
 {% set DEVICE_TYPE = "RevPi_Core" %}
-{% set TAG_NR = "015" %}
+{% set TAG_NR = "014" %}
 {% set HAS_RS485 = false %}
 {% set HAS_INTERFACES = true %}
 {% set HAS_CYCLETIME = true %}
