@@ -83,7 +83,7 @@ get_list_leds() {
     RevPi_Core*)
         LEDS="$LEDS_CORE"
         ;;
-    RevPi_Flat)
+    RevPi_Flat*)
         LEDS="$LEDS_FLAT"
         ;;
     *)
