@@ -27,7 +27,7 @@ params:
   SKIP_INSTALL: "False"
   DUT: ""
   TESTS: "eth-1 eth-3"
-  BITRATE_DEFAULT: 90
+  ETHERNET_SPEED: 100
 
 run:
   steps:
@@ -37,5 +37,5 @@ run:
         -d "${DUT}"
         -i "${IP_ATE}"
         -t "${TESTS}"
-        -b "${BITRATE_DEFAULT}"
+        -b "${ETHERNET_SPEED}"
     - ../../utils/send-to-lava.sh ./output/result.txt

@@ -175,7 +175,7 @@ actions:
             SKIP_INSTALL: "false"
             DUT: *device_type
             TESTS: "eth-1 eth-3"
-            BITRATE_DEFAULT: 90
+            ETHERNET_SPEED: 100
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git

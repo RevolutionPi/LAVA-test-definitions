@@ -10,11 +10,11 @@ DUT=""
 IP_ATE="10.42.11.150"
 SKIP_INSTALL="True"
 TESTS="eth-1 eth-3"
-BITRATE_DEFAULT=90
+ETHERNET_SPEED=100
 
 
 usage() {
-    echo "Usage: $0 [-s <true|false>] [-d dut] [-i ip_ate] [-t tests] [-b expected_bitrate]" 1>&2
+    echo "Usage: $0 [-s <true|false>] [-d dut] [-i ip_ate] [-t tests] [-b ethernet_speed]" 1>&2
     exit 1
 }
 
@@ -24,7 +24,7 @@ while getopts "d:s:i:t:b:B:h" o; do
     s) SKIP_INSTALL="${OPTARG}" ;;
     i) IP_ATE="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
-    b) BITRATE_DEFAULT="${OPTARG}" ;;
+    b) ETHERNET_SPEED="${OPTARG}" ;;
     h|*) usage ;;
     esac
 done
@@ -42,7 +42,8 @@ check_ethtool() {
 }
 
 check_iperf3() {
-    local check_nr="$1"
+    local minimum_bitrate="$1"
+    local check_nr="$2"
     local output_iperf3=""
     local bitrate_average=0
     case "$check_nr" in
@@ -58,11 +59,11 @@ check_iperf3() {
         error_msg "Undefined test..."
     esac
 
-    if [ "$(printf "%.0f" "$bitrate_average")" -gt "$BITRATE_DEFAULT" ]; then
-        info_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $BITRATE_DEFAULT Mbit/s -> eth-3_$check_nr/2 OK"
+    if [ "$(printf "%.0f" "$bitrate_average")" -gt "$minimum_bitrate" ]; then
+        info_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $minimum_bitrate Mbit/s -> eth-3_$check_nr/2 OK"
         add_metric "eth-3-$check_nr" pass "$bitrate_average" "Mbit/s"
     else
-        warn_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $BITRATE_DEFAULT Mbit/s -> eth-3_$check_nr/2 FAIL"
+        warn_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $minimum_bitrate Mbit/s -> eth-3_$check_nr/2 FAIL"
         add_metric "eth-3-$check_nr" fail "$bitrate_average" "Mbit/s"
     fi
 }
@@ -85,8 +86,8 @@ run() {
     "eth-3")
         output="$(ip a show eth0 | grep inet)"
         info_msg "$output"
-        check_iperf3 1
-        check_iperf3 2
+        check_iperf3 "$IPERF_SPEED" 1
+        check_iperf3 "$IPERF_SPEED" 2
         ;;
     *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
@@ -96,6 +97,9 @@ run() {
 create_out_dir "${OUTPUT}"
 
 install_deps "iperf3 jq" "$SKIP_INSTALL"
+
+# allow a 10% deviation in speed with iperf3
+IPERF_SPEED=$((ETHERNET_SPEED-ETHERNET_SPEED/10))
 
 for t in $TESTS; do
     run "$t"
