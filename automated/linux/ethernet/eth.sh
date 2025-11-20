@@ -91,6 +91,8 @@ run() {
         ;;
     *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
+
+    return 0
 }
 
 # Test run.
