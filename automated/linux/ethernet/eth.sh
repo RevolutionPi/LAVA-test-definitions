@@ -76,7 +76,7 @@ run() {
     "eth-1")
         check_ethtool eth0
         case "$DUT" in
-        RevPi_Connect)
+        RevPi_Connect*)
             check_ethtool eth1
             ;;
         *)
