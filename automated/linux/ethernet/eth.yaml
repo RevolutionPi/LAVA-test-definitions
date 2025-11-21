@@ -27,7 +27,7 @@ params:
   SKIP_INSTALL: "False"
   DUT: ""
   TESTS: "eth-1 eth-3"
-  ETHERNET_SPEED: 100
+  ETHERNET_SPEED: 1000
 
 run:
   steps:
