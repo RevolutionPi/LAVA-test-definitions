@@ -15,6 +15,8 @@
 {% set RS485_DEVICES = RS485_DEVICES | default(["/dev/ttyRS485-0"]) %}
 {% set TPM_TEST = TPM_TEST | default("tpm-1") %}
 
+{% set ETHERNET_SPEED = ETHERNET_SPEED | default(1000) %}
+
 {% block flash_revpi %}
 {% if HAS_FLASH %}
 {% include "include/flash-revpi.jinja2" %}
@@ -196,7 +198,7 @@
         "from": "git",
         "path": "automated/linux/ethernet/eth.yaml",
         "name": "eth",
-        "params": {"SKIP_INSTALL": "false", "DUT": DEVICE_TYPE, "TESTS": "eth-1 eth-3", "ETHERNET_SPEED": 100}
+        "params": {"SKIP_INSTALL": "false", "DUT": DEVICE_TYPE, "TESTS": "eth-1 eth-3", "ETHERNET_SPEED": ETHERNET_SPEED}
     },
     {
         "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",

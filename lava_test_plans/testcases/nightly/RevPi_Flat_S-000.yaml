@@ -2,3 +2,4 @@
 
 {% set DEVICE_TYPE = "RevPi_Flat_S" %}
 {% set TAG_NR = "000" %}
+{% set ETHERNET_SPEED = 100 %}

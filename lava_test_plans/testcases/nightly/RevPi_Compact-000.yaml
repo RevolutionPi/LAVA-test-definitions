@@ -6,3 +6,4 @@
 {% set RS485_DEVICES = ["/dev/ttyRS485-0"] %}
 {% set HAS_INTERFACES = false %}
 {% set HAS_CYCLETIME = false %}
+{% set ETHERNET_SPEED = 100 %}

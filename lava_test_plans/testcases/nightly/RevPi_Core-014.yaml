@@ -5,3 +5,4 @@
 {% set HAS_RS485 = false %}
 {% set HAS_INTERFACES = true %}
 {% set HAS_CYCLETIME = true %}
+{% set ETHERNET_SPEED = 100 %}

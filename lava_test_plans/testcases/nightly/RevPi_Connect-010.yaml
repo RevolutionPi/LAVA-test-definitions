@@ -3,3 +3,4 @@
 
 {% set DEVICE_TYPE = "RevPi_Connect" %}
 {% set TAG_NR = "010" %}
+{% set ETHERNET_SPEED = 100 %}
