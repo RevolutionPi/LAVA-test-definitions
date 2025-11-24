@@ -5,3 +5,4 @@
 {% set HAS_INTERFACES = false %}
 {% set HAS_WLAN = true %}
 {% set TAG_NR = "006" %}
+{% set TPM_TEST = "tpm-1 tpm-2b" %}

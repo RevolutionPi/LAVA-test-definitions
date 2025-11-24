@@ -5,3 +5,4 @@
 {% set HAS_WLAN = true %}
 {% set INTERFACES_TESTS = "pileft-1 pileft-2 piright-1 piright-2 dmesg" %}
 {% set TAG_NR = "016" %}
+{% set TPM_TEST = "tpm-1 tpm-2b" %}
