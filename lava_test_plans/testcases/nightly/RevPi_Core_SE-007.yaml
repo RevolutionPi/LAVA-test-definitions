@@ -1,0 +1,7 @@
+{% extends "include/revpi-testsuite.jinja2" %}
+
+{% set DEVICE_TYPE = "RevPi_Core_SE" %}
+{% set TAG_NR = "007" %}
+{% set HAS_RS485 = false %}
+{% set HAS_INTERFACES = false %}
+{% set ETHERNET_SPEED = 100 %}
