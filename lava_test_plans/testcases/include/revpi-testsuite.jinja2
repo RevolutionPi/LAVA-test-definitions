@@ -4,7 +4,7 @@
 {% set TAGS = ("config" + TAG_NR if TAG_NR else "configxxx") %}
 {% set LAVA_JOB_NAME = DEVICE_TYPE + " - Testsuite " + TAGS %}
 
-{% set HAS_FLASH = HAS_FLASH | default(true) %}
+{% set CAN_FLASH = CAN_FLASH | default(true) %}
 {% set HAS_CYCLETIME = HAS_CYCLETIME | default(true) %}
 {% set HAS_INTERFACES = HAS_INTERFACES | default(true) %}
 {% set HAS_WLAN = HAS_WLAN | default(false) %}
@@ -18,7 +18,7 @@
 {% set ETHERNET_SPEED = ETHERNET_SPEED | default(1000) %}
 
 {% block flash_revpi %}
-{% if HAS_FLASH %}
+{% if CAN_FLASH %}
 {% include "include/flash-revpi.jinja2" %}
 {% endif %}
 {% endblock flash_revpi %}
