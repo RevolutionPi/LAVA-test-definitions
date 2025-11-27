@@ -18,9 +18,7 @@
 {% set ETHERNET_SPEED = ETHERNET_SPEED | default(1000) %}
 
 {% block flash_revpi %}
-{% if CAN_FLASH %}
 {% include "include/flash-revpi.jinja2" %}
-{% endif %}
 {% endblock flash_revpi %}
 
 {% block test_revpi %}

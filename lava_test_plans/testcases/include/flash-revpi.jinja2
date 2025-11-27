@@ -1,4 +1,5 @@
 {% block flash_revpi %}
+{% if CAN_FLASH %}
 {# Deploy LXC container #}
 {% set deploy_to = "lxc" %}
 {% set namespace = "tlxc" %}
@@ -51,6 +52,7 @@
 {% set namespace = "recovery" %}
 {% set timeout_minutes = 5 %}
 {% include "include/actions/boot.jinja2" %}
+{% endif %}
 
 {# Command: Factory reset #}
 {% set command_name = "run_factory_reset" %}
