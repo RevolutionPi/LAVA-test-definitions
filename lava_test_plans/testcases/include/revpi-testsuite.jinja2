@@ -9,7 +9,7 @@
 {% set HAS_INTERFACES = HAS_INTERFACES | default(true) %}
 {% set HAS_WLAN = HAS_WLAN | default(false) %}
 {% set HAS_HDMI = HAS_HDMI | default(true) %}
-{% set INSTALL_PICONTROL_DKMS = INSTALL_PICONTROL_DKMS | default(false) %}
+{% set INSTALL_PICONTROL_DKMS = (INSTALL_PICONTROL_DKMS | string | lower) == "true" %}
 {% set INTERFACES_TESTS = INTERFACES_TESTS | default("pileft-1 pileft-2 piright-1 piright-2 dmesg") %}
 {% set PITEST_TESTS = PITEST_TESTS | default("pt-1 pt_test_digital_ios") %}
 {% set RS485_DEVICES = RS485_DEVICES | default(["/dev/ttyRS485-0"]) %}
