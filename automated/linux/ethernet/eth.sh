@@ -18,7 +18,7 @@ usage() {
     exit 1
 }
 
-while getopts "d:s:i:t:b:B:h" o; do
+while getopts "d:s:i:t:b:h" o; do
     case "$o" in
     d) DUT="${OPTARG}" ;;
     s) SKIP_INSTALL="${OPTARG}" ;;
