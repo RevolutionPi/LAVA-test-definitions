@@ -20,7 +20,10 @@ usage() {
 while getopts "s:r:t:d:h" o; do
     case "$o" in
     s)
-        install_deps util-linux-extra
+        . /etc/os-release
+        if [ "${VERSION_ID:-0}" -ge 12 ]; then
+            install_deps util-linux-extra
+        fi
         ;;
     r) SKIP_REBOOT="${OPTARG}" ;;
     t) TESTS="${OPTARG}" ;;
