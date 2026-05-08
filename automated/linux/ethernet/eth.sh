@@ -29,6 +29,16 @@ while getopts "d:s:i:t:b:B:h" o; do
     esac
 done
 
+resolve_iface() {
+    if ip link show "$1" > /dev/null 2>&1; then
+        echo "$1"
+    else
+        echo "$2"
+    fi
+}
+ETH0=$(resolve_iface lan0 eth0)
+ETH1=$(resolve_iface lan1 eth1)
+
 check_ethtool() {
     local interface="$1"
     local ret_ethtool=0
@@ -74,17 +84,17 @@ run() {
 
     case "$test_case_id" in
     "eth-1")
-        check_ethtool eth0
+        check_ethtool "$ETH0"
         case "$DUT" in
         RevPi_Connect*)
-            check_ethtool eth1
+            check_ethtool "$ETH1"
             ;;
         *)
             ;;
         esac
         ;;
     "eth-3")
-        output="$(ip a show eth0 | grep inet)"
+        output="$(ip a show "$ETH0" | grep inet)"
         info_msg "$output"
         check_iperf3 "$IPERF_SPEED" 1
         check_iperf3 "$IPERF_SPEED" 2
