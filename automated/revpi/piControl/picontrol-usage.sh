@@ -37,6 +37,12 @@ run() {
     local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
 
+    if [ ! -c /dev/piControl0 ]; then
+        warn_msg "/dev/piControl0 not found"
+        report_fail "$test_case_id"
+        return 0
+    fi
+
     case "$test_case_id" in
     "picontrol-usage")
         # Basic read-only test
