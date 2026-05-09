@@ -42,6 +42,7 @@ piTest_Check_config() (
     # Check if a module is NOT configured
     if is_module_configured "$pi_test_output"
     then
+        info_msg "$pi_test_output"
         report_fail "$test_case_name-HW_CONFIGURED"
     else
         report_pass "$test_case_name-HW_CONFIGURED"
@@ -50,6 +51,7 @@ piTest_Check_config() (
     # Check if a module is not physically present
     if is_module_not_present "$pi_test_output"
     then
+        info_msg "$pi_test_output"
         report_fail "$test_case_name-HW_NOT_PRESENT"
     else
         report_pass "$test_case_name-HW_NOT_PRESENT"
