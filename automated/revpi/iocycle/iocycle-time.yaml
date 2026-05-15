@@ -25,7 +25,6 @@ params:
   SKIP_INSTALL: "false"
   TESTS: "iocycle-time iocycle-time-stress"
   C_TIME: "300"
-  MEAN_MS: "20"
 
 run:
   steps:
