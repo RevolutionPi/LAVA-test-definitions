@@ -7,6 +7,9 @@
 {% for definition in test_definitions %}
           - repository: {{ definition.repository }}
             from: {{ definition.from }}
+{% if definition.branch | default('') %}
+            branch: {{ definition.branch }}
+{% endif %}
             path: {{ definition.path }}
             name: {{ definition.name }}
 {% if definition.params|default({}) %}
