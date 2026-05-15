@@ -38,8 +38,9 @@
 {% set timeout_minutes = 30 %}
 {% set test_definitions = [
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/deployment/lava_prog_device.yaml",
         "name": "auto-programming-device"
     }

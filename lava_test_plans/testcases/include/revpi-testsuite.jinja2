@@ -10,6 +10,7 @@
 {% set HAS_WLAN = HAS_WLAN | default(false) %}
 {% set HAS_HDMI = HAS_HDMI | default(true) %}
 {% set INSTALL_PICONTROL_DKMS = (INSTALL_PICONTROL_DKMS | string | lower) == "true" %}
+{% set TEST_DEFINITIONS_BRANCH = TEST_DEFINITIONS_BRANCH | default("master") %}
 {% set INTERFACES_TESTS = INTERFACES_TESTS | default("pileft-1 pileft-2 piright-1 piright-2 dmesg") %}
 {% set PITEST_TESTS = PITEST_TESTS | default("pt-1 pt_test_digital_ios") %}
 {% set RS485_DEVICES = RS485_DEVICES | default(["/dev/ttyRS485-0"]) %}
@@ -42,8 +43,9 @@
 {% endif %}
 {% set test_definitions = [
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/device-config/config_loader.yaml",
         "name": "config_loader",
         "params": config_params
@@ -59,8 +61,9 @@
 {% endif %}
 {% set _ = test_definitions.append(
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/package/pkg-install.yaml",
         "name": "install-testing-packages",
         "params": pkg_install_params
@@ -109,78 +112,89 @@
 {# Base test definitions for testsuite-I #}
 {% set base_tests = [
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/system_info/system_info.yaml",
         "name": "system_info",
         "params": {"TESTS": "sysinfo-image-release sysinfo-uname sysinfo-dpkg"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/resize-fs/resize-fs.yaml",
         "name": "resize-fs",
         "params": {"TESTS": "last-partition-resize", "BLOCKDEV": "mmcblk0"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/usb/usb.yaml",
         "name": "usb",
         "params": {"TESTS": "usb-1 usb-2 usb-4 usb-5", "SKIP_INSTALL": "false"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/leds/leds.yaml",
         "name": "leds",
         "params": {"DUT": DEVICE_TYPE, "TESTS": "led-1 led-2_led-3 led-5"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/tpm/tpm.yaml",
         "name": "tpm-test",
         "params": {"TESTS": TPM_TEST}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/initramfs/initramfs.yaml",
         "name": "initramfs",
         "params": {"SKIP_INSTALL": "false", "TESTS": "initramfs-boot initramfs-tools initramfs-file"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/cpu-governor/cpu-governor.yaml",
         "name": "cpu-governor",
         "params": {"SKIP_INSTALL": "false", "GOVERNOR": "performance", "TESTS": "cpu-governor"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/file-perms/file-perms.yaml",
         "name": "file-perms",
         "params": {"TESTS": "keyrings apt-sources sudoers etc"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/piControl/piControl.yaml",
         "name": "piControl",
         "params": {"TESTS": "pc-1 pc-2 pc-perms pc-cycle-time-sample pc-set-cycle-time"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/piTest/pt.yaml",
         "name": "piTest_piBridge",
         "params": {"TESTS": PITEST_TESTS}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/piControl/picontrol-usage.yaml",
         "name": "picontrol-usage",
         "params": {
@@ -192,15 +206,17 @@
             }
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/ethernet/eth.yaml",
         "name": "eth",
         "params": {"SKIP_INSTALL": "false", "DUT": DEVICE_TYPE, "TESTS": "eth-1 eth-3", "ETHERNET_SPEED": ETHERNET_SPEED}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/rfkill/rfkill.yaml",
         "name": "rfkill",
         "params": {"TESTS": "wlan-disabled bluetooth-disabled"}
@@ -210,8 +226,9 @@
 {# Add optional tests #}
 {% if HAS_INTERFACES %}
 {% set _ = base_tests.append({
-    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "repository": TEST_DEFINITIONS_REPOSITORY,
     "from": "git",
+    "branch": TEST_DEFINITIONS_BRANCH,
     "path": "automated/revpi/interfaces/interfaces.yaml", 
     "name": "interfaces",
     "params": {"TESTS": INTERFACES_TESTS}
@@ -220,8 +237,9 @@
 
 {% if HAS_CYCLETIME %}
 {% set _ = base_tests.append({
-    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "repository": TEST_DEFINITIONS_REPOSITORY,
     "from": "git",
+    "branch": TEST_DEFINITIONS_BRANCH,
     "path": "automated/revpi/iocycle/iocycle-time.yaml",
     "name": "cycleTime",
     "params": {"TESTS": "iocycle-time iocycle-time-stress"}
@@ -232,8 +250,9 @@
 {# Add RS485 tests for each device #}
 {% for rs485_dev in RS485_DEVICES %}
 {% set _ = base_tests.append({
-    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "repository": TEST_DEFINITIONS_REPOSITORY,
     "from": "git",
+    "branch": TEST_DEFINITIONS_BRANCH,
     "path": "automated/revpi/rs485/rs485.yaml",
     "name": "rs485-" + loop.index0|string + "-test",
     "params": {"RSDEV": rs485_dev, "TESTS": "rs485-dev-perms rs485-dev-group rs485-client", "BAUD": "19200"}
@@ -243,15 +262,17 @@
 
 {% set _ = base_tests.extend([
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/rtc/rtc.yaml",
         "name": "rtc-I",
         "params": {"SKIP_INSTALL": "false", "SKIP_REBOOT": "false", "TESTS": "rtc-1 rtc-2a"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/system_info/system_info.yaml",
         "name": "system_info_dmesg",
         "params": {"TESTS": "sysinfo-dmesg"}
@@ -297,8 +318,9 @@
 {# Base testsuite-II tests #}
 {% set phase2_tests = [
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/rtc/rtc.yaml",
         "name": "rtc-II",
         "params": {"SKIP_INSTALL": "true", "SKIP_REBOOT": "true", "TESTS": "rtc-2b"}
@@ -307,8 +329,9 @@
 
 {% if HAS_HDMI %}
 {% set _ = phase2_tests.append({
-    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+    "repository": TEST_DEFINITIONS_REPOSITORY,
     "from": "git",
+    "branch": TEST_DEFINITIONS_BRANCH,
     "path": "automated/revpi/hdmi/hdmi.yaml",
     "name": "ui-desktop-start",
     "params": {"TESTS": "hdmi-status-check start-desktop", "SKIP_REBOOT": true}
@@ -317,8 +340,9 @@
 
 {% if HAS_WLAN %}
 {% set _ = phase2_tests.append({
-    "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
-    "from": "git", 
+    "repository": TEST_DEFINITIONS_REPOSITORY,
+    "from": "git",
+    "branch": TEST_DEFINITIONS_BRANCH,
     "path": "automated/linux/wlan/wlan.yaml",
     "name": "wlan-test",
     "params": {"TESTS": "wlan-enable-ext-antenna"}
@@ -359,15 +383,17 @@
 {% set timeout_minutes = 4 %}
 {% set test_definitions = [
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
+        "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/wlan/wlan.yaml",
         "name": "wlan-test-5g",
         "params": {"TESTS": "wlan-config-nm wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_5G": "WLAN_SSID_5G"}
     },
     {
-        "repository": "https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git",
-        "from": "git", 
+        "repository": TEST_DEFINITIONS_REPOSITORY,
+        "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/wlan/wlan.yaml",
         "name": "wlan-test-24g",
         "params": {"TESTS": "wlan-config-nm wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_24G": "WLAN_SSID_24G"}

@@ -13,6 +13,7 @@
     {
         "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
         "path": test_path_file,
         "name": TEST_NAME
     }
