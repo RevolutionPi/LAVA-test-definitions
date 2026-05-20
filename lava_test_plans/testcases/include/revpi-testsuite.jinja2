@@ -181,7 +181,7 @@
         "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/piControl/piControl.yaml",
         "name": "piControl",
-        "params": {"TESTS": "pc-1 pc-2 pc-perms pc-cycle-time-sample pc-set-cycle-time"}
+        "params": {"TESTS": "pc-1 pc-2 pc-perms" + (" pc-cycle-time-sample pc-set-cycle-time" if HAS_CYCLETIME else "")}
     },
     {
         "repository": TEST_DEFINITIONS_REPOSITORY,
