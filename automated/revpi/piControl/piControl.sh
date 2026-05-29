@@ -84,7 +84,7 @@ pc_set_cycle_time() {
     initial_cycle_time="$(cat $PICONTROL_SYSFS_PATH/cycle_duration)"
     cycle_time="$initial_cycle_time"
     if [ "$cycle_time" -lt "$EFFECTIVE_MIN_CYCLE_TIME" ]; then
-        info_msg "cycle time of $cycle_time is too low, starting with $EFFECTIVE_MIN_CYCLE_TIME instead"
+        info_msg "current cycle time of $cycle_time is too low, starting with $EFFECTIVE_MIN_CYCLE_TIME instead"
         cycle_time="$EFFECTIVE_MIN_CYCLE_TIME"
     fi
 
