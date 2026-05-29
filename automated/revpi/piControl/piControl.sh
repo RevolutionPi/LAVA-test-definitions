@@ -63,6 +63,7 @@ pc_cycle_time_sample() {
     # depending on the setup, so make sure the lowest realistic value is taken
     # for the test
     if [ "$cycle_duration" -lt "$EFFECTIVE_MIN_CYCLE_TIME" ]; then
+        info_msg "current cycle time of $cycle_time is too low for setup, using $EFFECTIVE_MIN_CYCLE_TIME instead"
         cycle_duration="$EFFECTIVE_MIN_CYCLE_TIME"
     fi
 
