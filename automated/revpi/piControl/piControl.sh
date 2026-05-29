@@ -80,7 +80,8 @@ pc_set_cycle_time() {
     local last_cycle_time=0 last_cycle_diff=0
     local err=""
 
-    cycle_time="$(cat $PICONTROL_SYSFS_PATH/cycle_duration)"
+    initial_cycle_time="$(cat $PICONTROL_SYSFS_PATH/cycle_duration)"
+    cycle_time="$initial_cycle_time"
     if [ "$cycle_time" -lt "$EFFECTIVE_MIN_CYCLE_TIME" ]; then
         info_msg "cycle time of $cycle_time is too low, starting with $EFFECTIVE_MIN_CYCLE_TIME instead"
         cycle_time="$EFFECTIVE_MIN_CYCLE_TIME"
