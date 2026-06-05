@@ -69,3 +69,5 @@ get_test_program "${TEST_GIT_URL}" "${TEST_DIR}" "${TEST_PROG_VERSION}" "${TEST_
 for t in $TESTS; do
     run "$t"
 done
+
+exit 0

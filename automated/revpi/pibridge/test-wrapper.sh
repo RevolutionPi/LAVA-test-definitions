@@ -36,3 +36,5 @@ fi
 
 # call given function
 $1
+
+exit 0

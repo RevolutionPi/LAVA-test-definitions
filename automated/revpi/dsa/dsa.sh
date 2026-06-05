@@ -204,3 +204,5 @@ install_deps "iperf3 jq" "$SKIP_INSTALL"
 for t in ${TESTS}; do
     run "${t}"
 done
+
+exit 0

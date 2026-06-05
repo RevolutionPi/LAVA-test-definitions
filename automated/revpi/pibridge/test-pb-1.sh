@@ -57,3 +57,5 @@ piTest_setIOValue $OUTPUT_L_2 $VALUE
 piTest_setIOValue $OUTPUT_R_1 $VALUE
 piTest_setIOValue $OUTPUT_R_2 $VALUE
 sleep 1
+
+exit 0

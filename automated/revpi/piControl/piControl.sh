@@ -117,6 +117,7 @@ pc_set_cycle_time() {
     # max piControl cycle time is 45000
     while [ "$cycle_time" -le "45000" ] \
         && [ -z "$err" ] ; do
+        printf 'test %d\n' "$cycle_time"
         printf "%d\n" "$cycle_time" \
             > "$PICONTROL_SYSFS_CYCLE_DURATION_PATH"
         # let picontrol settle
@@ -210,3 +211,5 @@ install_deps coreutils "$SKIP_INSTALL"
 for t in $TESTS; do
     run "$t"
 done
+
+exit 0

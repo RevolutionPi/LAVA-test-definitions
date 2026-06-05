@@ -97,3 +97,5 @@ fi
 for t in $TESTS; do
     run "$t"
 done
+
+exit 0

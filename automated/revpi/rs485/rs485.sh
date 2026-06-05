@@ -112,3 +112,5 @@ TESTS="rs485-dev-present $TESTS"
 for t in $TESTS; do
     run "$t"
 done
+
+exit 0

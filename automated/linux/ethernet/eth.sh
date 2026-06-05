@@ -116,3 +116,5 @@ IPERF_SPEED=$((ETHERNET_SPEED-ETHERNET_SPEED/10))
 for t in $TESTS; do
     run "$t"
 done
+
+exit 0

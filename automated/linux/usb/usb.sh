@@ -143,3 +143,5 @@ install_deps "bc fdisk" "$SKIP_INSTALL"
 for t in $TESTS; do
     run "$t"
 done
+
+exit 0

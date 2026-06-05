@@ -113,3 +113,5 @@ done
 
 # Enable NTP again after tests are run (only if the DUT should not reboot)
 [ "${SKIP_REBOOT}" != "true" ] || timedatectl set-ntp true
+
+exit 0

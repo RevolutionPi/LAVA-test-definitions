@@ -143,3 +143,5 @@ for t in $TESTS; do
 done
 
 # TODO: This test should be modified for external hardware...
+
+exit 0

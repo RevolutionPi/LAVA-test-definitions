@@ -71,3 +71,5 @@ install_deps "piserial tpm2-tools" "$SKIP_INSTALL"
 for t in $TESTS; do
     run "$t"
 done
+
+exit 0

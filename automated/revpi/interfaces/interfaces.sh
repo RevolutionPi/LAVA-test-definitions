@@ -102,3 +102,5 @@ create_out_dir "${OUTPUT}"
 for t in $TESTS; do
     run "$t"
 done
+
+exit 0

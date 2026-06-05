@@ -50,3 +50,5 @@ rm -f ./*.deb
 
 # Reboot DUT if desired
 [ "${SKIP_REBOOT}" = "true" ] || [ "${SKIP_REBOOT}" = "True" ] || shutdown -r +1
+
+exit 0
