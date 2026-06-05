@@ -9,6 +9,8 @@ TESTS="pc-1 pc-2 pc-perms pc-cycle-time-sample pc-set-cycle-time"
 SKIP_INSTALL=false
 PICONTROL_DEV="/dev/piControl0"
 PICONTROL_SYSFS_PATH="/sys/class/piControl/piControl0"
+PICONTROL_SYSFS_LAST_CYCLE_PATH="$PICONTROL_SYSFS_PATH"/last_cycle
+PICONTROL_SYSFS_CYCLE_DURATION_PATH="$PICONTROL_SYSFS_PATH"/cycle_duration
 EFFECTIVE_MIN_CYCLE_TIME=15000
 
 usage() {
@@ -55,8 +57,20 @@ check_dmesg() {
 pc_cycle_time_sample() {
     local last_cycle_time cycle_duration cycle_diff
 
-    last_cycle_time="$(cat "$PICONTROL_SYSFS_PATH"/last_cycle)"
-    cycle_duration="$(cat "$PICONTROL_SYSFS_PATH"/cycle_duration)"
+    if [ ! -r "$PICONTROL_SYSFS_LAST_CYCLE_PATH" ]; then
+        warn_msg "File '$PICONTROL_SYSFS_LAST_CYCLE_PATH' cannot be read."
+        report_fail pc-cycle-time-sample
+        return 1
+    fi
+
+    if [ ! -r "$PICONTROL_SYSFS_CYCLE_DURATION_PATH" ]; then
+        warn_msg "File '$PICONTROL_SYSFS_CYCLE_DURATION_PATH' cannot be read."
+        report_fail pc-cycle-time-sample
+        return 1
+    fi
+
+    last_cycle_time="$(cat "$PICONTROL_SYSFS_LAST_CYCLE_PATH")"
+    cycle_duration="$(cat "$PICONTROL_SYSFS_CYCLE_DURATION_PATH")"
 
     # the cycle_duration can be set as low as 500 microseconds, which is "as
     # fast as possible". devices usually hover around 12000-15000 microseconds
@@ -81,7 +95,19 @@ pc_set_cycle_time() {
     local last_cycle_time=0 last_cycle_diff=0
     local err=""
 
-    initial_cycle_time="$(cat "$PICONTROL_SYSFS_PATH"/cycle_duration)"
+    if [ ! -r "$PICONTROL_SYSFS_LAST_CYCLE_PATH" ]; then
+        warn_msg "File '$PICONTROL_SYSFS_LAST_CYCLE_PATH' cannot be read."
+        report_fail pc-set-cycle-time
+        return 1
+    fi
+
+    if [ ! -r "$PICONTROL_SYSFS_CYCLE_DURATION_PATH" ]; then
+        warn_msg "File '$PICONTROL_SYSFS_CYCLE_DURATION_PATH' cannot be read."
+        report_fail pc-set-cycle-time
+        return 1
+    fi
+
+    initial_cycle_time="$(cat "$PICONTROL_SYSFS_CYCLE_DURATION_PATH")"
     cycle_time="$initial_cycle_time"
     if [ "$cycle_time" -lt "$EFFECTIVE_MIN_CYCLE_TIME" ]; then
         info_msg "current cycle time of $cycle_time is too low, starting with $EFFECTIVE_MIN_CYCLE_TIME instead"
@@ -92,11 +118,11 @@ pc_set_cycle_time() {
     while [ "$cycle_time" -le "45000" ] \
         && [ -z "$err" ] ; do
         printf "%d\n" "$cycle_time" \
-            > "$PICONTROL_SYSFS_PATH"/cycle_duration
+            > "$PICONTROL_SYSFS_CYCLE_DURATION_PATH"
         # let picontrol settle
         sleep 0.5
 
-        last_cycle_time="$(cat "$PICONTROL_SYSFS_PATH"/last_cycle)"
+        last_cycle_time="$(cat "$PICONTROL_SYSFS_LAST_CYCLE_PATH")"
         last_cycle_diff="$(printf "%d" \
             "$((last_cycle_time - cycle_time))" | cut -d'-' -f2)"
 
@@ -111,7 +137,7 @@ pc_set_cycle_time() {
 
     # restore initial cycle time before the test ran
     printf "%d\n" "$initial_cycle_time" \
-        > "$PICONTROL_SYSFS_PATH"/cycle_duration
+        > "$PICONTROL_SYSFS_CYCLE_DURATION_PATH"
 
     [ -z "$err" ]
     check_return pc-set-cycle-time
