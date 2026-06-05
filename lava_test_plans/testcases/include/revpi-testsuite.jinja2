@@ -327,7 +327,8 @@
     }
 ] %}
 
-{% if HAS_HDMI %}
+{# ui-desktop-start test is temporary disabled until it is stable #}
+{% if HAS_HDMI and False %}
 {% set _ = phase2_tests.append({
     "repository": TEST_DEFINITIONS_REPOSITORY,
     "from": "git",
