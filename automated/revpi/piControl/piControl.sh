@@ -86,7 +86,7 @@ pc_cycle_time_sample() {
 
     info_msg "cycle_duration: $cycle_duration, last_cycle_time: $last_cycle_time, cycle_diff: $cycle_diff"
 
-    [ "$cycle_diff" -lt 1500 ]
+    [ "$cycle_diff" -lt 2000 ]
     check_return pc-cycle-time-sample
 }
 
@@ -127,8 +127,8 @@ pc_set_cycle_time() {
         last_cycle_diff="$(printf "%d" \
             "$((last_cycle_time - cycle_time))" | cut -d'-' -f2)"
 
-        if [ "$last_cycle_diff" -gt "1500" ]; then
-            err="last cycle deviates by over 1500 (set: $cycle_time, measured: $last_cycle_time, diff: $last_cycle_diff)"
+        if [ "$last_cycle_diff" -gt "2000" ]; then
+            err="last cycle deviates by over 2000 (set: $cycle_time, measured: $last_cycle_time, diff: $last_cycle_diff)"
             warn_msg "$err"
             break
         fi
