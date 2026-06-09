@@ -56,6 +56,7 @@ check_dmesg() {
 
 pc_cycle_time_sample() {
     local last_cycle_time cycle_duration cycle_diff
+    local test_result=fail
 
     if [ ! -r "$PICONTROL_SYSFS_LAST_CYCLE_PATH" ]; then
         warn_msg "File '$PICONTROL_SYSFS_LAST_CYCLE_PATH' cannot be read."
@@ -86,8 +87,12 @@ pc_cycle_time_sample() {
 
     info_msg "cycle_duration: $cycle_duration, last_cycle_time: $last_cycle_time, cycle_diff: $cycle_diff"
 
-    [ "$cycle_diff" -lt 2000 ]
-    check_return pc-cycle-time-sample
+    if [ "$cycle_diff" -lt 2000 ]; then
+        test_result=pass
+    else
+        test_result=fail
+    fi
+    add_metric pc-cycle-time-sample "$test_result" "$cycle_diff" us
 }
 
 pc_set_cycle_time() {
