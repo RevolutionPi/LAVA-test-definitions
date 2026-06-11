@@ -45,94 +45,191 @@ ensure_mountable_partition() {
     fi
 }
 
-run() {
-    local test_case_id="$1"
+usb_1() {
+    local test_case_id=usb-1
+
+    mkdir -p "$MOUNT_POINT"
+
+    if mount "$DEVICE" "$MOUNT_POINT"; then
+        report_pass "$test_case_id"
+        umount "$MOUNT_POINT" \
+            || warn_msg "$test_case_id: Unable to unmount $MOUNT_POINT"
+    else
+        warn_msg "$test_case_id: Can't mount $DEVICE to $MOUNT_POINT"
+        report_fail "$test_case_id"
+    fi
+}
+
+usb_2() {
+    local test_case_id=usb-2
+
+    mkdir -p "$MOUNT_POINT"
+
+    if ! mount "$DEVICE" "$MOUNT_POINT"; then
+        warn_msg "$test_case_id: Can't mount $DEVICE to $MOUNT_POINT"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    if ! dd if=/dev/urandom of=./testfile bs=1k count=512; then
+        warn_msg "$test_case_id: Can't write test file"
+        report_fail "$test_case_id"
+        umount "$MOUNT_POINT" \
+            || warn_msg "$test_case_id: Unable to unmount $MOUNT_POINT"
+        return 1
+    fi
+
+    if ! md5sum ./testfile > md5; then
+        warn_msg "$test_case_id: Can't write md5sum of testfile to file"
+        report_fail "$test_case_id"
+        umount "$MOUNT_POINT" \
+            || warn_msg "$test_case_id: Unable to unmount $MOUNT_POINT"
+        return 1
+    fi
+
+    if ! cp testfile md5 "$MOUNT_POINT"; then
+        warn_msg "$test_case_id: Can't copy testfile and md5sum to mount point"
+        report_fail "$test_case_id"
+        umount "$MOUNT_POINT" \
+            || warn_msg "$test_case_id: Unable to unmount $MOUNT_POINT"
+        return 1
+    fi
+
+    if ! pushd "$MOUNT_POINT" > /dev/null; then
+        warn_msg "$test_case_id: Can't enter $MOUNT_POINT"
+        report_fail "$test_case_id"
+        umount "$MOUNT_POINT" \
+            || warn_msg "$test_case_id: Unable to unmount $MOUNT_POINT"
+        return 1
+    fi
+
+    if ! md5sum -c md5; then
+        warn_msg "$test_case_id: Checksums don't match"
+        report_fail "$test_case_id"
+        umount "$MOUNT_POINT" \
+            || warn_msg "$test_case_id: Unable to unmount $MOUNT_POINT"
+        return 1
+    fi
+
+    if ! popd > /dev/null; then
+        warn_msg "$test_case_id: Unable to exit $MOUNT_POINT"
+        report_fail "$test_case_id"
+        umount "$MOUNT_POINT" \
+            || warn_msg "$test_case_id: Unable to unmount $MOUNT_POINT"
+        return 1
+    fi
+
+    if ! umount "$MOUNT_POINT"; then
+        warn_msg "$test_case_id: Unable unmount $MOUNT_POINT"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    rmdir "$MOUNT_POINT" \
+        || warn_msg "$test_case_id: Unable to remove left over $MOUNT_POINT dir"
+    report_pass "$test_case_id"
+}
+
+usb_4() {
+    local test_case_id=usb-4
     local output=""
     local speed=""
+    local result=""
+
+    # Run dd to measure the speed - write
+    if ! output="$(dd if=/dev/zero \
+        of="$DEVICE" \
+        conv=sync \
+        iflag=nocache \
+        oflag=nocache \
+        bs=1k \
+        count=100000 2>&1)"; then
+        warn_msg "$test_case_id: Unable to write to $DEVICE"
+        report_fail "$test_case_id"
+        return 1
+    fi
+    echo "$output"
+
+    if ! speed="$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)"
+    then
+        warn_msg "$test_case_id: Can't extract speed from output"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    if [ "$(echo "$speed >= $SPEED_DEFAULT_WRITE_MIN" | bc -l)" -eq 1 ]; then
+        result=pass
+        info_msg "Overall write speed is greater than $SPEED_DEFAULT_WRITE_MIN MB/s"
+        report_pass "$test_case_id"
+    else
+        result=fail
+        warn_msg "Overall write speed is less than $SPEED_DEFAULT_WRITE_MIN MB/s -> FAIL!"
+        report_fail "$test_case_id"
+    fi
+
+    add_metric "$test_case_id-metric" "$result" "$speed" MB/s
+}
+
+usb_5() {
+    local test_case_id=usb-5
+    local output=""
+    local speed=""
+    local result=""
+
+    # Run dd to measure the speed - read
+    if ! output="$(dd if="$DEVICE" \
+        of=/dev/null \
+        conv=sync \
+        iflag=nocache \
+        oflag=nocache \
+        bs=1k \
+        count=100000 2>&1)"; then
+        warn_msg "$test_case_id: Unable to read from $DEVICE"
+        report_fail "$test_case_id"
+        return 1
+    fi
+    echo "$output"
+
+    if ! speed="$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)"
+    then
+        warn_msg "$test_case_id: Unable to extract speed"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    if [ "$(echo "$speed >= $SPEED_DEFAULT_READ_MIN" | bc -l)" -eq 1 ]; then
+        result=pass
+        info_msg "Overall read speed is greater than $SPEED_DEFAULT_READ_MIN MB/s"
+        report_pass "$test_case_id"
+    else
+        result=fail
+        warn_msg "Overall read speed is less than $SPEED_DEFAULT_READ_MIN MB/s -> FAIL!"
+        report_fail "$test_case_id"
+    fi
+
+    add_metric "$test_case_id-metric" "$result" "$speed" MB/s
+}
+
+run() {
+    local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
 
     if mount | grep -q "$DEVICE"; then
         umount "$DEVICE"
-        exit_on_fail "$test_case_id-umount-left-over-mount"
+        warn_msg "$test_case_id: Left over mount from $DEVICE, not running test"
+        report_skip "$test_case_id"
+        return 1
     fi
 
     ensure_mountable_partition "${DEVICE%[0-9]}" "$DEVICE"
 
     case "$test_case_id" in
-    "usb-1")
-        mkdir -p "$MOUNT_POINT"
-
-        if mount "$DEVICE" "$MOUNT_POINT"; then
-            report_pass "$test_case_id"
-            umount "$MOUNT_POINT"
-        else
-            error_msg "$test_case_id FAIL!"
-        fi
-        ;;
-    "usb-2")
-        if [ ! -d "$MOUNT_POINT" ]; then
-            mkdir "$MOUNT_POINT"
-        fi
-
-        mount "$DEVICE" "$MOUNT_POINT"
-        exit_on_fail "$test_case_id-mount"
-
-        dd if=/dev/urandom of=./testfile bs=1k count=512
-        exit_on_fail "$test_case_id-dd"
-        md5sum ./testfile > md5
-
-        cp testfile md5 "$MOUNT_POINT" > /dev/null
-
-        pushd "$MOUNT_POINT" > /dev/null || error_msg "$test_case_id-pushd"
-        md5sum -c md5
-        check_return "$test_case_id-md5sum"
-        popd > /dev/null || error_msg "$test_case_id-popd"
-
-        umount "$MOUNT_POINT"
-        rmdir "$MOUNT_POINT"
-        ;;
-    "usb-4")
-        # Run dd to measure the speed - write
-        output=$(dd if=/dev/zero \
-            of="$DEVICE" \
-            conv=sync \
-            iflag=nocache \
-            oflag=nocache \
-            bs=1k \
-            count=100000 2>&1)
-        echo "$output"
-        speed=$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)
-        if [ "$(echo "$speed >= $SPEED_DEFAULT_WRITE_MIN" | bc -l)" -eq 1 ]; then
-            info_msg "Overall write speed is greater than $SPEED_DEFAULT_WRITE_MIN MB/s"
-            add_metric "$test_case_id-write-speed" pass "$speed" MB/s
-        else
-            warn_msg "Overall write speed is less than $SPEED_DEFAULT_WRITE_MIN MB/s -> FAIL!"
-            add_metric "$test_case_id-write-speed" fail "$speed" MB/s
-        fi
-        ;;
-    "usb-5")
-        # Run dd to measure the speed - read
-        output=$(dd if="$DEVICE" \
-            of=/dev/null \
-            conv=sync \
-            iflag=nocache \
-            oflag=nocache \
-            bs=1k \
-            count=100000 2>&1)
-        echo "$output"
-        speed=$(echo "$output" | grep -Eo "$SPEED_REGEX" | cut -d' ' -f1)
-        if [ "$(echo "$speed >= $SPEED_DEFAULT_READ_MIN" | bc -l)" -eq 1 ]; then
-            info_msg "Overall read speed is greater than $SPEED_DEFAULT_READ_MIN MB/s"
-            add_metric "$test_case_id-read-speed" pass "$speed" MB/s
-        else
-            warn_msg "Overall read speed is less than $SPEED_DEFAULT_READ_MIN MB/s -> FAIL!"
-            add_metric "$test_case_id-read-speed" fail "$speed" MB/s
-        fi
-        ;;
+    "usb-1") usb_1 ;;
+    "usb-2") usb_2 ;;
+    "usb-4") usb_4 ;;
+    "usb-5") usb_5 ;;
     *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
-
-    check_return "${test_case_id}"
 }
 
 # Test run.
