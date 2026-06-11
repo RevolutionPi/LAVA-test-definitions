@@ -52,10 +52,6 @@ last_partition_resize_check() {
     fi
 }
 
-last_partition_fs_resize_check() {
-    local blockdev="$1"
-}
-
 run() {
     local test_case_id="$1"
     info_msg "Running $test_case_id test..."
