@@ -56,6 +56,8 @@ check_iperf3() {
     local check_nr="$2"
     local output_iperf3=""
     local bitrate_average=0
+    local result=""
+
     case "$check_nr" in
     1)
         output_iperf3="$(iperf3 -t 1800 -4 -c "$IP_ATE" -t 10 -J)"
@@ -70,12 +72,16 @@ check_iperf3() {
     esac
 
     if [ "$(printf "%.0f" "$bitrate_average")" -gt "$minimum_bitrate" ]; then
+        result=pass
         info_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $minimum_bitrate Mbit/s -> eth-3_$check_nr/2 OK"
-        add_metric "eth-3-$check_nr" pass "$bitrate_average" "Mbit/s"
+        report_pass eth-3-"$check_nr"
     else
+        result=fail
         warn_msg "Bitrate average: $bitrate_average Mbit/s - Bitrate expected: $minimum_bitrate Mbit/s -> eth-3_$check_nr/2 FAIL"
-        add_metric "eth-3-$check_nr" fail "$bitrate_average" "Mbit/s"
+        report_fail eth-3-"$check_nr"
     fi
+
+    add_metric "eth-3-$check_nr-metric" "$result" "$bitrate_average" "Mbit/s"
 }
 
 run() {

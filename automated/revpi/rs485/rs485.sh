@@ -44,10 +44,12 @@ rs485_client() {
 
     if errors="$(./rs485.py "$RSDEV" -b "$BAUD" -l "$LIMIT" client)"; then
         result="pass"
+        report_pass rs485-client
     else
         result="fail"
+        report_fail rs485-client
     fi
-    add_metric rs485-client "$result" "$errors" errors
+    add_metric rs485-client-metric "$result" "$errors" errors
 }
 
 rs485_dev_present() {

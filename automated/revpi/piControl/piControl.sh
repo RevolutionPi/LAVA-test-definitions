@@ -89,10 +89,12 @@ pc_cycle_time_sample() {
 
     if [ "$cycle_diff" -lt 2000 ]; then
         test_result=pass
+        report_pass pc-cycle-time-sample
     else
         test_result=fail
+        report_fail pc-cycle-time-sample
     fi
-    add_metric pc-cycle-time-sample "$test_result" "$cycle_diff" us
+    add_metric pc-cycle-time-sample-metric "$test_result" "$cycle_diff" us
 }
 
 pc_set_cycle_time() {

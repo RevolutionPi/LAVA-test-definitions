@@ -43,7 +43,7 @@ info_msg "Installing package(s)..."
 if ! apt-get install -y ./*.deb; then
     error_fatal "Unable to install package(s)"
 else
-    add_metric pkg-install-apt-install pass "$#" packages
+    report_pass pkg-install-apt-install
 fi
 
 rm -f ./*.deb

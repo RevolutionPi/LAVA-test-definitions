@@ -31,6 +31,7 @@ done
 
 run() {
     local test_case_id="$1"
+    local result=""
     info_msg "Running ${test_case_id} test..."
 
     case "$test_case_id" in
@@ -49,10 +50,13 @@ run() {
     echo "$output"
     mean_ms=$(echo "$output" | jq -r '.mean_ms')
     if [ "$(echo "$mean_ms > $MEAN_MS" | bc)" -eq "1" ]; then
-        add_metric "${test_case_id}" fail "$mean_ms" milliseconds
+        result=fail
+        report_fail "$test_case_id"
     else
-        add_metric "${test_case_id}" pass "$mean_ms" milliseconds
+        result=pass
+        report_pass "$test_case_id"
     fi
+    add_metric "${test_case_id}-metric" "$result" "$mean_ms" milliseconds
 
     if [ "$test_case_id" = "iocycle-time-stress" ]; then
         pkill stress
