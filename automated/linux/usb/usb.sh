@@ -31,13 +31,18 @@ done
 
 check_available_dev() {
     if [ ! -b "$1" ];then
-        error_msg "Block device $1 not found"
+        warn_msg "Block device $1 not found"
+        return 1
     fi
+
+    return 0
 }
 
 # usage: ensure_mountable_partition DEVICE PARTITION
 ensure_mountable_partition() {
-    check_available_dev "$1"
+    if ! check_available_dev "$1"; then
+        return 1
+    fi
 
     if [ ! -b "$2" ] || ! (file -Ls "$2" | grep -q ext4); then
         partition_disk "${DEVICE%[0-9]}"
@@ -221,7 +226,11 @@ run() {
         return 1
     fi
 
-    ensure_mountable_partition "${DEVICE%[0-9]}" "$DEVICE"
+    if ! ensure_mountable_partition "${DEVICE%[0-9]}" "$DEVICE"; then
+        warn_msg "$test_case_id: Cannot ensure device is mountable"
+        report_fail "$test_case_id"
+        return 1
+    fi
 
     case "$test_case_id" in
     "usb-1") usb_1 ;;
