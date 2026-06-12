@@ -33,7 +33,9 @@ rfkill_check_devices_state() {
     local failed=""
 
     if ! rfkill_output="$(rfkill --json)"; then
-        error_msg "failed to run rfkill"
+        warn_msg "failed to run rfkill"
+        report_fail "$test_case_id"
+        return 1
     fi
 
     if ! dev_ifs="$(echo "$rfkill_output" |
