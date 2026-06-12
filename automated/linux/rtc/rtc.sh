@@ -57,30 +57,51 @@ check_hwclock() {
         info_msg "hwclock is correct after setting."
         return 0
     else
-        error_msg "hwclock is not correct after setting."
+        warn_msg "hwclock is not correct after setting."
+        return 1
     fi
 }
 
 rtc_1() {
+    local test_case_id=rtc-1
+
     info_msg "Set hardware clock to $DATE_SET"
     hwclock --set --date "$DATE_SET"
     # Check if hwclock is correct after setting
-    check_hwclock "$DATE_SET"
+    if ! check_hwclock "$DATE_SET"; then
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    report_pass "$test_case_id"
 }
 
 rtc_2a() {
+    local test_case_id=rtc-2a
+
     # Disable NTP, set hardware clock to "$DATE_SET"
     timedatectl set-ntp false
     info_msg "Set hardware clock to $DATE_SET"
     hwclock --set --date "$DATE_SET"
-    check_hwclock "$DATE_SET"
+    if ! check_hwclock "$DATE_SET"; then
+        report_fail "$test_case_id"
+        return 1
+    fi
+    report_pass "$test_case_id"
     # Reboot DUT if desired
     [ "${SKIP_REBOOT}" = "true" ] || shutdown -r +1
 }
 
 rtc_2b() {
+    local test_case_id=rtc-2b
+
     # Verify the expected time after reboot
-    check_hwclock "$DATE_SET" "$TOLERANCE_DEFAULT_MIN"
+    if ! check_hwclock "$DATE_SET" "$TOLERANCE_DEFAULT_MIN"; then
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    report_pass "$test_case_id"
 }
 
 run() {
@@ -89,19 +110,11 @@ run() {
     info_msg "Running ${test_case_id} test..."
 
     case "$test" in
-    "rtc-1")
-        rtc_1
-        ;;
-    "rtc-2a")
-        rtc_2a
-        ;;
-    "rtc-2b")
-        rtc_2b
-        ;;
+    "rtc-1") rtc_1 ;;
+    "rtc-2a") rtc_2a ;;
+    "rtc-2b") rtc_2b ;;
     *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
-
-    check_return "${test_case_id}"
 }
 
 # Test run.
