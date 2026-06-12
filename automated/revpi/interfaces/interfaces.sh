@@ -24,18 +24,12 @@ done
 
 check_iface1() {
     local iface_name="$1"
-    if [ -d "/sys/class/net/${iface_name}" ]; then
-        info_msg "$iface_name found"
-    else
-        error_msg "$iface_name not found!"
-    fi
+    [ -d "/sys/class/net/${iface_name}" ]
 }
 
 check_iface2() {
     local iface_name="$1"
-    if ! ip addr show "$1" ; then
-        error_msg "$iface_name not found!"
-    fi
+    ip addr show "$1"
 }
 
 check_dmesg() {
@@ -62,10 +56,11 @@ check_dmesg() {
         fi
 
         if [ "$set_error" -eq 1 ]; then
-            error_msg "error(s) ocurred.. Check output of dmesg or warning messages above"
+            warn_msg "error(s) ocurred.. Check output of dmesg or warning messages above"
         fi
-
     fi
+
+    [ "$set_error" -gt 0 ]
 }
 
 run() {
@@ -75,25 +70,28 @@ run() {
     case "$test_case_id" in
     "pileft-1")
         check_iface1 pileft
+        check_return "$test_case_id"
         ;;
     "pileft-2")
         check_iface2 pileft
+        check_return "$test_case_id"
         ;;
     "piright-1")
         check_iface1 piright
+        check_return "$test_case_id"
         ;;
     "piright-2")
         check_iface2 piright
+        check_return "$test_case_id"
         ;;
     "dmesg")
         check_dmesg
+        check_return "$test_case_id"
         ;;
     *)
-        report_fail "Undefined test \"$test_case_id\""
+        error_msg "Undefined test \"$test_case_id\""
         ;;
     esac
-
-    check_return "${test_case_id}"
 }
 
 # Test run.
