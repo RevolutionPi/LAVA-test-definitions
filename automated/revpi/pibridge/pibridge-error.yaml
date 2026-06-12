@@ -1,0 +1,36 @@
+---
+metadata:
+  name: pibridge-error
+  format: Lava-Test Test Definition 1.0
+  description: |
+    Test for piBridge errors during communication
+  maintainer:
+    - t.boehler@kunbus.com
+  os:
+    - debian
+  scope:
+    - functional
+  devices:
+    - RevPi Core
+    - RevPi Core 3
+    - RevPi Core 3+
+    - RevPi Core S
+    - RevPi Core SE
+    - RevPi Connect
+    - RevPi Connect+
+    - RevPi Connect S
+    - RevPi Connect SE
+    - RevPi Connect 4
+    - RevPi Connect 5
+
+params:
+  SKIP_INSTALL: "false"
+  TESTS: "pibridge-error"
+
+run:
+  steps:
+    - cd ./automated/revpi/pibridge
+    - ./pibridge-error.sh
+        -s "$SKIP_INSTALL"
+        -t "$TESTS"
+    - ../../utils/send-to-lava.sh ./output/result.txt

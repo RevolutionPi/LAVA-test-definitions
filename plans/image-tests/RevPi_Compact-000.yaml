@@ -148,6 +148,13 @@ actions:
         - repository:
             https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
           from: git
+          path: automated/revpi/pibridge/pibridge-error.yaml
+          name: piBridge
+          params:
+            TESTS: "pibridge-error"
+        - repository:
+            https://gitlab.com/revolutionpi/infrastructure/testing/LAVA-test-definitions.git
+          from: git
           path: automated/revpi/piTest/pt.yaml
           name: piTest_piBridge
           params:
