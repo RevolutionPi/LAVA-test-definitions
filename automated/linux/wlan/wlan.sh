@@ -35,55 +35,129 @@ while getopts "t:I:S:W:P:h" o; do
     esac
 done
 
+wlan_enable_ext_antenna() {
+    local test_case_id=wlan-enable-ext-antenna
+    local output=""
+
+    output="$(revpi-config enable external-antenna)"
+    if [ "${output}" -ne 0 ]; then
+        report_fail "$test_case_id"
+    else
+        report_pass "$test_case_id"
+        # reboot to fully activate antenna
+        shutdown -r +1
+    fi
+}
+
+wlan_config_nm() {
+    local test_case_id=wlan-config-nm
+
+    if ! echo "country=DE" >> /etc/NetworkManager/NetworkManager.conf; then
+        warn_msg "$test_case_id: Unable to set WLAN country"
+        report_fail "$test_case_id"
+        return 1
+    fi
+    if ! systemctl restart NetworkManager; then
+        warn_msg "$test_case_id: Unable to restart NetworkManager"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    report_pass "$test_case_id"
+
+    # Wait a few seconds after configuration to let NetworkManager settle
+    sleep 5
+}
+
+wlan_1_nm() {
+    local test_case_id=wlan-1-nm
+
+    if ! nmcli -c no device wifi rescan ifname "${WLAN_INTERFACE}"; then
+        warn_msg "$test_case_id: Unable to start WLAN rescan"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    sleep 5
+
+    if ! nmcli -f SSID -c no device wifi list ifname "${WLAN_INTERFACE}" \
+        | grep -q "${WLAN_SSID}"; then
+        warn_msg "$test_case_id: Unable to find $WLAN_SSID in list of SSIDs"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    report_pass "$test_case_id"
+}
+
+wlan_2_nm_a() {
+    local test_case_id=wlan-2-nm-a
+
+    if ! nmcli device wifi connect "${WLAN_SSID}" password "${WLAN_PASSWORD}" name TEST; then
+        warn_msg "$test_case_id: Unable to connect to SSID: ${WLAN_SSID}"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    report_pass "$test_case_id"
+}
+
+wlan_2_nm_b() {
+    local test_case_id=wlan-2-nm-b
+    local output=""
+
+    if ! output="$(nmcli -t connection show TEST)"; then
+        warn_msg "$test_case_id: Cannot show connection 'TEST'"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    if ! echo "${output}" | grep -q "802-11-wireless.ssid:${WLAN_SSID}"; then
+        warn_msg "$test_case_id: 802-11-wireless.ssid is not '$WLAN_SSID'"
+        report_fail "$test_case_id"
+        return 1
+    fi
+    if ! echo "${output}" | grep -q "802-11-wireless.mode:infrastructure"; then
+        warn_msg "$test_case_id: 802-11-wireless.mode is not 'infrastructure'"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    report_pass "$test_case_id"
+}
+
+wlan_2_nm_disconnect() {
+    local test_case_id=wlan-2-nm-disconnect
+
+    if ! nmcli connection delete TEST; then
+        warn_msg "$test_case_id: Unable to remove connection 'TEST'"
+        report_fail "$test_case_id"
+        return 1
+    fi
+
+    report_pass "$test_case_id"
+}
+
 run() {
     local test_case_id="$1"
     local output=""
     info_msg "Running ${test_case_id} test..."
 
     case "${test_case_id}" in
-    "wlan-enable-ext-antenna")
-        output="$(revpi-config enable external-antenna)"
-        [ "${output}" -ne 0 ] || shutdown -r +1
-        ;;
-    "wlan-config-nm")
-        echo "country=DE" >> /etc/NetworkManager/NetworkManager.conf
-        systemctl restart NetworkManager
-        # Wait a few seconds after configuration
-        sleep 5
-        ;;
-    "wlan-1-nm")
-        nmcli -c no device wifi rescan ifname "${WLAN_INTERFACE}"
-        sleep 5
-        nmcli -f SSID -c no device wifi list ifname "${WLAN_INTERFACE}" | grep "${WLAN_SSID}"
-        ;;
-    "wlan-2-nm-a")
-        nmcli device wifi connect "${WLAN_SSID}" password "${WLAN_PASSWORD}" name TEST
-        output="$?"
-        if [ "${output}" -ne 0 ]; then
-            error_msg "Unable to connect to SSID: ${WLAN_SSID}. Test aborted"
-        fi
-        ;;
-    "wlan-2-nm-b")
-        output="$(nmcli -t connection show TEST)"
-        if ! echo "${output}" | grep -q "802-11-wireless.ssid:${WLAN_SSID}"; then
-            report_fail "802-11-wireless.ssid should be ${WLAN_SSID}"
-        fi
-        if ! echo "${output}" | grep -q "802-11-wireless.mode:infrastructure"; then
-            report_fail "802-11-wireless.mode NOT infrastructure!"
-        fi
-        ;;
-    "wlan-2-nm-disconnect")
-        nmcli connection delete TEST
-        ;;
+    "wlan-enable-ext-antenna") wlan_enable_ext_antenna ;;
+    "wlan-config-nm") wlan_config_nm ;;
+    "wlan-1-nm") wlan_1_nm ;;
+    "wlan-2-nm-a") wlan_2_nm_a ;;
+    "wlan-2-nm-b") wlan_2_nm_b ;;
+    "wlan-2-nm-disconnect") wlan_2_nm_disconnect ;;
     "wlan-sleep")
-        sleep "${WLAN_SLEEP}";
+        sleep "${WLAN_SLEEP}"
+        report_pass "$test_case_id"
         ;;
     *)
-        report_fail "Undefined test..."
+        error_msg "Undefined test..."
         ;;
     esac
-
-    check_return "${test_case_id}"
 }
 
 # Test run.
