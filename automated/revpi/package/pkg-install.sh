@@ -28,7 +28,7 @@ done
 shift $((OPTIND - 1))
 
 if [ "$#" -lt 1 ]; then
-    error_msg "At least 1 URL needs to be given"
+    error_fatal "At least 1 URL needs to be given"
 fi
 
 # Test run.
