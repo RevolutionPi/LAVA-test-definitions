@@ -52,13 +52,13 @@ wlan_enable_ext_antenna() {
 wlan_config_nm() {
     local test_case_id=wlan-config-nm
 
-    if ! echo "country=DE" >> /etc/NetworkManager/NetworkManager.conf; then
-        warn_msg "$test_case_id: Unable to set WLAN country"
+    if ! echo "options cfg80211 ieee80211_regdom=DE" > /etc/modprobe.d/cfg80211.conf; then
+        warn_msg "$test_case_id: Unable to write cfg80211 country config"
         report_fail "$test_case_id"
         return 1
     fi
-    if ! systemctl restart NetworkManager; then
-        warn_msg "$test_case_id: Unable to restart NetworkManager"
+    if ! iw reg set DE; then
+        warn_msg "$test_case_id: Unable to set WLAN regulatory domain"
         report_fail "$test_case_id"
         return 1
     fi
