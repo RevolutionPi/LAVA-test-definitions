@@ -62,6 +62,11 @@ wlan_config_nm() {
         report_fail "$test_case_id"
         return 1
     fi
+    if ! revpi-config enable ieee80211; then
+        warn_msg "$test_case_id: Unable to enable WLAN radio"
+        report_fail "$test_case_id"
+        return 1
+    fi
 
     report_pass "$test_case_id"
 
