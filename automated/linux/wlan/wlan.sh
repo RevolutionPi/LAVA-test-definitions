@@ -69,9 +69,6 @@ wlan_config_nm() {
     fi
 
     report_pass "$test_case_id"
-
-    # Wait a few seconds after configuration to let NetworkManager settle
-    sleep 5
 }
 
 wlan_1_nm() {
