@@ -354,7 +354,7 @@
     "branch": TEST_DEFINITIONS_BRANCH,
     "path": "automated/linux/wlan/wlan.yaml",
     "name": "wlan-test",
-    "params": {"TESTS": "wlan-enable-ext-antenna"}
+    "params": {"TESTS": "wlan-enable-ext-antenna wlan-config-nm"}
 }) %}
 {% endif %}
 
@@ -397,7 +397,7 @@
         "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/wlan/wlan.yaml",
         "name": "wlan-test-5g",
-        "params": {"TESTS": "wlan-config-nm wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_5G": "WLAN_SSID_5G"}
+        "params": {"TESTS": "wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_5G": "WLAN_SSID_5G"}
     },
     {
         "repository": TEST_DEFINITIONS_REPOSITORY,
@@ -405,7 +405,7 @@
         "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/linux/wlan/wlan.yaml",
         "name": "wlan-test-24g",
-        "params": {"TESTS": "wlan-config-nm wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_24G": "WLAN_SSID_24G"}
+        "params": {"TESTS": "wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_24G": "WLAN_SSID_24G"}
     }
 ] %}
 {% set inline_definitions = [] %}
