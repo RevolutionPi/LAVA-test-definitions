@@ -162,3 +162,11 @@ A test passes when `result` is `pass`. If a measurement is present, it means
 the test also reported a numeric metric (e.g. packet counts, timing).
 
 ---
+## Further reading
+
+The `test-runner` tool originates from the Linaro test-definitions project.
+Their documentation covers additional topics such as running test plans,
+manual tests, and uploading results to SQUAD (qa-reports):
+
+- [Linaro test-runner documentation](https://github.com/Linaro/test-definitions/blob/master/docs/test-runner.md)
+- `test-runner --help` for full list of options available locally
