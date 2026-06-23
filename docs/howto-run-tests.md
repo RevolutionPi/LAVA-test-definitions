@@ -170,3 +170,23 @@ manual tests, and uploading results to SQUAD (qa-reports):
 
 - [Linaro test-runner documentation](https://github.com/Linaro/test-definitions/blob/master/docs/test-runner.md)
 - `test-runner --help` for full list of options available locally
+
+## Quick reference
+
+```sh
+# Setup (once per session)
+. venv/bin/activate
+. ./automated/bin/setenv.sh
+
+# Run a test locally (on the device)
+test-runner -esd <path/to/test.yaml>
+
+# Run a test remotely from PC
+test-runner -esd <path/to/test.yaml> -g root@<device-ip>
+
+# Pass parameters
+test-runner -esd <path/to/test.yaml> -r KEY1=VALUE1 KEY2=VALUE2
+
+# See all available options
+test-runner --help
+```
