@@ -121,3 +121,44 @@ test-runner -esd automated/revpi/pibridge/pibridge-error.yaml \
 Multiple parameters are separated by spaces after `-r`.
 
 ---
+
+## Understanding the output
+
+### During the run
+
+The test runner prints each step as it executes them:
+
+```
++ cd ./automated/revpi/pibridge
++ ./pibridge-error.sh -s True -t pibridge-error
+INFO: Running pibridge-error test...
+pibridge-error pass
+pibridge-error-rx-err-metric pass 0 packets
+```
+
+Each test case reports `pass`, `fail`, or `skip`. Tests that measure something
+also report a value and unit.
+
+### After the run
+
+Results are saved to `$HOME/output/<test-name>_<uuid>/`. The most useful files:
+
+| File | Content |
+|------|---------|
+| `result.csv` | All results in a table: name, test_case_id, result, measurement, units |
+| `result.json` | Same results in JSON format |
+| `stdout.log` | Full output of the test execution |
+
+Example `result.csv`:
+
+```
+name,test_case_id,result,measurement,units,test_params
+pibridge-error,pibridge-error,pass,,,SKIP_INSTALL=false;TESTS=pibridge-error
+pibridge-error,pibridge-error-rx-err-metric,pass,0.0,packets,SKIP_INSTALL=false;TESTS=pibridge-error
+pibridge-error,pibridge-error-tx-err-metric,pass,0.0,packets,SKIP_INSTALL=false;TESTS=pibridge-error
+```
+
+A test passes when `result` is `pass`. If a measurement is present, it means
+the test also reported a numeric metric (e.g. packet counts, timing).
+
+---
