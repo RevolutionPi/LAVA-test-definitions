@@ -18,19 +18,21 @@ WLAN_INTERFACE="wlan0"
 WLAN_SSID=""
 WLAN_PASSWORD=""
 WLAN_SLEEP=10
+SKIP_REBOOT="false"
 
 usage() {
-    echo "Usage: $0 [-t tests] [-I wlan_interface] [-S wlan_sleep] -W <wlan_ssid> -P <wlan_password>" 1>&2
+    echo "Usage: $0 [-t tests] [-I wlan_interface] [-S wlan_sleep] [-r skip_reboot] -W <wlan_ssid> -P <wlan_password>" 1>&2
     exit 1
 }
 
-while getopts "t:I:S:W:P:h" o; do
+while getopts "t:I:S:W:P:r:h" o; do
     case "$o" in
     t) TESTS="${OPTARG}" ;;
     I) WLAN_INTERFACE="${OPTARG}" ;;
     S) WLAN_SLEEP="${OPTARG}" ;;
     W) WLAN_SSID="${OPTARG}" ;;
     P) WLAN_PASSWORD="${OPTARG}" ;;
+    r) SKIP_REBOOT="${OPTARG}" ;;
     h|*) usage ;;
     esac
 done
@@ -44,8 +46,7 @@ wlan_enable_ext_antenna() {
         report_fail "$test_case_id"
     else
         report_pass "$test_case_id"
-        # reboot to fully activate antenna
-        shutdown -r +1
+        [ "${SKIP_REBOOT}" = "true" ] || shutdown -r +1
     fi
 }
 
