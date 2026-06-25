@@ -77,6 +77,7 @@ rfkill_check_devices_state() {
     report_set_stop
 
     if [ "$failed" ]; then
+        rfkill list
         report_fail "$test_case_id"
     else
         report_pass "$test_case_id"
