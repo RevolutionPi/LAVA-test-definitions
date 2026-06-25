@@ -7,7 +7,7 @@ RESULT_FILE="${OUTPUT}/result.txt"
 export RESULT_FILE
 
 TESTS="
-    wlan-config-nm
+    wlan-config-country
     wlan-1-nm
     wlan-2-nm-a
     wlan-sleep
@@ -49,8 +49,8 @@ wlan_enable_ext_antenna() {
     fi
 }
 
-wlan_config_nm() {
-    local test_case_id=wlan-config-nm
+wlan_config_country() {
+    local test_case_id=wlan-config-country
 
     if ! echo "options cfg80211 ieee80211_regdom=DE" > /etc/modprobe.d/cfg80211.conf; then
         warn_msg "$test_case_id: Unable to write cfg80211 country config"
@@ -147,7 +147,7 @@ run() {
 
     case "${test_case_id}" in
     "wlan-enable-ext-antenna") wlan_enable_ext_antenna ;;
-    "wlan-config-nm") wlan_config_nm ;;
+    "wlan-config-country") wlan_config_country ;;
     "wlan-1-nm") wlan_1_nm ;;
     "wlan-2-nm-a") wlan_2_nm_a ;;
     "wlan-2-nm-b") wlan_2_nm_b ;;

@@ -17,7 +17,7 @@ metadata:
 
 params:
   TESTS:
-    wlan-config-nm
+    wlan-config-country
     wlan-1-nm
     wlan-2-nm-a
     wlan-sleep
