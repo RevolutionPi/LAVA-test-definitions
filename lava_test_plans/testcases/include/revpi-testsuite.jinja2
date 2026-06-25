@@ -71,6 +71,17 @@
 ) %}
 {% endif %}
 
+{% if HAS_WLAN %}
+{% set _ = test_definitions.append({
+    "repository": TEST_DEFINITIONS_REPOSITORY,
+    "from": "git",
+    "branch": TEST_DEFINITIONS_BRANCH,
+    "path": "automated/linux/wlan/wlan.yaml",
+    "name": "wlan-setup",
+    "params": {"TESTS": "wlan-config-country wlan-enable-ext-antenna", "SKIP_REBOOT": "true"}
+}) %}
+{% endif %}
+
 {% set inline_definitions = [] %}
 {% if INSTALL_PICONTROL_DKMS %}
 {% set _ = inline_definitions.append({
@@ -347,50 +358,8 @@
 }) %}
 {% endif %}
 
-{% if HAS_WLAN %}
-{% set _ = phase2_tests.append({
-    "repository": TEST_DEFINITIONS_REPOSITORY,
-    "from": "git",
-    "branch": TEST_DEFINITIONS_BRANCH,
-    "path": "automated/linux/wlan/wlan.yaml",
-    "name": "wlan-test",
-    "params": {"TESTS": "wlan-enable-ext-antenna wlan-config-country"}
-}) %}
-{% endif %}
-
-{% set namespace = "testsuite-II" %}
-{% set timeout_minutes = 2 %}
-{% set test_definitions = phase2_tests %}
-{% set inline_definitions = [] %}
-{% include "include/actions/test.jinja2" %}
-
-{# Phase 4: Testsuite-III (only for devices with WLAN) #}
 {% if HAS_WLAN and DEVICE_TYPE in ["RevPi_Connect_4", "RevPi_Connect_5", "RevPi_Flat"] %}
-{# Commands before phase 3 #}
-{% set command_name = "wait_for_reboot" %}
-{% set namespace = "recovery" %}
-{% set timeout_minutes = 5 %}
-{% include "include/actions/command.jinja2" %}
-
-{% set command_name = "wait_for_ssh" %}
-{% set namespace = "recovery" %}
-{% set timeout_minutes = 5 %}
-{% include "include/actions/command.jinja2" %}
-
-{% set deploy_to = "ssh" %}
-{% set namespace = "testsuite-III" %}
-{% set timeout_minutes = 4 %}
-{% include "include/actions/deploy.jinja2" %}
-
-{% set boot_method = "ssh" %}
-{% set namespace = "testsuite-III" %}
-{% set boot_prompts = ["'root@RevPi[0-9]+:'"] %}
-{% set timeout_minutes = 2 %}
-{% include "include/actions/boot.jinja2" %}
-
-{% set namespace = "testsuite-III" %}
-{% set timeout_minutes = 4 %}
-{% set test_definitions = [
+{% set _ = phase2_tests.extend([
     {
         "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
@@ -407,9 +376,13 @@
         "name": "wlan-test-24g",
         "params": {"TESTS": "wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_24G": "WLAN_SSID_24G"}
     }
-] %}
+]) %}
+{% endif %}
+
+{% set namespace = "testsuite-II" %}
+{% set timeout_minutes = 4 %}
+{% set test_definitions = phase2_tests %}
 {% set inline_definitions = [] %}
 {% include "include/actions/test.jinja2" %}
-{% endif %}
 
 {% endblock test_revpi %}
