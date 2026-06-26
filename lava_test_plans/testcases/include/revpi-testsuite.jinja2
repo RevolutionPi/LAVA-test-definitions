@@ -198,14 +198,6 @@
         "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
         "branch": TEST_DEFINITIONS_BRANCH,
-        "path": "automated/revpi/pibridge/pibridge-error.yaml",
-        "name": "piBridge",
-        "params": {"TESTS": "pibridge-error"}
-    },
-    {
-        "repository": TEST_DEFINITIONS_REPOSITORY,
-        "from": "git",
-        "branch": TEST_DEFINITIONS_BRANCH,
         "path": "automated/revpi/piTest/pt.yaml",
         "name": "piTest_piBridge",
         "params": {"TESTS": PITEST_TESTS}
@@ -255,14 +247,24 @@
 {% endif %}
 
 {% if HAS_CYCLETIME %}
-{% set _ = base_tests.append({
-    "repository": TEST_DEFINITIONS_REPOSITORY,
-    "from": "git",
-    "branch": TEST_DEFINITIONS_BRANCH,
-    "path": "automated/revpi/iocycle/iocycle-time.yaml",
-    "name": "cycleTime",
-    "params": {"TESTS": "iocycle-time iocycle-time-stress"}
-}) %}
+{% set _ = base_tests.extend([
+    {
+        "repository": TEST_DEFINITIONS_REPOSITORY,
+        "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
+        "path": "automated/revpi/iocycle/iocycle-time.yaml",
+        "name": "cycleTime",
+        "params": {"TESTS": "iocycle-time iocycle-time-stress"}
+    },
+    {
+        "repository": TEST_DEFINITIONS_REPOSITORY,
+        "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
+        "path": "automated/revpi/pibridge/pibridge-error.yaml",
+        "name": "piBridge",
+        "params": {"TESTS": "pibridge-error"}
+    }
+]) %}
 {% endif %}
 
 {% if HAS_RS485 %}
