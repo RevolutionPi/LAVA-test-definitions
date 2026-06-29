@@ -281,24 +281,44 @@
 {% endfor %}
 {% endif %}
 
+{% set _ = base_tests.append({
+    "repository": TEST_DEFINITIONS_REPOSITORY,
+    "from": "git",
+    "branch": TEST_DEFINITIONS_BRANCH,
+    "path": "automated/linux/rtc/rtc.yaml",
+    "name": "rtc-I",
+    "params": {"SKIP_INSTALL": "false", "SKIP_REBOOT": "false", "TESTS": "rtc-1 rtc-2a"}
+}) %}
+
+{% if HAS_WLAN %}
 {% set _ = base_tests.extend([
     {
         "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
         "branch": TEST_DEFINITIONS_BRANCH,
-        "path": "automated/linux/rtc/rtc.yaml",
-        "name": "rtc-I",
-        "params": {"SKIP_INSTALL": "false", "SKIP_REBOOT": "false", "TESTS": "rtc-1 rtc-2a"}
+        "path": "automated/linux/wlan/wlan.yaml",
+        "name": "wlan-test-5g",
+        "params": {"TESTS": "wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_5G": "WLAN_SSID_5G"}
     },
     {
         "repository": TEST_DEFINITIONS_REPOSITORY,
         "from": "git",
         "branch": TEST_DEFINITIONS_BRANCH,
-        "path": "automated/revpi/system_info/system_info.yaml",
-        "name": "system_info_dmesg",
-        "params": {"TESTS": "sysinfo-dmesg"}
+        "path": "automated/linux/wlan/wlan.yaml",
+        "name": "wlan-test-24g",
+        "params": {"TESTS": "wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_24G": "WLAN_SSID_24G"}
     }
 ]) %}
+{% endif %}
+
+{% set _ = base_tests.append({
+    "repository": TEST_DEFINITIONS_REPOSITORY,
+    "from": "git",
+    "branch": TEST_DEFINITIONS_BRANCH,
+    "path": "automated/revpi/system_info/system_info.yaml",
+    "name": "system_info_dmesg",
+    "params": {"TESTS": "sysinfo-dmesg"}
+}) %}
 
 {% set namespace = "testsuite-I" %}
 {% set timeout_minutes = 30 %}
@@ -358,27 +378,6 @@
     "name": "ui-desktop-start",
     "params": {"TESTS": "hdmi-status-check start-desktop", "SKIP_REBOOT": true}
 }) %}
-{% endif %}
-
-{% if HAS_WLAN %}
-{% set _ = phase2_tests.extend([
-    {
-        "repository": TEST_DEFINITIONS_REPOSITORY,
-        "from": "git",
-        "branch": TEST_DEFINITIONS_BRANCH,
-        "path": "automated/linux/wlan/wlan.yaml",
-        "name": "wlan-test-5g",
-        "params": {"TESTS": "wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_5G": "WLAN_SSID_5G"}
-    },
-    {
-        "repository": TEST_DEFINITIONS_REPOSITORY,
-        "from": "git",
-        "branch": TEST_DEFINITIONS_BRANCH,
-        "path": "automated/linux/wlan/wlan.yaml",
-        "name": "wlan-test-24g",
-        "params": {"TESTS": "wlan-1-nm wlan-2-nm-a wlan-sleep wlan-2-nm-b wlan-2-nm-disconnect", "WLAN_24G": "WLAN_SSID_24G"}
-    }
-]) %}
 {% endif %}
 
 {% set namespace = "testsuite-II" %}
