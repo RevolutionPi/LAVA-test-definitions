@@ -26,8 +26,7 @@ metadata:
 
 params:
   SKIP_INSTALL: "true"
-  SKIP_REBOOT: "true"
-  TESTS: "rtc-1 rtc-2a"
+  TESTS: "rtc-1 rtc-2"
   DATE_SET: "2024-01-01 11:11:00"
 
 run:
@@ -35,7 +34,6 @@ run:
     - cd ./automated/linux/rtc
     - ./rtc.sh
         -s "${SKIP_INSTALL}"
-        -r "${SKIP_REBOOT}"
         -t "${TESTS}"
         -d "${DATE_SET}"
     - ../../utils/send-to-lava.sh ./output/result.txt
