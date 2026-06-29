@@ -103,6 +103,13 @@
 {% set timeout_minutes = 5 %}
 {% include "include/actions/command.jinja2" %}
 
+{% if HAS_HDMI %}
+{% set command_name = "hdmi_on" %}
+{% set namespace = "recovery" %}
+{% set timeout_minutes = 1 %}
+{% include "include/actions/command.jinja2" %}
+{% endif %}
+
 {% set command_name = "wait_for_ssh" %}
 {% set namespace = "recovery" %}
 {% set timeout_minutes = 5 %}
@@ -311,6 +318,18 @@
 ]) %}
 {% endif %}
 
+{# ui-desktop-start test is temporary disabled until it is stable #}
+{% if HAS_HDMI and False %}
+{% set _ = base_tests.append({
+    "repository": TEST_DEFINITIONS_REPOSITORY,
+    "from": "git",
+    "branch": TEST_DEFINITIONS_BRANCH,
+    "path": "automated/revpi/hdmi/hdmi.yaml",
+    "name": "ui-desktop-start",
+    "params": {"TESTS": "hdmi-status-check start-desktop", "SKIP_REBOOT": true}
+}) %}
+{% endif %}
+
 {% set _ = base_tests.append({
     "repository": TEST_DEFINITIONS_REPOSITORY,
     "from": "git",
@@ -331,13 +350,6 @@
 {% set namespace = "recovery" %}
 {% set timeout_minutes = 5 %}
 {% include "include/actions/command.jinja2" %}
-
-{% if HAS_HDMI %}
-{% set command_name = "hdmi_on" %}
-{% set namespace = "recovery" %}
-{% set timeout_minutes = 1 %}
-{% include "include/actions/command.jinja2" %}
-{% endif %}
 
 {% set command_name = "wait_for_ssh" %}
 {% set namespace = "recovery" %}
@@ -368,17 +380,6 @@
     }
 ] %}
 
-{# ui-desktop-start test is temporary disabled until it is stable #}
-{% if HAS_HDMI and False %}
-{% set _ = phase2_tests.append({
-    "repository": TEST_DEFINITIONS_REPOSITORY,
-    "from": "git",
-    "branch": TEST_DEFINITIONS_BRANCH,
-    "path": "automated/revpi/hdmi/hdmi.yaml",
-    "name": "ui-desktop-start",
-    "params": {"TESTS": "hdmi-status-check start-desktop", "SKIP_REBOOT": true}
-}) %}
-{% endif %}
 
 {% set namespace = "testsuite-II" %}
 {% set timeout_minutes = 4 %}
