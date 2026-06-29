@@ -56,13 +56,19 @@ pt_test_digital_ios() {
 
         # turn on power before testing
         if [ -n "$power" ]; then
-            piTest_setIOValue "test-$input-$output-power-on" "$power" "$HIGH"
+            if ! piTest_setIOValue "$power" "$HIGH"; then
+                report_fail "test-$input-$output"
+                continue
+            fi
         fi
 
         piTest_Check_001 "test-$input-$output" "$input" "$output"
 
         if [ -n "$power" ]; then
-            piTest_setIOValue "test-$input-$output-power-off" "$power" "$LOW"
+            if ! piTest_setIOValue "$power" "$LOW"; then
+                report_fail "test-$input-$output"
+                continue
+            fi
         fi
     done
 }
@@ -99,9 +105,14 @@ test_pt_compact_a_1() {
 }
 
 test_pt_flat_da_1() {
-    piTest_setIOValue "test-flat-digital" "DOut" "1"
+    if ! piTest_setIOValue "DOut" "1"; then
+        report_fail "test-flat-dout"
+        return 1
+    fi
     piTest_Check_002 "test-flat-analog" "AIn" "AOut"
-    piTest_setIOValue "test-flat-digital" "DOut" "0"
+    if ! piTest_setIOValue "DOut" "0"; then
+        report_fail "test-flat-dout"
+    fi
 }
 
 test_pt_DIO_MIO_AIO_01() {

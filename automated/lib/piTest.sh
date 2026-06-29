@@ -65,10 +65,12 @@ piTest_Check_config() (
 )
 
 # Function for setting the IO value
+# $1: variable name
+# $2: value to write
+# Returns 0 on success, 1 on failure.
 piTest_setIOValue() (
-    test_case_name=$1
-    variable=$2
-    value=$3
+    variable=$1
+    value=$2
 
     output=$(piTest -w "$variable","$value")
     ret=$?
@@ -76,19 +78,18 @@ piTest_setIOValue() (
     # XXX: hack: piTest is broken:
     #  - no proper exit code on failure
     #  - no usage of stderr for error messages
-
-    if echo "$output" | grep -E "(Cannot find variable)|(Wrong arguments)"
-    then
-        report_fail "$test_case_name-piTest"
-    return
+    if [ "$ret" -ne 0 ]; then
+        echo "piTest_setIOValue '$variable': exit $ret" >&2
+        return 1
     fi
 
-    # XXX: piTest never seems to return an error code
-    if [ "$ret" -ne 0 ]
-    then
-        report_fail "$test_case_name-piTest-write"
-    return
+    # older versions of piTest don't return error codes
+    if echo "$output" | grep -qE "(Cannot find variable)|(Wrong arguments)"; then
+        echo "piTest_setIOValue '$variable': $output" >&2
+        return 1
     fi
+
+    return 0
 )
 
 # Function for checking digital IO value
@@ -178,13 +179,17 @@ piTest_Check_001() (
     output=$3
 
     # set output to low
-    piTest_setIOValue "$test_case_name" "$output" "$LOW"
+    if ! piTest_setIOValue "$output" "$LOW"; then
+        return 1
+    fi
     # wait for process image
     sleep "$PROCIMG_WAIT"
     piTest_validateIOValue "$test_case_name" "$input" "$LOW"
 
     # set output to high
-    piTest_setIOValue "$test_case_name" "$output" "$HIGH"
+    if ! piTest_setIOValue "$output" "$HIGH"; then
+        return 1
+    fi
     # wait for process image
     sleep "$PROCIMG_WAIT"
     piTest_validateIOValue "$test_case_name" "$input" "$HIGH"
@@ -201,14 +206,18 @@ piTest_Check_002() (
 
     # set output with ANALOG_VALx
     for analog_value in $(seq $ANALOG_START $ANALOG_STEP $ANALOG_END); do
-        piTest_setIOValue "$test_case_name" "$output" "$analog_value"
+        if ! piTest_setIOValue "$output" "$analog_value"; then
+            return 1
+        fi
         # Wait for process image
         sleep "$PROCIMG_WAIT"
         piTest_validateAIOValue "$test_case_name" "$input" "$analog_value"
     done
 
     # set output to zero
-    piTest_setIOValue "$test_case_name" "$output" "$LOW"
+    if ! piTest_setIOValue "$output" "$LOW"; then
+        return 1
+    fi
     # wait for process image
     sleep "$PROCIMG_WAIT"
     piTest_validateAIOValue "$test_case_name" "$input" "$LOW"
