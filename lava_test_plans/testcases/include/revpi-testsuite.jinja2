@@ -293,8 +293,8 @@
     "from": "git",
     "branch": TEST_DEFINITIONS_BRANCH,
     "path": "automated/linux/rtc/rtc.yaml",
-    "name": "rtc-I",
-    "params": {"SKIP_INSTALL": "false", "SKIP_REBOOT": "false", "TESTS": "rtc-1 rtc-2a"}
+    "name": "rtc",
+    "params": {"SKIP_INSTALL": "false", "TESTS": "rtc-1 rtc-2"}
 }) %}
 
 {% if HAS_WLAN %}
@@ -342,48 +342,6 @@
 {% set namespace = "testsuite-I" %}
 {% set timeout_minutes = 30 %}
 {% set test_definitions = base_tests %}
-{% set inline_definitions = [] %}
-{% include "include/actions/test.jinja2" %}
-
-{# Commands between phases #}
-{% set command_name = "wait_for_reboot" %}
-{% set namespace = "recovery" %}
-{% set timeout_minutes = 5 %}
-{% include "include/actions/command.jinja2" %}
-
-{% set command_name = "wait_for_ssh" %}
-{% set namespace = "recovery" %}
-{% set timeout_minutes = 5 %}
-{% include "include/actions/command.jinja2" %}
-
-{# Phase 3: Testsuite-II #}
-{% set deploy_to = "ssh" %}
-{% set namespace = "testsuite-II" %}
-{% set timeout_minutes = 4 %}
-{% include "include/actions/deploy.jinja2" %}
-
-{% set boot_method = "ssh" %}
-{% set namespace = "testsuite-II" %}
-{% set boot_prompts = ["'root@RevPi[0-9]+:'"] %}
-{% set timeout_minutes = 2 %}
-{% include "include/actions/boot.jinja2" %}
-
-{# Base testsuite-II tests #}
-{% set phase2_tests = [
-    {
-        "repository": TEST_DEFINITIONS_REPOSITORY,
-        "from": "git",
-        "branch": TEST_DEFINITIONS_BRANCH,
-        "path": "automated/linux/rtc/rtc.yaml",
-        "name": "rtc-II",
-        "params": {"SKIP_INSTALL": "true", "SKIP_REBOOT": "true", "TESTS": "rtc-2b"}
-    }
-] %}
-
-
-{% set namespace = "testsuite-II" %}
-{% set timeout_minutes = 4 %}
-{% set test_definitions = phase2_tests %}
 {% set inline_definitions = [] %}
 {% include "include/actions/test.jinja2" %}
 
