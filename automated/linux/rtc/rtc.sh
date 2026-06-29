@@ -82,6 +82,7 @@ rtc_2() {
     hwclock --set --date "$DATE_SET"
     if ! check_hwclock "$DATE_SET"; then
         report_fail "$test_case_id"
+        timedatectl set-ntp true
         return 1
     fi
 
