@@ -87,7 +87,7 @@
 {% set _ = inline_definitions.append({
     "name": "install-picontrol-dkms",
     "description": "Install picontrol-dkms package",
-    "steps": ["apt install picontrol-dkms -y"]
+    "steps": ["DEBIAN_FRONTEND=noninteractive apt install picontrol-dkms -y"]
 }) %}
 {% endif %}
 {% set _ = inline_definitions.append({
