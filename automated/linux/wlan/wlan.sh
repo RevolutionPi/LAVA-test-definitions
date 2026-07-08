@@ -50,6 +50,24 @@ wlan_enable_ext_antenna() {
     fi
 }
 
+# NetworkManager reports the device as "unavailable" for a moment after the
+# radio is unblocked, and refuses to scan until it settles into
+# "disconnected". Poll instead of guessing a fixed delay.
+_wait_wlan_available() {
+    local timeout=10
+    local waited=0
+
+    while nmcli -t -f DEVICE,STATE device status | grep -q "^${WLAN_INTERFACE}:unavailable"; do
+        if [ "$waited" -ge "$timeout" ]; then
+            return 1
+        fi
+        sleep 1
+        waited=$((waited + 1))
+    done
+
+    return 0
+}
+
 wlan_config_country() {
     local test_case_id=wlan-config-country
 
@@ -65,6 +83,11 @@ wlan_config_country() {
     fi
     if ! revpi-config enable ieee80211; then
         warn_msg "$test_case_id: Unable to enable WLAN radio"
+        report_fail "$test_case_id"
+        return 1
+    fi
+    if ! _wait_wlan_available; then
+        warn_msg "$test_case_id: ${WLAN_INTERFACE} still unavailable after enabling the radio"
         report_fail "$test_case_id"
         return 1
     fi
