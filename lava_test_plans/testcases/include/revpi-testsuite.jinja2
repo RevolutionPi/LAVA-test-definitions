@@ -90,11 +90,14 @@
     "steps": ["DEBIAN_FRONTEND=noninteractive apt install picontrol-dkms -y"]
 }) %}
 {% endif %}
+{# pkg-install already schedules the reboot unless DKMS must be installed afterwards. #}
+{% if not PKG_URLS or INSTALL_PICONTROL_DKMS %}
 {% set _ = inline_definitions.append({
     "name": "reboot-after-config",
     "description": "Reboot after revpi config",
-    "steps": ["shutdown -r +1"]
+    "steps": ["systemd-run --on-active=10s --unit=lava-reboot systemctl reboot"]
 }) %}
+{% endif %}
 {% include "include/actions/test.jinja2" %}
 
 {# Commands after preconfiguration #}
