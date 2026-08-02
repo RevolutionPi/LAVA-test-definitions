@@ -15,6 +15,17 @@ RUNTIME_SEC=60
 BYTES=512
 MAX_MS=5
 PROCESSES=1
+stress_pid=""
+
+stop_stress() {
+    if [ -n "$stress_pid" ]; then
+        kill "$stress_pid" 2>/dev/null || true
+        wait "$stress_pid" 2>/dev/null || true
+        stress_pid=""
+    fi
+}
+
+trap stop_stress EXIT HUP INT TERM
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS] [-r RUNTIME_SEC] [-b BYTES] [-m MAX_MS] [-p PROCESSES]" 1>&2
@@ -56,11 +67,12 @@ run() {
         ;;
     "picontrol-usage-stress")
         # Multi-process stress test with CPU load
-        stress --cpu 4 &
+        stress --cpu "$(nproc)" &
+        stress_pid=$!
         "${TEST_SCRIPT_DIR}"/picontrol-usage -w -t "${RUNTIME_SEC}" -b "${BYTES}" -m "${MAX_MS}" -p "${PROCESSES}"
         check_return "$test_case_id"
 
-        pkill stress
+        stop_stress
         ;;
     *) error_msg "Unknown test case: ${test_case_id}" ;;
     esac

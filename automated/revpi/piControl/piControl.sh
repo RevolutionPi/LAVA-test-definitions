@@ -115,6 +115,8 @@ pc_set_cycle_time() {
     fi
 
     initial_cycle_time="$(cat "$PICONTROL_SYSFS_CYCLE_DURATION_PATH")"
+    trap 'printf "%d\n" "$initial_cycle_time" \
+        > "$PICONTROL_SYSFS_CYCLE_DURATION_PATH"' EXIT HUP INT TERM
     cycle_time="$initial_cycle_time"
     if [ "$cycle_time" -lt "$EFFECTIVE_MIN_CYCLE_TIME" ]; then
         info_msg "current cycle time of $cycle_time is too low, starting with $EFFECTIVE_MIN_CYCLE_TIME instead"
@@ -146,6 +148,7 @@ pc_set_cycle_time() {
     # restore initial cycle time before the test ran
     printf "%d\n" "$initial_cycle_time" \
         > "$PICONTROL_SYSFS_CYCLE_DURATION_PATH"
+    trap - EXIT HUP INT TERM
 
     [ -z "$err" ]
     check_return pc-set-cycle-time
