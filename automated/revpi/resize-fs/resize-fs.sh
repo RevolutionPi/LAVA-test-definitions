@@ -24,22 +24,27 @@ last_partition_resize_check() {
     if ! blockdev_size="$(cat /sys/block/"$blockdev"/size)"; then
         printf "Unable to read size of blockdev %s\n" "$blockdev" >&2
         report_fail "$test_case_id"
+        return 1
     fi
 
-	# shellcheck disable=SC2012
-    if ! last_partition="$(cd /dev && ls -1 "$blockdev"p* | tail -1)"; then
+    last_partition="$(find "/sys/block/$blockdev" -maxdepth 1 \
+        -name "${blockdev}p*" -printf '%f\n' | sort -V | tail -1)"
+    if [ -z "$last_partition" ]; then
         printf "Unable to find last partition of blockdev %s\n" "$blockdev" >&2
         report_fail "$test_case_id"
+        return 1
     fi
 
     if ! last_partition_start="$(cat /sys/block/"$blockdev"/"$last_partition"/start)"; then
         printf "Unable to get start of partition %s\n" "$last_partition" >&2
         report_fail "$test_case_id"
+        return 1
     fi
 
     if ! last_partition_size="$(cat /sys/block/"$blockdev"/"$last_partition"/size)"; then
         printf "Unable to get size of partition %s\n" "$last_partition" >&2
         report_fail "$test_case_id"
+        return 1
     fi
 
     local last_partition_end="$((last_partition_start + last_partition_size))"
