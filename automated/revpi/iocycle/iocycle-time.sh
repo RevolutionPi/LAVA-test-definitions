@@ -13,6 +13,17 @@ TEST_DIR="$(pwd)/${TEST_PROGRAM}"
 TEST_SCRIPT_DIR="${TEST_DIR}/pibridge_cycle_time"
 C_TIME=300
 MEAN_MS=20
+stress_pid=""
+
+stop_stress() {
+    if [ -n "$stress_pid" ]; then
+        kill "$stress_pid" 2>/dev/null || true
+        wait "$stress_pid" 2>/dev/null || true
+        stress_pid=""
+    fi
+}
+
+trap stop_stress EXIT HUP INT TERM
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-t TESTS]" 1>&2
@@ -41,14 +52,25 @@ run() {
         # using background_process_start and *_stop doesn't work here as stress
         # spawns multiple processes in a weird way. Killing one doesn't stop the
         # others.
-        stress --cpu 4 &
+        stress --cpu "$(nproc)" &
+        stress_pid=$!
         ;;
     *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
 
-    output=$("${TEST_SCRIPT_DIR}"/pibridge-cycle-time -s "${C_TIME}" 2>/dev/null)
+    if ! output=$("${TEST_SCRIPT_DIR}"/pibridge-cycle-time -s "${C_TIME}"); then
+        warn_msg "cycle-time measurement failed"
+        report_fail "$test_case_id"
+        stop_stress
+        return 1
+    fi
     echo "$output"
-    mean_ms=$(echo "$output" | jq -r '.mean_ms')
+    if ! mean_ms=$(echo "$output" | jq -er '.mean_ms | numbers'); then
+        warn_msg "cycle-time measurement returned invalid JSON"
+        report_fail "$test_case_id"
+        stop_stress
+        return 1
+    fi
     if [ "$(echo "$mean_ms > $MEAN_MS" | bc)" -eq "1" ]; then
         result=fail
         report_fail "$test_case_id"
@@ -59,7 +81,7 @@ run() {
     add_metric "${test_case_id}-metric" "$result" "$mean_ms" milliseconds
 
     if [ "$test_case_id" = "iocycle-time-stress" ]; then
-        pkill stress
+        stop_stress
     fi
 }
 
