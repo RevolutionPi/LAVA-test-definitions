@@ -61,10 +61,15 @@ run() {
 # Test run
 create_out_dir "${OUTPUT}"
 
-if [ -z "$PISERIAL_SERIAL_NR" ] || [ -z "$PISERIAL_PASS" ]; then
-    echo "Options -S and -P are mandatory." >&2
-    usage
-fi
+case " $TESTS " in
+*" tpm-1 "*)
+    if [ -z "$PISERIAL_SERIAL_NR" ] || [ -z "$PISERIAL_PASS" ]; then
+        echo "Options -S and -P are mandatory for tpm-1." >&2
+        usage
+    fi
+    ;;
+*) ;;
+esac
 
 install_deps "piserial tpm2-tools" "$SKIP_INSTALL"
 
