@@ -158,9 +158,10 @@ piTest_validateAIOValue() (
             range_low=0
         fi
 
-        if ! [ "$value" -ge "$range_low" ] && [ "$value" -le "$range_high" ];
-        then
+        if [ "$value" -lt "$range_low" ] || [ "$value" -gt "$range_high" ]; then
             report_fail "$1-$2-value-$3-is-$value"
+        else
+            report_pass "$1-$2-value-$3-is-$value"
         fi
     else
         report_fail "$1-variable-not-found-$2"

@@ -60,7 +60,7 @@ check_dmesg() {
         fi
     fi
 
-    [ "$set_error" -gt 0 ]
+    [ "$set_error" -eq 0 ]
 }
 
 run() {
