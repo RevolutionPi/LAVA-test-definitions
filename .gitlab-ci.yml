@@ -24,3 +24,28 @@ py-type-check:
   rules:
     - changes:
         - automated/utils/prepare_lava_job
+
+render-lava-test-plans:
+  image:
+    registry.gitlab.com/revolutionpi/infrastructure/docker-images/build-container/lava-submit-trixie:amd64-latest
+  stage: lint
+  tags:
+    - dedicated-lava-submitter
+  script:
+    - git clone --depth 1 https://github.com/Linaro/lava-test-plans.git
+    - |
+      cd lava-test-plans
+      nightly_dir="$CI_PROJECT_DIR/lava_test_plans/testcases/nightly"
+      for testcase in "$nightly_dir"/*.yaml; do
+        filename="${testcase##*/}"
+        device_config="${filename%.yaml}"
+        device_type="${device_config%-*}"
+        python3 -m lava_test_plans \
+          --device-type "$device_type" \
+          --variables "$CI_PROJECT_DIR/lava_test_plans/variables.ini" \
+          --test-case "nightly/$filename" \
+          --testcase-path "$CI_PROJECT_DIR/lava_test_plans/testcases" \
+          --template-path "$CI_PROJECT_DIR/lava_test_plans/testcases" \
+          --testplan-device-path "$CI_PROJECT_DIR/lava_test_plans/devices" \
+          --dry-run
+      done
