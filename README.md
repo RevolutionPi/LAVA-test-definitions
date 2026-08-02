@@ -16,7 +16,7 @@ A set of testing scripts designed to work with LAVA.
 │   ├── revpi				# revpi-specific tests
 │   └── utils				# various utilities used by jobs
 ├── docs					# general documentation
-└── plans					# commonly used job definitions
+└── lava_test_plans			# LAVA job templates and device testcases
 ```
 
 ## Naming schema for Pictory configurations
