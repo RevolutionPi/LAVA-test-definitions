@@ -28,7 +28,7 @@ while getopts "t:s:d:a:h" o; do
 done
 
 pt_1() {
-    piTest_Check_config "test-pt1-pt2" "$(piTest -d)"
+    piTest_Check_config "pt1-pt2" "$(piTest -d)"
 }
 
 pt_test_digital_ios() {
@@ -41,7 +41,7 @@ pt_test_digital_ios() {
 
     if [ -z "$ios" ]; then
         info_msg "No digital IOs defined. Skipping test."
-        report_skip "test-digital-ios"
+        report_skip "digital-ios"
 
         return 0
     fi
@@ -57,16 +57,16 @@ pt_test_digital_ios() {
         # turn on power before testing
         if [ -n "$power" ]; then
             if ! piTest_setIOValue "$power" "$HIGH"; then
-                report_fail "test-$input-$output"
+                report_fail "$input-$output"
                 continue
             fi
         fi
 
-        piTest_Check_001 "test-$input-$output" "$input" "$output"
+        piTest_Check_001 "$input-$output" "$input" "$output"
 
         if [ -n "$power" ]; then
             if ! piTest_setIOValue "$power" "$LOW"; then
-                report_fail "test-$input-$output"
+                report_fail "$input-$output"
                 continue
             fi
         fi
@@ -80,7 +80,7 @@ pt_test_analog_ios() {
 
     if [ -z "$ios" ]; then
         info_msg "No analog IOs defined. Skipping test."
-        report_skip "test-analog-ios"
+        report_skip "analog-ios"
 
         return 0
     fi
@@ -90,28 +90,28 @@ pt_test_analog_ios() {
         input="$(echo "$line" | cut -d',' -f1)"
         output="$(echo "$line" | cut -d',' -f2)"
 
-        piTest_Check_002 "test-$input-$output" "$input" "$output"
+        piTest_Check_002 "$input-$output" "$input" "$output"
     done
 }
 
 test_pt_compact_d_1() {
-    piTest_Check_001 "test-compact-pt" "DI1" "DO1"
-    piTest_Check_001 "test-compact-pt" "DI2" "DO2"
+    piTest_Check_001 "compact-pt" "DI1" "DO1"
+    piTest_Check_001 "compact-pt" "DI2" "DO2"
 }
 
 test_pt_compact_a_1() {
-    piTest_Check_002 "test-compact-analog-01" "AI1" "AO1"
-    piTest_Check_002 "test-compact-analog-01" "AI2" "AO2"
+    piTest_Check_002 "compact-analog-01" "AI1" "AO1"
+    piTest_Check_002 "compact-analog-01" "AI2" "AO2"
 }
 
 test_pt_flat_da_1() {
     if ! piTest_setIOValue "DOut" "1"; then
-        report_fail "test-flat-dout"
+        report_fail "flat-dout"
         return 1
     fi
-    piTest_Check_002 "test-flat-analog" "AIn" "AOut"
+    piTest_Check_002 "flat-analog" "AIn" "AOut"
     if ! piTest_setIOValue "DOut" "0"; then
-        report_fail "test-flat-dout"
+        report_fail "flat-dout"
     fi
 }
 
@@ -155,17 +155,17 @@ run() {
         test_pt_flat_da_1
         ;;
     "test_pt_config_006")
-        test_pt_DIO_MIO_AIO_01 "test-pt-config-006"
+        test_pt_DIO_MIO_AIO_01 "pt-config-006"
         ;;
     "test_pt_config_011")
         # Same configuration as config006 but with GW
-        test_pt_DIO_MIO_AIO_01 "test-pt-config-011"
+        test_pt_DIO_MIO_AIO_01 "pt-config-011"
         ;;
     "test_pt_config_010")
-        test_pt_DIO_MIO_AIO_02 "test-pt-config-010"
+        test_pt_DIO_MIO_AIO_02 "pt-config-010"
         ;;
     "test_pt_config_013")
-        test_pt_DIO_MIO_AIO_02 "test-pt-config-013"
+        test_pt_DIO_MIO_AIO_02 "pt-config-013"
         ;;
     "test_pt_connect_digin-1_relais-3")
         test_pt_connect_digin1_relaisX "relais-3" "RevPiOutput"
