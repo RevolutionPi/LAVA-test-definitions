@@ -31,25 +31,38 @@ run() {
         local rx_before rx_after rx_diff
         local tx_before tx_after tx_diff
         local rx_result=pass tx_result=pass
-        previous_baud="$(stty -F "$RSDEV" speed)"
-        exit_on_fail "$test_case_id-get-baud" "$test_case_id"
+
+        if [ ! -c "$RSDEV" ]; then
+            warn_msg "RS-485 device $RSDEV is not available"
+            report_fail "$test_case_id"
+            return 1
+        fi
+        if [ ! -r "$RX_ERR_FILE" ] || [ ! -r "$TX_ERR_FILE" ]; then
+            warn_msg "PiBridge error counters are not readable"
+            report_fail "$test_case_id"
+            return 1
+        fi
+        if ! previous_baud="$(stty -F "$RSDEV" speed)"; then
+            warn_msg "Failed to read baud rate from $RSDEV"
+            report_fail "$test_case_id"
+            return 1
+        fi
 
         trap 'stty -F "$RSDEV" -echo raw speed "$previous_baud" \
             > /dev/null' EXIT
-        trap 'exit 1' HUP INT TERM
 
-        stty -F "$RSDEV" -echo raw speed 1200
-        exit_on_fail "$test_case_id-set-baud" \
-            "$test_case_id $test_case_id-set-previous-baud"
+        if ! stty -F "$RSDEV" -echo raw speed 1200; then
+            warn_msg "Failed to set baud rate on $RSDEV"
+            report_fail "$test_case_id"
+            return 1
+        fi
 
-        [ -r "$RX_ERR_FILE" ] && [ -r "$TX_ERR_FILE" ]
-        exit_on_fail "$test_case_id-pibridge-stats" \
-            "$test_case_id $test_case_id-set-previous-baud"
-
-        rx_before="$(cat "$RX_ERR_FILE")" \
-            && tx_before="$(cat "$TX_ERR_FILE")"
-        exit_on_fail "$test_case_id-read-pibridge-stats" \
-            "$test_case_id $test_case_id-set-previous-baud"
+        if ! rx_before="$(cat "$RX_ERR_FILE")" \
+            || ! tx_before="$(cat "$TX_ERR_FILE")"; then
+            warn_msg "Failed to read PiBridge error counters"
+            report_fail "$test_case_id"
+            return 1
+        fi
 
         for i in $(seq 1 100); do
             if ! echo "test" > "$RSDEV"; then
@@ -58,10 +71,12 @@ run() {
             fi
         done
 
-        rx_after="$(cat "$RX_ERR_FILE")" \
-            && tx_after="$(cat "$TX_ERR_FILE")"
-        exit_on_fail "$test_case_id-read-pibridge-stats-after" \
-            "$test_case_id $test_case_id-set-previous-baud"
+        if ! rx_after="$(cat "$RX_ERR_FILE")" \
+            || ! tx_after="$(cat "$TX_ERR_FILE")"; then
+            warn_msg "Failed to read PiBridge error counters after sending"
+            report_fail "$test_case_id"
+            return 1
+        fi
         rx_diff=$((rx_after - rx_before))
         tx_diff=$((tx_after - tx_before))
 
@@ -84,7 +99,7 @@ run() {
 
         stty -F "$RSDEV" -echo raw speed "$previous_baud" > /dev/null
         check_return "$test_case_id-set-previous-baud"
-        trap - EXIT HUP INT TERM
+        trap - EXIT
         ;;
     *) error_msg "Unknown test $test_case_id" ;;
     esac
