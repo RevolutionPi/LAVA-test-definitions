@@ -27,7 +27,7 @@ last_partition_resize_check() {
         return 1
     fi
 
-    last_partition="$(find "/sys/block/$blockdev" -maxdepth 1 \
+    last_partition="$(find "/sys/block/$blockdev/" -maxdepth 1 \
         -name "${blockdev}p*" -printf '%f\n' | sort -V | tail -1)"
     if [ -z "$last_partition" ]; then
         printf "Unable to find last partition of blockdev %s\n" "$blockdev" >&2
