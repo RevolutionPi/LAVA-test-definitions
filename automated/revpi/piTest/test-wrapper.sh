@@ -71,10 +71,14 @@ pt_1() {
     pi_test_output=$(piTest -d)
     info_msg "$pi_test_output"
 
-    run_test_case 'piTest -x' "pt1-pt2-piTest-x"
-    run_test_case "! is_module_configured \"$pi_test_output\"" "pt1-pt2-HW_CONFIGURED"
-    run_test_case "! is_module_not_present \"$pi_test_output\"" "pt1-pt2-HW_NOT_PRESENT"
-    run_test_case "! is_module_updated \"$pi_test_output\"" "pt1-pt2-HW_UPDATE"
+    piTest -x
+    check_return "pt1-pt2-picontrol-driver-reset"
+    ! is_module_configured "$pi_test_output"
+    check_return "pt1-pt2-HW_CONFIGURED"
+    ! is_module_not_present "$pi_test_output"
+    check_return "pt1-pt2-HW_NOT_PRESENT"
+    ! is_module_updated "$pi_test_output"
+    check_return "pt1-pt2-HW_UPDATE"
 }
 
 pt_test_digital_ios() {
@@ -112,7 +116,10 @@ pt_test_digital_ios() {
         check_io "$input-$output" "$output" "$input" || ret=$?
 
         if [ -n "$power" ]; then
-            piTest_setIOValue "$power" "$LOW"
+            if ! piTest_setIOValue "$power" "$LOW"; then
+                report_fail "$input-$output"
+                continue
+            fi
         fi
     done
     return "${ret}"
