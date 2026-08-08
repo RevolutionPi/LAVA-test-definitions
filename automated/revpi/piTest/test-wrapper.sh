@@ -203,14 +203,16 @@ test_pt_connect_digin_1_relais_3() {
         report_fail "relais-3"
         return 1
     fi
-
-    run_test_case "piTest_validate_BitStatus \"$variable_di\" \"$bit_di\" \"$val_di\"" "relais-3-low"
+    if ! piTest_validate_BitStatus "$variable_di" "$bit_di" "$val_di"; then
+        report_fail "relais-3"
+        return 1
+    fi
     if ! piTest_set_bit "$variable_relay" "$bit_relay" "$HIGH"; then
         report_fail "relais-3"
         return 1
     fi
-
-    run_test_case "piTest_validate_BitStatus \"$variable_di\" \"$bit_di\" $((1 - val_di))" "relais-3-high"
+    piTest_validate_BitStatus "$variable_di" "$bit_di" $((1 - val_di))
+    check_return "relais-3"
 }
 
 test_pt_connect_digin_1_relais_5() {
@@ -232,14 +234,16 @@ test_pt_connect_digin_1_relais_5() {
         report_fail "relais-5"
         return 1
     fi
-
-    run_test_case "piTest_validate_BitStatus \"$variable_di\" \"$bit_di\" \"$val_di\"" "relais-5-low"
+    if ! piTest_validate_BitStatus "$variable_di" "$bit_di" "$val_di"; then
+        report_fail "relais-5"
+        return 1
+    fi
     if ! piTest_set_bit "$variable_relay" "$bit_relay" "$HIGH"; then
         report_fail "relais-5"
         return 1
     fi
-
-    run_test_case "piTest_validate_BitStatus \"$variable_di\" \"$bit_di\" $((1 - val_di))" "relais-5-high"
+    piTest_validate_BitStatus "$variable_di" "$bit_di" $((1 - val_di))
+    check_return "relais-5"
 }
 
 run() {
