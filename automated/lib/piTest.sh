@@ -126,18 +126,24 @@ piTest_checkVariable() {
 }
 
 # Function for checking digital IO value
+# $1: variable name
+# $2: expected value
+# Returns 0 on match, 1 otherwise
 piTest_validateIOValue() (
-    if [ "$(piTest -v "$2")" != "Cannot read variable info" ]
-    then
-        if [ "$(piTest -q -1 -r "$2")" -ne "$3" ]
-        then
-            report_fail "$1-$2"
-        else
-            report_pass "$1-$2"
-        fi
-    else
-        report_fail "$1-variable-not-found-$2"
+    variable=$1
+    expected=$2
+
+    if ! piTest_checkVariable "$variable" > /dev/null; then
+        return 1
     fi
+
+    actual=$(piTest_readValue "$variable") || return 1
+
+    if [ "$actual" -ne "$expected" ]; then
+        return 1
+    fi
+
+    return 0
 )
 
 piTest_getOffset() (
@@ -217,7 +223,9 @@ piTest_Check_001() (
     fi
     # wait for process image
     sleep "$PROCIMG_WAIT"
-    piTest_validateIOValue "$test_case_name" "$input" "$LOW"
+    if ! piTest_validateIOValue "$input" "$LOW"; then
+        return 1
+    fi
 
     # set output to high
     if ! piTest_setIOValue "$output" "$HIGH"; then
@@ -225,7 +233,9 @@ piTest_Check_001() (
     fi
     # wait for process image
     sleep "$PROCIMG_WAIT"
-    piTest_validateIOValue "$test_case_name" "$input" "$HIGH"
+    if ! piTest_validateIOValue "$input" "$HIGH"; then
+        return 1
+    fi
 )
 
 # Function for analog IO
