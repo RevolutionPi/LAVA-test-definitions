@@ -5,6 +5,41 @@
 # shellcheck disable=SC1091
 source ../../lib/piTest.sh
 
+piTest_Check_001() (
+    # $1: TEST_CASE_NAME
+    # $2: INPUT
+    # $3: OUTPUT
+    test_case_name=$1
+    input=$2
+    output=$3
+
+    # set output to low
+    if ! piTest_setIOValue "$output" "$LOW"; then
+        report_fail "$test_case_name-$input-low"
+        return 1
+    fi
+    # wait for process image
+    sleep "$PROCIMG_WAIT"
+    if piTest_validateIOValue "$input" "$LOW"; then
+        report_pass "$test_case_name-$input-low"
+    else
+        report_fail "$test_case_name-$input-low"
+    fi
+
+    # set output to high
+    if ! piTest_setIOValue "$output" "$HIGH"; then
+        report_fail "$test_case_name-$input-high"
+        return 1
+    fi
+    # wait for process image
+    sleep "$PROCIMG_WAIT"
+    if piTest_validateIOValue "$input" "$HIGH"; then
+        report_pass "$test_case_name-$input-high"
+    else
+        report_fail "$test_case_name-$input-high"
+    fi
+)
+
 test-pb-3() {
     piTest_Check_001 "pb-3" "DIO_R1_I1" "DIO_R1_O1"
 }

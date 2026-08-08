@@ -27,6 +27,167 @@ while getopts "t:s:d:a:h" o; do
     esac
 done
 
+piTest_Check_config() (
+    # $1: TEST_CASE_NAME
+    # $2: PIT_TEST_OUTPUT
+    test_case_name=$1
+    pi_test_output=$2
+
+    # Check if piTest -x fails
+    if piTest -x
+    then
+        report_pass "$test_case_name-piTest-x"
+    else
+        report_fail "$test_case_name-piTest-x"
+    fi
+
+    # Check if a module is NOT configured
+    if is_module_configured "$pi_test_output"
+    then
+        info_msg "$pi_test_output"
+        report_fail "$test_case_name-HW_CONFIGURED"
+    else
+        report_pass "$test_case_name-HW_CONFIGURED"
+    fi
+
+    # Check if a module is not physically present
+    if is_module_not_present "$pi_test_output"
+    then
+        info_msg "$pi_test_output"
+        report_fail "$test_case_name-HW_NOT_PRESENT"
+    else
+        report_pass "$test_case_name-HW_NOT_PRESENT"
+    fi
+
+    # Check if an update is required
+    if is_module_updated "$pi_test_output"
+    then
+        report_fail "$test_case_name-HW_UPDATE"
+    else
+        report_pass "$test_case_name-HW_UPDATE"
+    fi
+)
+
+piTest_Check_001() (
+    # $1: TEST_CASE_NAME
+    # $2: INPUT
+    # $3: OUTPUT
+    test_case_name=$1
+    input=$2
+    output=$3
+
+    # set output to low
+    if ! piTest_setIOValue "$output" "$LOW"; then
+        report_fail "$test_case_name-$input-low"
+        return 1
+    fi
+    # wait for process image
+    sleep "$PROCIMG_WAIT"
+    if piTest_validateIOValue "$input" "$LOW"; then
+        report_pass "$test_case_name-$input-low"
+    else
+        report_fail "$test_case_name-$input-low"
+    fi
+
+    # set output to high
+    if ! piTest_setIOValue "$output" "$HIGH"; then
+        report_fail "$test_case_name-$input-high"
+        return 1
+    fi
+    # wait for process image
+    sleep "$PROCIMG_WAIT"
+    if piTest_validateIOValue "$input" "$HIGH"; then
+        report_pass "$test_case_name-$input-high"
+    else
+        report_fail "$test_case_name-$input-high"
+    fi
+)
+
+piTest_Check_002() (
+    # $1: TEST_CASE_NAME
+    # $2: INPUT
+    # $3: OUTPUT
+    test_case_name=$1
+    input=$2
+    output=$3
+
+    # set output with ANALOG_VALx
+    for analog_value in $(seq $ANALOG_START $ANALOG_STEP $ANALOG_END); do
+        if ! piTest_setIOValue "$output" "$analog_value"; then
+            return 1
+        fi
+        # Wait for process image
+        sleep "$PROCIMG_WAIT"
+        if piTest_validateAIOValue "$input" "$analog_value"; then
+            report_pass "$test_case_name-$input-$analog_value"
+        else
+            report_fail "$test_case_name-$input-$analog_value"
+        fi
+    done
+
+    # reset output to zero
+    if ! piTest_setIOValue "$output" "$LOW"; then
+        return 1
+    fi
+    # wait for process image
+    sleep "$PROCIMG_WAIT"
+    if piTest_validateAIOValue "$input" "$LOW"; then
+        report_pass "$test_case_name-$input-reset"
+    else
+        report_fail "$test_case_name-$input-reset"
+    fi
+)
+
+test_pt_connect_digin1_relaisX() (
+    # $1: TEST_CASE_NAME
+    # $2: NAME VARIABLE RELAY
+    local test_case_name="$1"
+    local variable_relay="$2"
+    local variable_di="RevPiStatus"
+    local bit_relay=0
+    local bit_di=6
+    local val_di=0
+
+    if [ "$variable_relay" = "RevPiLED" ]; then
+        bit_relay=6
+        val_di=1
+    fi
+
+    if [ "$(piTest -v "$variable_relay")" = "Cannot read variable info" ]; then
+        report_fail "$test_case_name-variable-$variable_relay"
+        report_skip "$test_case_name-relay-low"
+        report_skip "$test_case_name-relay-high"
+        return 1
+    fi
+    report_pass "$test_case_name-variable-$variable_relay"
+
+    if [ "$(piTest -v "$variable_di")" = "Cannot read variable info" ]; then
+        report_fail "$test_case_name-variable-$variable_di"
+        report_skip "$test_case_name-relay-low"
+        report_skip "$test_case_name-relay-high"
+        return 1
+    fi
+    report_pass "$test_case_name-variable-$variable_di"
+
+    piTest_set_bit "$variable_relay" "$bit_relay" "$LOW"
+    # wait for process image
+    sleep "$PROCIMG_WAIT"
+    if piTest_validate_BitStatus "$variable_di" "$bit_di" "$val_di"; then
+        report_pass "$test_case_name-relay-low"
+    else
+        report_fail "$test_case_name-relay-low"
+    fi
+
+    piTest_set_bit "$variable_relay" "$bit_relay" "$HIGH"
+    # wait for process image
+    sleep "$PROCIMG_WAIT"
+    if piTest_validate_BitStatus "$variable_di" "$bit_di" $((1 - val_di)); then
+        report_pass "$test_case_name-relay-high"
+    else
+        report_fail "$test_case_name-relay-high"
+    fi
+)
+
 pt_1() {
     piTest_Check_config "pt1-pt2" "$(piTest -d)"
 }
