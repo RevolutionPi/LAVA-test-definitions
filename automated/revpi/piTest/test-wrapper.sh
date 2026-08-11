@@ -27,169 +27,54 @@ while getopts "t:s:d:a:h" o; do
     esac
 done
 
-piTest_Check_config() (
-    # $1: TEST_CASE_NAME
-    # $2: PIT_TEST_OUTPUT
-    test_case_name=$1
-    pi_test_output=$2
-
-    # Check if piTest -x fails
-    if piTest -x
-    then
-        report_pass "$test_case_name-piTest-x"
-    else
-        report_fail "$test_case_name-piTest-x"
-    fi
-
-    # Check if a module is NOT configured
-    if is_module_configured "$pi_test_output"
-    then
-        info_msg "$pi_test_output"
-        report_fail "$test_case_name-HW_CONFIGURED"
-    else
-        report_pass "$test_case_name-HW_CONFIGURED"
-    fi
-
-    # Check if a module is not physically present
-    if is_module_not_present "$pi_test_output"
-    then
-        info_msg "$pi_test_output"
-        report_fail "$test_case_name-HW_NOT_PRESENT"
-    else
-        report_pass "$test_case_name-HW_NOT_PRESENT"
-    fi
-
-    # Check if an update is required
-    if is_module_updated "$pi_test_output"
-    then
-        report_fail "$test_case_name-HW_UPDATE"
-    else
-        report_pass "$test_case_name-HW_UPDATE"
-    fi
-)
-
-piTest_Check_001() (
-    # $1: TEST_CASE_NAME
-    # $2: INPUT
-    # $3: OUTPUT
-    test_case_name=$1
-    input=$2
-    output=$3
-
-    # set output to low
+check_io() {
+    local test_name="$1" output="$2" input="$3"
     if ! piTest_setIOValue "$output" "$LOW"; then
-        report_fail "$test_case_name-$input-low"
+        report_fail "$test_name"
         return 1
     fi
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
-    if piTest_validateIOValue "$input" "$LOW"; then
-        report_pass "$test_case_name-$input-low"
-    else
-        report_fail "$test_case_name-$input-low"
+    if ! piTest_validateIOValue "$input" "$LOW"; then
+        report_fail "$test_name"
+        return 1
     fi
-
-    # set output to high
     if ! piTest_setIOValue "$output" "$HIGH"; then
-        report_fail "$test_case_name-$input-high"
+        report_fail "$test_name"
         return 1
     fi
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
-    if piTest_validateIOValue "$input" "$HIGH"; then
-        report_pass "$test_case_name-$input-high"
-    else
-        report_fail "$test_case_name-$input-high"
+    piTest_validateIOValue "$input" "$HIGH"
+    check_return "$test_name"
+}
+
+check_aio() {
+    local test_name="$1" output="$2" input="$3" value="$4"
+    if ! piTest_setIOValue "$output" "$value"; then
+        report_fail "$test_name"
+        return 1
     fi
-)
+    piTest_validateAIOValue "$input" "$value"
+    check_return "$test_name"
+}
 
-piTest_Check_002() (
-    # $1: TEST_CASE_NAME
-    # $2: INPUT
-    # $3: OUTPUT
-    test_case_name=$1
-    input=$2
-    output=$3
-
-    # set output with ANALOG_VALx
-    for analog_value in $(seq $ANALOG_START $ANALOG_STEP $ANALOG_END); do
-        if ! piTest_setIOValue "$output" "$analog_value"; then
-            return 1
-        fi
-        # Wait for process image
-        sleep "$PROCIMG_WAIT"
-        if piTest_validateAIOValue "$input" "$analog_value"; then
-            report_pass "$test_case_name-$input-$analog_value"
-        else
-            report_fail "$test_case_name-$input-$analog_value"
-        fi
+check_aio_range() {
+    local prefix="$1" output="$2" input="$3"
+    local analog_value
+    local ret=0
+    for analog_value in $(seq "$ANALOG_START" "$ANALOG_STEP" "$ANALOG_END"); do
+        check_aio "$prefix-$analog_value" "$output" "$input" "$analog_value" || ret=$?
     done
-
-    # reset output to zero
-    if ! piTest_setIOValue "$output" "$LOW"; then
-        return 1
-    fi
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
-    if piTest_validateAIOValue "$input" "$LOW"; then
-        report_pass "$test_case_name-$input-reset"
-    else
-        report_fail "$test_case_name-$input-reset"
-    fi
-)
-
-test_pt_connect_digin1_relaisX() (
-    # $1: TEST_CASE_NAME
-    # $2: NAME VARIABLE RELAY
-    local test_case_name="$1"
-    local variable_relay="$2"
-    local variable_di="RevPiStatus"
-    local bit_relay=0
-    local bit_di=6
-    local val_di=0
-
-    if [ "$variable_relay" = "RevPiLED" ]; then
-        bit_relay=6
-        val_di=1
-    fi
-
-    if [ "$(piTest -v "$variable_relay")" = "Cannot read variable info" ]; then
-        report_fail "$test_case_name-variable-$variable_relay"
-        report_skip "$test_case_name-relay-low"
-        report_skip "$test_case_name-relay-high"
-        return 1
-    fi
-    report_pass "$test_case_name-variable-$variable_relay"
-
-    if [ "$(piTest -v "$variable_di")" = "Cannot read variable info" ]; then
-        report_fail "$test_case_name-variable-$variable_di"
-        report_skip "$test_case_name-relay-low"
-        report_skip "$test_case_name-relay-high"
-        return 1
-    fi
-    report_pass "$test_case_name-variable-$variable_di"
-
-    piTest_set_bit "$variable_relay" "$bit_relay" "$LOW"
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
-    if piTest_validate_BitStatus "$variable_di" "$bit_di" "$val_di"; then
-        report_pass "$test_case_name-relay-low"
-    else
-        report_fail "$test_case_name-relay-low"
-    fi
-
-    piTest_set_bit "$variable_relay" "$bit_relay" "$HIGH"
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
-    if piTest_validate_BitStatus "$variable_di" "$bit_di" $((1 - val_di)); then
-        report_pass "$test_case_name-relay-high"
-    else
-        report_fail "$test_case_name-relay-high"
-    fi
-)
+    check_aio "$prefix-reset" "$output" "$input" "$LOW" || ret=$?
+    return "${ret}"
+}
 
 pt_1() {
-    piTest_Check_config "pt1-pt2" "$(piTest -d)"
+    local pi_test_output
+    pi_test_output=$(piTest -d)
+    info_msg "$pi_test_output"
+
+    run_test_case 'piTest -x' "pt1-pt2-piTest-x"
+    run_test_case "! is_module_configured \"$pi_test_output\"" "pt1-pt2-HW_CONFIGURED"
+    run_test_case "! is_module_not_present \"$pi_test_output\"" "pt1-pt2-HW_NOT_PRESENT"
+    run_test_case "! is_module_updated \"$pi_test_output\"" "pt1-pt2-HW_UPDATE"
 }
 
 pt_test_digital_ios() {
@@ -197,13 +82,13 @@ pt_test_digital_ios() {
     local input
     local output
     local power
+    local ret=0
 
     # TODO: skipping this is still reported as pass in the calling context
 
     if [ -z "$ios" ]; then
         info_msg "No digital IOs defined. Skipping test."
         report_skip "digital-ios"
-
         return 0
     fi
 
@@ -219,30 +104,29 @@ pt_test_digital_ios() {
         if [ -n "$power" ]; then
             if ! piTest_setIOValue "$power" "$HIGH"; then
                 report_fail "$input-$output"
+                ret=1
                 continue
             fi
         fi
 
-        piTest_Check_001 "$input-$output" "$input" "$output"
+        check_io "$input-$output" "$output" "$input" || ret=$?
 
         if [ -n "$power" ]; then
-            if ! piTest_setIOValue "$power" "$LOW"; then
-                report_fail "$input-$output"
-                continue
-            fi
+            piTest_setIOValue "$power" "$LOW"
         fi
     done
+    return "${ret}"
 }
 
 pt_test_analog_ios() {
     local ios="$1"
     local input
     local output
+    local ret=0
 
     if [ -z "$ios" ]; then
         info_msg "No analog IOs defined. Skipping test."
         report_skip "analog-ios"
-
         return 0
     fi
 
@@ -251,43 +135,111 @@ pt_test_analog_ios() {
         input="$(echo "$line" | cut -d',' -f1)"
         output="$(echo "$line" | cut -d',' -f2)"
 
-        piTest_Check_002 "$input-$output" "$input" "$output"
+        check_aio_range "$input-$output-$input" "$output" "$input" || ret=$?
     done
+    return "${ret}"
 }
 
 test_pt_compact_d_1() {
-    piTest_Check_001 "compact-pt" "DI1" "DO1"
-    piTest_Check_001 "compact-pt" "DI2" "DO2"
+    local ret=0
+    check_io "compact-pt-DI1" "DO1" "DI1" || ret=$?
+    check_io "compact-pt-DI2" "DO2" "DI2" || ret=$?
+    return "${ret}"
 }
 
 test_pt_compact_a_1() {
-    piTest_Check_002 "compact-analog-01" "AI1" "AO1"
-    piTest_Check_002 "compact-analog-01" "AI2" "AO2"
+    local ret=0
+    check_aio_range "compact-analog-01-AI1" "AO1" "AI1" || ret=$?
+    check_aio_range "compact-analog-01-AI2" "AO2" "AI2" || ret=$?
+    return "${ret}"
 }
 
 test_pt_flat_da_1() {
+    local ret=0
     if ! piTest_setIOValue "DOut" "1"; then
         report_fail "flat-dout"
         return 1
     fi
-    piTest_Check_002 "flat-analog" "AIn" "AOut"
-    if ! piTest_setIOValue "DOut" "0"; then
-        report_fail "flat-dout"
-    fi
+    check_aio_range "flat-analog-AIn" "AOut" "AIn" || ret=$?
+    piTest_setIOValue "DOut" "0"
+    check_return "flat-dout" || ret=$?
+    return "${ret}"
 }
 
 test_pt_DIO_MIO_AIO_01() {
     local test_case_name="$1"
-    piTest_Check_001 "$test_case_name" "DIO_L3_I1" "DIO_R3_O1"
-    piTest_Check_001 "$test_case_name" "DIO_R3_I1" "DIO_L3_O1"
-    piTest_Check_002 "$test_case_name" "MIO_L2_AI1" "MIO_R2_AO7"
-    piTest_Check_002 "$test_case_name" "MIO_R2_AI2" "MIO_L2_AO7"
+    local ret=0
+    check_io "$test_case_name-DIO_L3_I1" "DIO_R3_O1" "DIO_L3_I1" || ret=$?
+    check_io "$test_case_name-DIO_R3_I1" "DIO_L3_O1" "DIO_R3_I1" || ret=$?
+    check_aio_range "$test_case_name-MIO_L2_AI1" "MIO_R2_AO7" "MIO_L2_AI1" || ret=$?
+    check_aio_range "$test_case_name-MIO_R2_AI2" "MIO_L2_AO7" "MIO_R2_AI2" || ret=$?
+    return "${ret}"
 }
 
 test_pt_DIO_MIO_AIO_02() {
     local test_case_name="$1"
-    piTest_Check_001 "$test_case_name" "DIO_L3_I1" "DIO_L3_O2"
-    piTest_Check_001 "$test_case_name" "DIO_L3_I2" "DIO_L3_O1"
+    local ret=0
+    check_io "$test_case_name-DIO_L3_I1" "DIO_L3_O2" "DIO_L3_I1" || ret=$?
+    check_io "$test_case_name-DIO_L3_I2" "DIO_L3_O1" "DIO_L3_I2" || ret=$?
+    return "${ret}"
+}
+
+test_pt_connect_digin_1_relais_3() {
+    local variable_relay="RevPiOutput"
+    local variable_di="RevPiStatus"
+    local bit_relay=0
+    local bit_di=6
+    local val_di=0
+
+    if ! piTest_checkVariable "$variable_relay" > /dev/null; then
+        report_fail "relais-3"
+        return 1
+    fi
+    if ! piTest_checkVariable "$variable_di" > /dev/null; then
+        report_fail "relais-3"
+        return 1
+    fi
+    if ! piTest_set_bit "$variable_relay" "$bit_relay" "$LOW"; then
+        report_fail "relais-3"
+        return 1
+    fi
+
+    run_test_case "piTest_validate_BitStatus \"$variable_di\" \"$bit_di\" \"$val_di\"" "relais-3-low"
+    if ! piTest_set_bit "$variable_relay" "$bit_relay" "$HIGH"; then
+        report_fail "relais-3"
+        return 1
+    fi
+
+    run_test_case "piTest_validate_BitStatus \"$variable_di\" \"$bit_di\" $((1 - val_di))" "relais-3-high"
+}
+
+test_pt_connect_digin_1_relais_5() {
+    local variable_relay="RevPiLED"
+    local variable_di="RevPiStatus"
+    local bit_relay=6
+    local bit_di=6
+    local val_di=1
+
+    if ! piTest_checkVariable "$variable_relay" > /dev/null; then
+        report_fail "relais-5"
+        return 1
+    fi
+    if ! piTest_checkVariable "$variable_di" > /dev/null; then
+        report_fail "relais-5"
+        return 1
+    fi
+    if ! piTest_set_bit "$variable_relay" "$bit_relay" "$LOW"; then
+        report_fail "relais-5"
+        return 1
+    fi
+
+    run_test_case "piTest_validate_BitStatus \"$variable_di\" \"$bit_di\" \"$val_di\"" "relais-5-low"
+    if ! piTest_set_bit "$variable_relay" "$bit_relay" "$HIGH"; then
+        report_fail "relais-5"
+        return 1
+    fi
+
+    run_test_case "piTest_validate_BitStatus \"$variable_di\" \"$bit_di\" $((1 - val_di))" "relais-5-high"
 }
 
 run() {
@@ -302,7 +254,6 @@ run() {
     "pt_test_digital_ios")
         pt_test_digital_ios "$DIGITAL_IOS"
         ;;
-
     "pt_test_analog_ios")
         pt_test_analog_ios "$ANALOG_IOS"
         ;;
@@ -329,10 +280,10 @@ run() {
         test_pt_DIO_MIO_AIO_02 "pt-config-013"
         ;;
     "test_pt_connect_digin-1_relais-3")
-        test_pt_connect_digin1_relaisX "relais-3" "RevPiOutput"
+        test_pt_connect_digin_1_relais_3
         ;;
     "test_pt_connect_digin-1_relais-5")
-        test_pt_connect_digin1_relaisX "relais-5" "RevPiLED"
+        test_pt_connect_digin_1_relais_5
         ;;
     *)
         report_fail "Undefined test..."
