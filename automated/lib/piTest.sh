@@ -105,6 +105,26 @@ piTest_readValue() {
     echo "$value"
 }
 
+# Check that a piTest variable exists and can be read.
+# $1: variable name
+# Returns 0 on success, 1 otherwise.
+piTest_checkVariable() {
+    local var="$1"
+    local output
+    local ret
+    output="$(piTest -v "$var")"
+    ret=$?
+    if [ "$ret" -ne 0 ]; then
+        echo "piTest_checkVariable '$var': exit $ret" >&2
+        return 1
+    fi
+    if echo "$output" | grep -q "Cannot read variable info"; then
+        echo "piTest_checkVariable '$var': variable not found" >&2
+        return 1
+    fi
+    return 0
+}
+
 # Function for checking digital IO value
 piTest_validateIOValue() (
     if [ "$(piTest -v "$2")" != "Cannot read variable info" ]
