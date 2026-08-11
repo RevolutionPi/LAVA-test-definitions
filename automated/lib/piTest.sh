@@ -9,7 +9,7 @@ ANALOG_END=9000
 ANALOG_STEP=1000
 ANALOG_RANGE=250
 
-PROCIMG_WAIT=1
+PROCIMG_WAIT=0.1
 
 # Function to check if a module is NOT configured
 is_module_configured() {
@@ -89,6 +89,7 @@ piTest_setIOValue() (
         return 1
     fi
 
+    sleep "$PROCIMG_WAIT"
     return 0
 )
 
@@ -228,8 +229,6 @@ piTest_Check_001() (
     if ! piTest_setIOValue "$output" "$LOW"; then
         return 1
     fi
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
     if ! piTest_validateIOValue "$input" "$LOW"; then
         return 1
     fi
@@ -238,8 +237,6 @@ piTest_Check_001() (
     if ! piTest_setIOValue "$output" "$HIGH"; then
         return 1
     fi
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
     if ! piTest_validateIOValue "$input" "$HIGH"; then
         return 1
     fi
@@ -259,8 +256,6 @@ piTest_Check_002() (
         if ! piTest_setIOValue "$output" "$analog_value"; then
             return 1
         fi
-        # Wait for process image
-        sleep "$PROCIMG_WAIT"
         if ! piTest_validateAIOValue "$input" "$analog_value"; then
             return 1
         fi
@@ -270,8 +265,6 @@ piTest_Check_002() (
     if ! piTest_setIOValue "$output" "$LOW"; then
         return 1
     fi
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
     if ! piTest_validateAIOValue "$input" "$LOW"; then
         return 1
     fi
