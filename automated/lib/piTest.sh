@@ -146,14 +146,16 @@ piTest_validateIOValue() (
     return 0
 )
 
-piTest_getOffset() (
+piTest_getOffset() {
     # $1: Variable name
     local var="$1"
-    local offset=0
-    offset=$(piTest -v "$var")
-    offset=$(echo "$offset" | grep -oP '(?<=offset:\s)\d+')
+    local info
+    local offset
+    piTest_checkVariable "$var" || return 1
+    info="$(piTest -v "$var")"
+    offset=$(echo "$info" | grep -oP '(?<=offset:\s)\d+')
     echo "$offset"
-)
+}
 
 piTest_set_bit() (
     # $1: Variable name
