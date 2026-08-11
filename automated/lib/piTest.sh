@@ -92,6 +92,19 @@ piTest_setIOValue() (
     return 0
 )
 
+# Read a process image variable value.
+# $1: variable name
+# Prints value to stdout. Returns 0 on success, 1 on failure.
+piTest_readValue() {
+    local var="$1"
+    local value
+    if ! value="$(piTest -q -1 -r "$var")"; then
+        echo "piTest_readValue '$var': piTest -r failed" >&2
+        return 1
+    fi
+    echo "$value"
+}
+
 # Function for checking digital IO value
 piTest_validateIOValue() (
     if [ "$(piTest -v "$2")" != "Cannot read variable info" ]
