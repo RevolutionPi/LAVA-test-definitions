@@ -167,7 +167,8 @@ piTest_set_bit() (
     local bit_status="$3"
     local offset=0
     offset=$(piTest_getOffset "$var")
-    piTest -s "$offset","$bit","$bit_status"
+    piTest -s "$offset","$bit","$bit_status" || return 1
+    sleep "$PROCIMG_WAIT"
 )
 
 # Function for checking digital IO bit status
@@ -293,8 +294,6 @@ test_pt_connect_digin1_relaisX() (
         val_di=1
     fi
     piTest_set_bit "$variable_relay" "$bit_relay" "$LOW"
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
     piTest_validate_BitStatus "$variable_di" "$bit_di" "$val_di"
     ret=$?
     if [ "$ret" -eq 1 ]; then
@@ -302,8 +301,6 @@ test_pt_connect_digin1_relaisX() (
         return 1
     fi
     piTest_set_bit "$variable_relay" "$bit_relay" "$HIGH"
-    # wait for process image
-    sleep "$PROCIMG_WAIT"
     piTest_validate_BitStatus "$variable_di" "$bit_di" $((1 - val_di))
     ret=$?
     if [ "$ret" -eq 1 ]; then
