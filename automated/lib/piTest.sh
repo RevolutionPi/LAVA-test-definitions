@@ -116,7 +116,10 @@ piTest_getOffset() {
     local info
     local offset
     piTest_checkVariable "$var" || return 1
-    info="$(piTest -v "$var")"
+    if ! info="$(piTest -v "$var")"; then
+        echo "piTest_getOffset '$var': piTest -v failed" >&2
+        return 1
+    fi
     offset=$(echo "$info" | grep -oP '(?<=offset:\s)\d+')
     echo "$offset"
 }
@@ -129,7 +132,7 @@ piTest_set_bit() (
     local bit="$2"
     local bit_status="$3"
     local offset=0
-    offset=$(piTest_getOffset "$var")
+    offset=$(piTest_getOffset "$var") || return 1
     piTest -s "$offset","$bit","$bit_status" || return 1
     sleep "$PROCIMG_WAIT"
 )
@@ -144,8 +147,11 @@ piTest_validate_BitStatus() (
     local bit_status="$3"
     local offset=0
     local val=0
-    offset=$(piTest_getOffset "$var")
-    val=$(piTest -qg "$offset","$bit")
+    offset=$(piTest_getOffset "$var") || return 1
+    if ! val=$(piTest -qg "$offset","$bit"); then
+        echo "piTest_validate_BitStatus '$var': piTest -qg failed" >&2
+        return 1
+    fi
     if [ "$val" = "$bit_status" ]; then
         return 0
     else
