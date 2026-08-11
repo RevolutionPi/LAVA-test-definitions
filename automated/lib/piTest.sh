@@ -187,24 +187,29 @@ piTest_validate_BitStatus() (
 )
 
 # Function for checking analog IO value
+# $1: variable name
+# $2: expected value
+# Returns 0 on match, 1 otherwise
 piTest_validateAIOValue() (
-    if [ "$(piTest -v "$2")" != "Cannot read variable info" ]
-    then
-        value=$(piTest -q -1 -r "$2")
-        range_low=$(( $3 - ANALOG_RANGE ))
-        range_high=$(( $3 + ANALOG_RANGE ))
+    variable=$1
+    expected=$2
 
-        if [ $range_low -lt 0 ]; then
-            range_low=0
-        fi
+    if ! piTest_checkVariable "$variable" > /dev/null; then
+        return 1
+    fi
 
-        if [ "$value" -lt "$range_low" ] || [ "$value" -gt "$range_high" ]; then
-            report_fail "$1-$2-value-$3-is-$value"
-        else
-            report_pass "$1-$2-value-$3-is-$value"
-        fi
+    value=$(piTest_readValue "$variable") || return 1
+    range_low=$(( expected - ANALOG_RANGE ))
+    range_high=$(( expected + ANALOG_RANGE ))
+
+    if [ $range_low -lt 0 ]; then
+        range_low=0
+    fi
+
+    if [ "$value" -ge "$range_low" ] && [ "$value" -le "$range_high" ]; then
+        return 0
     else
-        report_fail "$1-variable-not-found-$2"
+        return 1
     fi
 )
 
@@ -254,16 +259,20 @@ piTest_Check_002() (
         fi
         # Wait for process image
         sleep "$PROCIMG_WAIT"
-        piTest_validateAIOValue "$test_case_name" "$input" "$analog_value"
+        if ! piTest_validateAIOValue "$input" "$analog_value"; then
+            return 1
+        fi
     done
 
-    # set output to zero
+    # reset output to zero
     if ! piTest_setIOValue "$output" "$LOW"; then
         return 1
     fi
     # wait for process image
     sleep "$PROCIMG_WAIT"
-    piTest_validateAIOValue "$test_case_name" "$input" "$LOW"
+    if ! piTest_validateAIOValue "$input" "$LOW"; then
+        return 1
+    fi
 )
 
 test_pt_connect_digin1_relaisX() (
