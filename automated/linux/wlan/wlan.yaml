@@ -25,6 +25,7 @@ params:
     wlan-2-nm-disconnect
   WLAN_INTERFACE: "wlan0"
   WLAN_SLEEP: 10
+  SKIP_REBOOT: "false"
 
 run:
   steps:
@@ -42,6 +43,7 @@ run:
         -t "${TESTS}" \
         -I "${WLAN_INTERFACE}" \
         -S "${WLAN_SLEEP}" \
+        -r "${SKIP_REBOOT}" \
         -W "${WLAN_SSID}" \
         -P "${WLAN_PASSWORD}"
     - ../../utils/send-to-lava.sh ./output/result.txt
