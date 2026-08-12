@@ -46,7 +46,8 @@ wlan_enable_ext_antenna() {
         report_fail "$test_case_id"
     else
         report_pass "$test_case_id"
-        [ "${SKIP_REBOOT}" = "true" ] || shutdown -r +1
+        [ "${SKIP_REBOOT}" = "true" ] || \
+            [ "${SKIP_REBOOT}" = "True" ] || shutdown -r +1
     fi
 }
 
