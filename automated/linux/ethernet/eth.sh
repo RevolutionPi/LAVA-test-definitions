@@ -11,11 +11,12 @@ IP_ATE="10.42.11.150"
 SKIP_INSTALL="True"
 TESTS="eth-1 eth-3 eth-4"
 ETHERNET_SPEED=1000
-
+STATE_DIR="/var/lib/revpi-eth-rename"
+WORKER_RESULT="${STATE_DIR}/result"
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-d dut] [-i ip_ate] [-t tests] [-b ethernet_speed]" 1>&2
-    echo "Tests: eth-1 eth-3 eth-4" 1>&2
+    echo "Tests: eth-1 eth-3 eth-4 eth-5" 1>&2
     exit 1
 }
 
@@ -151,6 +152,49 @@ check_iface_names() {
     fi
 }
 
+check_iface_names_report() {
+    local total=""
+    local completed=""
+    local failures=""
+    local good=0
+    local result=fail
+
+    # The worker leaves a single line behind: total=N completed=N failures=N
+    if [ -f "$WORKER_RESULT" ]; then
+        info_msg "Worker result: $(cat "$WORKER_RESULT")"
+        total=$(sed -n 's/.*total=\([0-9][0-9]*\).*/\1/p' "$WORKER_RESULT")
+        completed=$(sed -n 's/.*completed=\([0-9][0-9]*\).*/\1/p' "$WORKER_RESULT")
+        failures=$(sed -n 's/.*failures=\([0-9][0-9]*\).*/\1/p' "$WORKER_RESULT")
+    fi
+
+    if [ -z "$total" ] || [ -z "$completed" ] || [ -z "$failures" ]; then
+        warn_msg "No usable result in $WORKER_RESULT"
+        warn_msg "The rename stability run did not report back"
+        report_fail eth-5
+        rm -rf "$STATE_DIR"
+        return
+    fi
+
+    good=$((completed - failures))
+    info_msg "=== Result: good=$good bad=$failures / $completed of $total ==="
+
+    if [ "$completed" -lt "$total" ]; then
+        warn_msg "Run gave up after $completed of $total iterations"
+    elif [ "$failures" -eq 0 ]; then
+        result=pass
+    fi
+
+    if [ "$result" = pass ]; then
+        report_pass eth-5
+    else
+        report_fail eth-5
+    fi
+
+    add_metric "eth-5-metric" "$result" "$failures" failures
+
+    rm -rf "$STATE_DIR"
+}
+
 run() {
     local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
@@ -174,6 +218,9 @@ run() {
         ;;
     "eth-4")
         check_iface_names
+        ;;
+    "eth-5")
+        check_iface_names_report
         ;;
     *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
