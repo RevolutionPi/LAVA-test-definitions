@@ -9,7 +9,7 @@ export RESULT_FILE
 DUT=""
 IP_ATE="10.42.11.150"
 SKIP_INSTALL="True"
-TESTS="eth-1 eth-3"
+TESTS="eth-1 eth-3 eth-4"
 ETHERNET_SPEED=1000
 
 

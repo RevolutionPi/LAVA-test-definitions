@@ -26,7 +26,7 @@ metadata:
 params:
   SKIP_INSTALL: "False"
   DUT: ""
-  TESTS: "eth-1 eth-3"
+  TESTS: "eth-1 eth-3 eth-4"
   ETHERNET_SPEED: 1000
 
 run:
