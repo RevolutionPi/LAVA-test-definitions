@@ -1,0 +1,40 @@
+{% set ETH_RENAME_ITERATIONS = ETH_RENAME_ITERATIONS | default(20) | int %}
+{% set HAS_ETH_RENAME_TEST = (HAS_ETH_RENAME_TEST | default(false) | string | lower) == "true" %}
+
+{% if HAS_ETH_RENAME_TEST %}
+
+{% set namespace = "eth-rename-report" %}
+
+{# Worker runs the stability test: N reboots, leaves the totals on the DUT in
+   /var/lib/revpi-eth-rename/result. LAVA ignores an inline timeout on a
+   command action, so the timeout for this one lives in common/timeouts.jinja2
+   as a named action timeout. #}
+{% set command_name = "eth_rename_stability" %}
+{% set timeout_minutes = "" %}
+{% include "include/actions/command.jinja2" %}
+
+{# Read result from DUT and report as single metric #}
+{% set deploy_to = "ssh" %}
+{% set timeout_minutes = 4 %}
+{% include "include/actions/deploy.jinja2" %}
+
+{% set boot_method = "ssh" %}
+{% set boot_prompts = ["'root@RevPi[0-9]+:'"] %}
+{% set timeout_minutes = 2 %}
+{% include "include/actions/boot.jinja2" %}
+
+{% set timeout_minutes = 5 %}
+{% set test_definitions = [
+    {
+        "repository": TEST_DEFINITIONS_REPOSITORY,
+        "from": "git",
+        "branch": TEST_DEFINITIONS_BRANCH,
+        "path": "automated/linux/ethernet/eth.yaml",
+        "name": "eth-rename-report",
+        "params": {"DUT": DEVICE_TYPE, "TESTS": "eth-5"}
+    }
+] %}
+{% set inline_definitions = [] %}
+{% include "include/actions/test.jinja2" %}
+
+{% endif %}
