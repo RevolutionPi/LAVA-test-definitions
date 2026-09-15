@@ -15,6 +15,7 @@ ETHERNET_SPEED=1000
 
 usage() {
     echo "Usage: $0 [-s <true|false>] [-d dut] [-i ip_ate] [-t tests] [-b ethernet_speed]" 1>&2
+    echo "Tests: eth-1 eth-3 eth-4" 1>&2
     exit 1
 }
 
@@ -38,6 +39,21 @@ resolve_iface() {
 }
 ETH0=$(resolve_iface lan0 eth0)
 ETH1=$(resolve_iface lan1 eth1)
+
+TRIXIE_VERSION_ID=13
+
+detect_iface_prefix() {
+    local version_id=""
+
+    version_id=$(. /etc/os-release && echo "${VERSION_ID:-0}")
+
+    if [ "$version_id" -ge "$TRIXIE_VERSION_ID" ]; then
+        echo lan
+    else
+        echo eth
+    fi
+}
+IFACE_PREFIX=$(detect_iface_prefix)
 
 check_ethtool() {
     local interface="$1"
@@ -84,6 +100,57 @@ check_iperf3() {
     add_metric "eth-3-$check_nr-metric" "$result" "$bitrate_average" "Mbit/s"
 }
 
+check_iface_names() {
+    local expected_ifaces="${IFACE_PREFIX}0"
+    local iface=""
+    local ret=0
+
+    case "$DUT" in
+    RevPi_Core*)
+        # Core (3/3+/S/SE) has a single ethernet port, all others have two
+        ;;
+    *)
+        expected_ifaces="${expected_ifaces} ${IFACE_PREFIX}1"
+        ;;
+    esac
+
+    info_msg "Expected interfaces: $expected_ifaces"
+
+    for iface in $expected_ifaces; do
+        if [ -e "/sys/class/net/$iface" ]; then
+            info_msg "Interface $iface is present"
+        else
+            warn_msg "Interface $iface is missing"
+            ret=1
+        fi
+    done
+
+    # Any further ethernet interface means a rename did not take effect, e.g.
+    # an eth0 left over on Trixie or an eth2 on Bookworm.
+    for iface in /sys/class/net/*; do
+        iface="${iface##*/}"
+
+        case "$iface" in
+        eth[0-9]*|lan[0-9]*) ;;
+        *) continue ;;
+        esac
+
+        case " $expected_ifaces " in
+        *" $iface "*) continue ;;
+        *) ;;
+        esac
+
+        warn_msg "Unexpected interface: $iface"
+        ret=1
+    done
+
+    if [ "$ret" -eq 0 ]; then
+        report_pass eth-4
+    else
+        report_fail eth-4
+    fi
+}
+
 run() {
     local test_case_id="$1"
     info_msg "Running ${test_case_id} test..."
@@ -104,6 +171,9 @@ run() {
         info_msg "$output"
         check_iperf3 "$IPERF_SPEED" 1
         check_iperf3 "$IPERF_SPEED" 2
+        ;;
+    "eth-4")
+        check_iface_names
         ;;
     *) error_msg "Invalid test case '$test_case_id'" ;;
     esac
