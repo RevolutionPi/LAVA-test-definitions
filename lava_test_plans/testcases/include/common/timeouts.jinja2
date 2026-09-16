@@ -2,6 +2,12 @@
 {% set LAVA_CONNECTION_TIMEOUT = LAVA_CONNECTION_TIMEOUT|default(2) %}
 {% set LAVA_ACTION_TIMEOUT = LAVA_ACTION_TIMEOUT|default(10) %}
 
+{% set HAS_ETH_RENAME_TEST = (HAS_ETH_RENAME_TEST | default(false) | string | lower) == "true" %}
+{% if HAS_ETH_RENAME_TEST %}
+{% set ETH_RENAME_TIMEOUT = (ETH_RENAME_ITERATIONS | default(20) | int) * 5 %}
+{% set LAVA_JOB_TIMEOUT = [LAVA_JOB_TIMEOUT | int, ETH_RENAME_TIMEOUT + 120] | max %}
+{% endif %}
+
 timeouts:
   job:
     minutes: {{ LAVA_JOB_TIMEOUT }}
@@ -9,3 +15,8 @@ timeouts:
     minutes: {{ LAVA_CONNECTION_TIMEOUT }}
   action:
     minutes: {{ LAVA_ACTION_TIMEOUT }}
+{% if HAS_ETH_RENAME_TEST %}
+  actions:
+    user-command:
+      minutes: {{ ETH_RENAME_TIMEOUT }}
+{% endif %}
