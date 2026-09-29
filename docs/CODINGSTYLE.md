@@ -33,7 +33,9 @@ case "${expression}" in
 a)
     variable="foo"
     ;;
-b) variable="bar"
+b)
+    variable="bar"
+    ;;
 *) ;;
 esac
 ```
