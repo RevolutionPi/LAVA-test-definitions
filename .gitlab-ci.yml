@@ -10,6 +10,8 @@ include:
     file: "/yaml-lint.yml"
   - project: "revolutionpi/infrastructure/ci-templates"
     file: "/shell-lint.yml"
+  - project: "revolutionpi/infrastructure/ci-templates"
+    file: "/testing/shared-submit.yml"
 
 py-type-check:
   image: arm64v8/debian:bookworm
@@ -49,3 +51,16 @@ render-lava-test-plans:
           --testplan-device-path "$CI_PROJECT_DIR/lava_test_plans/devices" \
           --dry-run
       done
+
+lava-test-definitions:
+  extends: .base-test-device
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+  variables:
+    LAVA_TEST_DEFINITIONS_REF: "$CI_COMMIT_REF_NAME"
+    IMAGE_URL: "$IMAGE_URL_RELEASE_TRIXIE"
+    SQUAD_PROJECT: "lava-test-definitions"
+  script:
+    - !reference [.common-test-run-script, script]
