@@ -64,11 +64,13 @@ python3 -m lava_test_plans \
 
 ### Creating New Test Cases
 
-To create a new device-specific test case, extend the universal RevPi testsuite template:
+To create a new device-specific test case, extend the universal RevPi testsuite template.
+Name the file `$TYPE-$CONFIG_NR.yaml` as described in the [top-level README](../README.md#naming-schema-for-plans):
 
 ```
 {% extends "include/revpi-testsuite.jinja2" %}
 
+{% set DEVICE_TYPE = "RevPi_Connect_5" %}
 {% set TAG_NR = "016" %}
 {% set TPM_TEST = "tpm-2b" %}
 {% set HAS_WLAN = true %}
