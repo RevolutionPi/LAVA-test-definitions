@@ -73,6 +73,7 @@ check_iperf3() {
     local check_nr="$2"
     local output_iperf3=""
     local bitrate_average=0
+    local iperf3_error=""
     local result=""
 
     case "$check_nr" in
@@ -87,6 +88,11 @@ check_iperf3() {
     *)
         error_msg "Undefined test..."
     esac
+
+    iperf3_error="$(echo "$output_iperf3" | jq -r '.error // empty')"
+    if [ -n "$iperf3_error" ]; then
+        warn_msg "iperf3: $iperf3_error"
+    fi
 
     if [ "$(printf "%.0f" "$bitrate_average")" -gt "$minimum_bitrate" ]; then
         result=pass
