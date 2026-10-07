@@ -51,6 +51,7 @@ check_aio() {
         report_fail "$test_name"
         return 1
     fi
+    sleep "$ANALOG_SETTLE_WAIT"
     piTest_validateAIOValue "$input" "$value"
     check_return "$test_name"
 }
