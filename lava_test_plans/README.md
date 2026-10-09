@@ -4,7 +4,7 @@
 
 The Revolution Pi Team provides support for testing the Kernel and distributions using this set of templates.
 
-These LAVA templates have been extended to include LXC support and feature a modular template architecture with action templates and device-specific configurations.
+These LAVA templates program the device under test from a docker container on the worker and feature a modular template architecture with action templates and device-specific configurations.
 
 This repository now includes templates designed for use with [lava-test-plans](https://github.com/Linaro/lava-test-plans), enabling the automatic generation of LAVA job definition files from templates.
 

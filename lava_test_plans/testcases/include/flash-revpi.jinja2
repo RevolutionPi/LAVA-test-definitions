@@ -1,40 +1,23 @@
 {% block flash_revpi %}
 {% if CAN_FLASH %}
-{# Deploy LXC container #}
-{% set deploy_to = "lxc" %}
-{% set namespace = "tlxc" %}
-{% set os = "debian" %}
-{% set packages = ["iputils-ping", "netcat-traditional", "usbutils", "fdisk", "xz-utils", "zstd"] %}
-{% set timeout_minutes = 5 %}
-{% include "include/actions/deploy.jinja2" %}
-
-{# Boot LXC container #}
-{% set boot_method = "lxc" %}
-{% set namespace = "tlxc" %}
-{% set boot_prompts = ["'root@(.*):/#'"] %}
-{% set timeout_minutes = 5 %}
-{% include "include/actions/boot.jinja2" %}
-
-{# Deploy recovery image #}
-{% set deploy_to = "recovery" %}
-{% set connection_namespace = "tlxc" %}
+{# Download the image that will be programmed onto the DUT #}
+{% set deploy_to = "downloads" %}
 {% set namespace = "recovery" %}
 {% set recovery_image_url = REVPI_FLASH_IMAGE %}
-{% set os = "debian" %}
-{% set packages = "" %}
 {% set timeout_minutes = 10 %}
 {% include "include/actions/deploy.jinja2" %}
 
-{# Boot recovery #}
+{# Boot recovery: power cycle the DUT and expose its storage as /dev/blockDUT #}
 {% set boot_method = "recovery" %}
 {% set boot_commands = "recovery" %}
-{% set boot_prompts = "" %}
 {% set namespace = "recovery" %}
 {% set timeout_minutes = 5 %}
 {% include "include/actions/boot.jinja2" %}
 
-{# Test: Auto programming device #}
-{% set namespace = "tlxc" %}
+{# Test: program the image from a docker container on the worker #}
+{% set namespace = "recovery" %}
+{% set docker_image = REVPI_FLASH_DOCKER_IMAGE %}
+{% set docker_image_local = REVPI_FLASH_DOCKER_IMAGE_LOCAL %}
 {% set timeout_minutes = 30 %}
 {% set test_definitions = [
     {

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Writes an image which is stored in folder /lava-lxc onto a RevPi.
+# Writes an image which is stored in folder /lava-downloads onto a RevPi.
 # After the image is written onto the device, it is verified with a
 # checksum against the original image from the source archive.
 
@@ -62,8 +62,8 @@ get_decompress_prog() {
 }
 
 prog_device() {
-    # find image and extract
-    cd /lava-lxc || exit
+    # LAVA bind-mounts the files of the "downloads" deploy action here.
+    cd /lava-downloads || error_fatal "/lava-downloads is not mounted"
 
     IMAGE_COMPRESSION=xz
     IMAGE=$(find . -maxdepth 1 -iname "*.xz" -type f)
