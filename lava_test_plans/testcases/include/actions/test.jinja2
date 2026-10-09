@@ -1,5 +1,10 @@
     - test:
         namespace: {{ namespace }}
+{% if docker_image|default('') %}
+        docker:
+          image: {{ docker_image }}
+          local: {{ docker_image_local|default(false)|string|lower }}
+{% endif %}
         timeout:
           minutes: {{ timeout_minutes|default(15) }}
 {% if test_definitions|default([]) %}
