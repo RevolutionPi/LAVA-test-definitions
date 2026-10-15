@@ -26,6 +26,9 @@ import sys
 from typing import Union
 
 CRC32_FUNC = crcmod.predefined.mkCrcFun("crc-32")
+PACKET_SIZE = 9
+BITS_PER_CHARACTER = 10
+PACKET_GAP_CHARACTERS = 20
 
 
 class PacketType(enum.Enum):
@@ -242,6 +245,10 @@ def serial_server(ser: serial.Serial, limit: int) -> int:
     Start the server to validate RS485 packets. If given a limit > 0, the
     server will only accept "limit" amount of packets before exiting.
 
+    Anything that is not a valid packet, whether too short or with a bad
+    CRC, is logged and answered with an error. The input is then dropped
+    until the line is quiet, to get back in sync with the client.
+
     :param serial.Serial ser: The serial device used for receiving and sending
     packets.
     :param int limit: The amount of packets to process. A limit of 0 sets no
@@ -256,19 +263,74 @@ def serial_server(ser: serial.Serial, limit: int) -> int:
         if limit > 0 and count >= limit:
             break
 
-        packet = ser.read(9)
-        rs485_packet = RS485Packet.from_struct(packet)
+        packet = read_packet(ser)
         count = count + 1
 
-        if not rs485_packet.is_valid():
-            packet = RS485Packet.from_error(PacketError.InvalidCrc).to_struct()
-            ser.write(packet)
-            error = error + 1
+        if is_valid_packet(packet):
+            ser.write(RS485Packet.new_ack().to_struct())
         else:
-            packet = RS485Packet.new_ack().to_struct()
-            ser.write(packet)
+            print(f"Invalid packet: {packet.hex(' ')}", file=sys.stderr)
+            ser.write(RS485Packet.from_error(PacketError.InvalidCrc).to_struct())
+            discard_until_quiet(ser)
+            error = error + 1
 
     return error
+
+
+def read_packet(ser: serial.Serial) -> bytes:
+    """
+    Wait for the first byte of a packet and read until the packet is complete
+    or the line pauses. A read cut short by a pause holds no whole packet.
+
+    The pause is timed per byte here: pyserial's inter_byte_timeout maps to
+    termios VTIME on Linux, which counts in tenths of a second.
+    """
+
+    ser.timeout = None
+    packet = ser.read(1)
+
+    ser.timeout = packet_gap(ser)
+    while len(packet) < PACKET_SIZE:
+        byte = ser.read(1)
+        if not byte:
+            break
+        packet += byte
+
+    return packet
+
+
+def packet_gap(ser: serial.Serial) -> float:
+    """
+    Return the pause in seconds that ends a packet on the serial device.
+    """
+
+    return PACKET_GAP_CHARACTERS * BITS_PER_CHARACTER / ser.baudrate
+
+
+def discard_until_quiet(ser: serial.Serial):
+    """
+    Drop all input until the line stays quiet for a packet gap, so that the
+    rest of a packet read out of sync does not join the next packet.
+    """
+
+    ser.flush()
+    ser.timeout = packet_gap(ser)
+    while ser.read(PACKET_SIZE):
+        pass
+
+
+def is_valid_packet(packet: bytes) -> bool:
+    """
+    Check that a received packet can be parsed and has a correct CRC.
+    """
+
+    if len(packet) != PACKET_SIZE:
+        return False
+
+    try:
+        return RS485Packet.from_struct(packet).is_valid()
+    except ValueError:
+        return False
 
 
 def main():
